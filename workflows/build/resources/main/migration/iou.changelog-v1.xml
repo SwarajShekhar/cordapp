@@ -3,10 +3,10 @@
                    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="R3.Corda" id="create_member_state">
+    <!--<changeSet author="R3.Corda" id="create_member_state">
         <createTable tableName="mn_member_state">
-            <column name="member_Name" type="NVARCHAR(64)"/>
-                        <column name="member_Type" type="NVARCHAR(64)"/>
+            <column name="member_name" type="NVARCHAR(64)"/>
+                        <column name="member_type" type="NVARCHAR(64)"/>
                                     <column name="description" type="NVARCHAR(64)"/>
                                                 <column name="DEAID" type="NVARCHAR(64)"/>
                                                             <column name="DDDID" type="NVARCHAR(64)"/>
@@ -14,5 +14,13 @@
             <column name="owner" type="NVARCHAR(64)"/>
             <column name="linear_id" type="NVARCHAR(64)"/>
         </createTable>
-    </changeSet>
+    </changeSet>-->
+    <!--<changeSet id="create_third_party_member_state" author="R3.corda">
+        <createTable tableName="third_party_member_state">
+            <column name="linear_pointer" type="NVARCHAR(64)"/>
+            <column name="receiver" type="NVARCHAR(64)"/>
+            <column name="owner" type="NVARCHAR(64)"/>
+            <column name="linear_id" type="NVARCHAR(64)"/>
+        </createTable>
+    </changeSet>-->
 </databaseChangeLog>

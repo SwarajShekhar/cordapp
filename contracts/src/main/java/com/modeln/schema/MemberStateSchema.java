@@ -28,11 +28,11 @@ public class MemberStateSchema extends MappedSchema {
     @Table(name = "mn_member_state")
     public static class PersistMember extends PersistentState {
         @Column(name = "owner") private final String owner;
-        @Column(name = "member_Name") private final String memberName;
-        @Column(name = "member_Type") private final String memberType;
+        @Column(name = "member_name") private final String memberName;
+        @Column(name = "member_type") private final String memberType;
         @Column(name = "description") private final String description;
-        @Column(name = "DEAID") private final String DEAID;
-        @Column(name = "DDDID") private final String DDDID;
+        @Column(name = "deaid") private final String DEAID;
+        @Column(name = "dddid") private final String DDDID;
         @Column(name = "status") private final String status;
         @Column(name = "linear_id") @Type(type = "uuid-char") private final UUID linearId;
 

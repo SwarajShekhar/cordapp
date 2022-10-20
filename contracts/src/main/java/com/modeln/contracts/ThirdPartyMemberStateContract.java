@@ -16,4 +16,14 @@ public class ThirdPartyMemberStateContract implements Contract {
     public interface Commands extends CommandData {
         class Send implements ThirdPartyMemberStateContract.Commands {}
     }
+
+    public interface CommandCreate extends CommandData {
+        class Create implements CommandData {
+
+            public Create() {
+                System.out.println("Inside create commandData");
+            }
+
+        }
+    }
 }

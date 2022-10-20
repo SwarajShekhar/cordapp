@@ -20,16 +20,13 @@ import java.util.List;
 @BelongsToContract(ThirdPartyMemberStateContract.class)
 public class ThirdPartyMemberState implements LinearState, QueryableState {
 
-    private MemberState memberState;
-    private Party receiver;
     private UniqueIdentifier linearId;
     private LinearPointer<MemberState> memberStateLinearPointer;
     private Party owner;
+    private Party receiver;
 
     @ConstructorForDeserialization
-    public ThirdPartyMemberState(MemberState memberState, Party receiver, UniqueIdentifier linearId, LinearPointer<MemberState> memberStateLinearPointer, Party owner) {
-        this.memberState = memberState;
-        this.receiver = receiver;
+    public ThirdPartyMemberState(UniqueIdentifier linearId, LinearPointer<MemberState> memberStateLinearPointer, Party owner) {
         this.linearId = linearId;
         this.memberStateLinearPointer = memberStateLinearPointer;
         this.owner = owner;
@@ -58,14 +55,6 @@ public class ThirdPartyMemberState implements LinearState, QueryableState {
     public ThirdPartyMemberState() {
     }
 
-    public MemberState getMemberState() {
-        return memberState;
-    }
-
-    public void setMemberState(MemberState memberState) {
-        this.memberState = memberState;
-    }
-
     public Party getReceiver() {
         return receiver;
     }
@@ -91,10 +80,9 @@ public class ThirdPartyMemberState implements LinearState, QueryableState {
     public PersistentState generateMappedObject(@NotNull MappedSchema schema) {
         if (schema instanceof ThirdPartyMemberStateSchema) {
             return new ThirdPartyMemberStateSchema.PersistMember(
-                    this.owner.getName().toString(),
-                    memberState.getMemberName(), memberState.getMemberType(), memberState.getDescription(),
-                    memberState.getDEAID(), memberState.getDDDID(), memberState.getStatus(),
-                    this.linearId.getId(), this.receiver.getName().toString());
+                    this.owner.getName().toString(), linearId.getId(),
+                    memberStateLinearPointer.getPointer().getId()
+                    );
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
         }
