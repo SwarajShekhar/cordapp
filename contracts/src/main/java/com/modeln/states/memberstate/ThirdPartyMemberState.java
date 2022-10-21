@@ -1,9 +1,8 @@
-package com.modeln.states;
+package com.modeln.states.memberstate;
 
-import com.modeln.contracts.ThirdPartyMemberStateContract;
-import com.modeln.schema.ThirdPartyMemberStateSchema;
+import com.modeln.contracts.memberstate.ThirdPartyMemberStateContract;
+import com.modeln.schema.memberstate.ThirdPartyMemberStateSchema;
 import net.corda.core.contracts.BelongsToContract;
-import net.corda.core.contracts.LinearPointer;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -21,12 +20,11 @@ import java.util.List;
 public class ThirdPartyMemberState implements LinearState, QueryableState {
 
     private UniqueIdentifier linearId;
-    private LinearPointer<MemberState> memberStateLinearPointer;
+    private UniqueIdentifier memberStateLinearPointer;
     private Party owner;
-    private Party receiver;
 
     @ConstructorForDeserialization
-    public ThirdPartyMemberState(UniqueIdentifier linearId, LinearPointer<MemberState> memberStateLinearPointer, Party owner) {
+    public ThirdPartyMemberState(UniqueIdentifier linearId, UniqueIdentifier memberStateLinearPointer, Party owner) {
         this.linearId = linearId;
         this.memberStateLinearPointer = memberStateLinearPointer;
         this.owner = owner;
@@ -44,29 +42,21 @@ public class ThirdPartyMemberState implements LinearState, QueryableState {
         this.owner = owner;
     }
 
-    public LinearPointer<MemberState> getMemberStateLinearPointer() {
+    public UniqueIdentifier getMemberStateLinearPointer() {
         return memberStateLinearPointer;
     }
 
-    public void setMemberStateLinearPointer(LinearPointer<MemberState> memberStateLinearPointer) {
+    public void setMemberStateLinearPointer(UniqueIdentifier memberStateLinearPointer) {
         this.memberStateLinearPointer = memberStateLinearPointer;
     }
 
     public ThirdPartyMemberState() {
     }
 
-    public Party getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(Party receiver) {
-        this.receiver = receiver;
-    }
-
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
-        return Arrays.asList(receiver, owner);
+        return Arrays.asList(owner);
     }
 
     @NotNull
@@ -81,7 +71,7 @@ public class ThirdPartyMemberState implements LinearState, QueryableState {
         if (schema instanceof ThirdPartyMemberStateSchema) {
             return new ThirdPartyMemberStateSchema.PersistMember(
                     this.owner.getName().toString(), linearId.getId(),
-                    memberStateLinearPointer.getPointer().getId()
+                    memberStateLinearPointer.getId()
                     );
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");

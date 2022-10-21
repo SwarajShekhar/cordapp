@@ -1,8 +1,8 @@
-package com.modeln.flows.initiators;
+package com.modeln.flows.memberState.initiators;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.modeln.contracts.MemberStateContract;
-import com.modeln.states.MemberStateProposal;
+import com.modeln.contracts.memberstate.MemberStateContract;
+import com.modeln.states.memberstate.MemberStateProposal;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
 import net.corda.core.identity.CordaX500Name;

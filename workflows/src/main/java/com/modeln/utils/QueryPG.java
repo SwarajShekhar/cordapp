@@ -32,6 +32,6 @@ public class QueryPG {
             }
         }
         System.out.println(" Data Retrieved Successfully ..");
-        return "DEFAULT";
+        return null;
     }
 }

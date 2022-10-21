@@ -1,7 +1,7 @@
-package com.modeln.states;
+package com.modeln.states.memberstate;
 
-import com.modeln.contracts.MemberStateContract;
-import com.modeln.schema.MemberStateSchema;
+import com.modeln.contracts.memberstate.MemberStateContract;
+import com.modeln.schema.memberstate.MemberStateSchema;
 import net.corda.core.contracts.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;

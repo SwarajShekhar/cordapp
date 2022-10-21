@@ -1,4 +1,4 @@
-package com.modeln.flows.initiators;
+package com.modeln.flows.memberState.initiators;
 
 import co.paralleluniverse.fibers.Suspendable;
 import net.corda.core.crypto.TransactionSignature;

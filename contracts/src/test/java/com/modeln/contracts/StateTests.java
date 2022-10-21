@@ -1,6 +1,6 @@
 package com.modeln.contracts;
 
-import com.modeln.states.MemberState;
+import com.modeln.states.memberstate.MemberState;
 import org.junit.Test;
 
 public class StateTests {

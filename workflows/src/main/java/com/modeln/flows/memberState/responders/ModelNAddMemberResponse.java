@@ -1,12 +1,11 @@
-package com.modeln.flows.responders;
+package com.modeln.flows.memberState.responders;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.modeln.exceptions.InvalidStateException;
-import com.modeln.flows.ModelNBroadcastMemberState;
-import com.modeln.flows.initiators.ModelNAddAndBroadcast;
-import com.modeln.flows.initiators.ModelNAddMemberRequest;
-import com.modeln.flows.initiators.ModelNAddMemberState;
-import com.modeln.states.MemberStateProposal;
+import com.modeln.flows.memberState.ModelNBroadcastMemberState;
+import com.modeln.flows.memberState.initiators.ModelNAddMemberRequest;
+import com.modeln.flows.memberState.initiators.ModelNAddMemberState;
+import com.modeln.states.memberstate.MemberStateProposal;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
@@ -20,9 +19,6 @@ import java.util.Arrays;
 public class ModelNAddMemberResponse extends FlowLogic<Void> {
 
     private FlowSession counterpartySession;
-    private UniqueIdentifier linearId;
-
-
     public ModelNAddMemberResponse(FlowSession counterpartySession) {
         this.counterpartySession = counterpartySession;
     }
@@ -39,7 +35,7 @@ public class ModelNAddMemberResponse extends FlowLogic<Void> {
                     MemberStateProposal proposal = (MemberStateProposal)contractState;
                     System.out.println(this.getClass().getSimpleName() + " --> subflow starting next for Addmember");
                     UniqueIdentifier uuid = subFlow(new ModelNAddMemberState.Initiator(((MemberStateProposal) contractState).getName(), ((MemberStateProposal) contractState).getType()));
-                    System.out.println(this.getClass().getSimpleName() + " --> linearID: " + linearId);
+                    System.out.println(this.getClass().getSimpleName() + " --> linearID: " + uuid);
                     // broadcast now
                     Party broadcastingMember = ((MemberStateProposal) contractState).getProposer();
                     subFlow(new ModelNBroadcastMemberState.Initiator(uuid.getId(), Arrays.asList(broadcastingMember)));

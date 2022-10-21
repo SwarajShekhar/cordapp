@@ -1,6 +1,6 @@
-package com.modeln.states;
+package com.modeln.states.memberstate;
 
-import com.modeln.contracts.MemberStateProposalContract;
+import com.modeln.contracts.memberstate.MemberStateProposalContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;

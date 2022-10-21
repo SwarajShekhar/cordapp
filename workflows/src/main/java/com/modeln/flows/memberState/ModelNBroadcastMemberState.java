@@ -1,8 +1,8 @@
-package com.modeln.flows;
+package com.modeln.flows.memberState;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.modeln.exceptions.RecordDoesNotExistException;
-import com.modeln.states.MemberState;
+import com.modeln.states.memberstate.MemberState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;

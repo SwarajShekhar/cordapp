@@ -1,7 +1,7 @@
-package com.modeln.flows.responders;
+package com.modeln.flows.memberState.responders;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.modeln.flows.initiators.SignOracle;
+import com.modeln.flows.memberState.initiators.SignOracle;
 import com.modeln.services.Oracle;
 import net.corda.core.crypto.TransactionSignature;
 import net.corda.core.flows.FlowException;

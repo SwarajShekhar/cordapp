@@ -1,4 +1,4 @@
-package com.modeln.schema;
+package com.modeln.schema.memberstate;
 
 import net.corda.core.schemas.MappedSchema;
 import net.corda.core.schemas.PersistentState;

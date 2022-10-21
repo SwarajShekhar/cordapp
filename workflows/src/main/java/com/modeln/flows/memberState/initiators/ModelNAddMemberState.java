@@ -1,9 +1,9 @@
-package com.modeln.flows.initiators;
+package com.modeln.flows.memberState.initiators;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.modeln.contracts.MemberStateContract;
+import com.modeln.contracts.memberstate.MemberStateContract;
 import com.modeln.exceptions.RecordAlreadyExistsException;
-import com.modeln.states.MemberState;
+import com.modeln.states.memberstate.MemberState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
@@ -14,7 +14,6 @@ import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

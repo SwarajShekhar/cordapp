@@ -1,4 +1,4 @@
-package com.modeln.schema;
+package com.modeln.schema.memberstate;
 
 public class ThirdPartyMemberStateSchemaV1 {
 }

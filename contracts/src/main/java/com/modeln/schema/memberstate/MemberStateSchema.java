@@ -1,9 +1,8 @@
-package com.modeln.schema;
+package com.modeln.schema.memberstate;
 
 import net.corda.core.schemas.MappedSchema;
 import net.corda.core.schemas.PersistentState;
 import org.hibernate.annotations.Type;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.persistence.Column;

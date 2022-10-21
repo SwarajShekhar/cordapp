@@ -1,18 +1,15 @@
-package com.modeln.flows.responders;
+package com.modeln.flows.memberState.responders;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.modeln.flows.initiators.QueryOracle;
+import com.modeln.flows.memberState.initiators.QueryOracle;
 import com.modeln.services.Oracle;
 import net.corda.core.flows.FlowException;
 import net.corda.core.flows.FlowLogic;
 import net.corda.core.flows.FlowSession;
 import net.corda.core.flows.InitiatedBy;
-import net.corda.core.transactions.FilteredTransaction;
-import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.utilities.ProgressTracker;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 @InitiatedBy(QueryOracle.class)
