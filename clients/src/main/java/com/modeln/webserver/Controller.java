@@ -1,30 +1,46 @@
 package com.modeln.webserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.modeln.flows.AddAndBroadcastBidAwardRequest;
+import com.modeln.flows.bidaward.initiator.AddAndBroadcastBidAward;
+import com.modeln.flows.invoicelineitem.initiator.AddInvoiceLineItemRequest;
+import com.modeln.flows.memberState.initiators.ModelNAddMemberRequest;
+import com.modeln.flows.membershipState.initiator.AddMemberShipStateRequest;
+import com.modeln.states.bidawards.BidAwardState;
+import com.modeln.states.invoicelineitem.InvoiceLineItemState;
 import com.modeln.states.membershipstate.MemberShipState;
 import net.corda.client.jackson.JacksonSupport;
 import com.modeln.states.memberstate.MemberState;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.CordaX500Name;
+import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.node.NodeInfo;
+import net.corda.core.transactions.SignedTransaction;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -151,8 +167,149 @@ public class Controller {
         return proxy.vaultQuery(MemberShipState.class).getStates();
     }
 
+    @GetMapping(value = "/invoiceLineItem",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<InvoiceLineItemState>> getInvoiceLineItem() {
+        return proxy.vaultQuery(InvoiceLineItemState.class).getStates();
+    }
+
+    @GetMapping(value = "/bidAward",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<BidAwardState>> getBidAward() {
+        return proxy.vaultQuery(BidAwardState.class).getStates();
+    }
+
     @PostMapping(value = "/members", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
-    public List<StateAndRef<MemberState>> createMembers(HttpServletRequest request) {
-        return proxy.vaultQuery(MemberState.class).getStates();
+    public ResponseEntity<String> createMembers(HttpServletRequest request) {
+
+        String name = request.getParameter("name");
+        String type = request.getParameter("type");
+
+        try {
+            SignedTransaction result = proxy.startTrackedFlowDynamic(ModelNAddMemberRequest.class, name,type).getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction id "+ result.getId() +" committed to ledger.\n " + result.getTx().getOutput(0));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping(value = "/membership", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> createMemberShip(HttpServletRequest request) {
+
+        String memberStateUUID = request.getParameter("memberStateUUID");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
+        Instant startInstant = Instant.parse(startDate);
+        Instant endInstant = Instant.parse(endDate);
+
+        try {
+            SignedTransaction result = proxy
+                    .startTrackedFlowDynamic(AddMemberShipStateRequest.class, memberStateUUID,startInstant, endInstant)
+                    .getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction id "+ result.getId() +" committed to ledger.\n " + result.getTx().getOutput(0));
+            // For the purposes of this demo app, we do not differentiate by exception type.
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/bidAward", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> createBidAward(HttpServletRequest request) {
+
+        String bidAwardId = request.getParameter("bidAwardId");
+        String memberStateUUID = request.getParameter("memberStateUUID");
+        String productNDC = request.getParameter("productNDC");
+        String wholesalerId = request.getParameter("wholesalerId");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        float wacPrice = Float.parseFloat(request.getParameter("wacPrice"));
+        float authorizedPrice = Float.parseFloat(request.getParameter("authorizedPrice"));
+        String broadcastToMembers = request.getParameter("broadcastToMembers");
+
+
+        Instant startInstant = Instant.parse(startDate);
+        Instant endInstant = Instant.parse(endDate);
+        List<AbstractParty> broadcastList = new ArrayList<>();
+        for(String party: broadcastToMembers.split(";")){
+            CordaX500Name partyX500Name = CordaX500Name.parse(party);
+            Party otherParty = proxy.wellKnownPartyFromX500Name(partyX500Name);
+            broadcastList.add(otherParty);
+        }
+
+        try {
+            proxy
+                    .startTrackedFlowDynamic(AddAndBroadcastBidAward.class,
+                            bidAwardId,
+                            UUID.fromString(memberStateUUID),
+                            productNDC,
+                            wholesalerId,
+                            startInstant,
+                            wacPrice,
+                            authorizedPrice,
+                            endInstant,
+                            wholesalerId,
+                            broadcastList
+                            )
+                    .getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction  committed to ledger");
+            // For the purposes of this demo app, we do not differentiate by exception type.
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping(value = "/invoiceLineItem", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> createInvoiceLineItem(HttpServletRequest request) {
+
+        String memberStateUniqueIdentifier = request.getParameter("memberStateUniqueIdentifier");
+        String productNDC = request.getParameter("productNDC");
+        String invoiceId = request.getParameter("invoiceId");
+        String invoiceDate = request.getParameter("invoiceDate");
+        String bidAwardUniqueIdentifier = request.getParameter("bidAwardUniqueIdentifier");
+        String consumer = request.getParameter("consumer");
+
+        Instant invoiceInstant = Instant.parse(invoiceDate);
+        CordaX500Name partyX500Name = CordaX500Name.parse(consumer);
+        Party otherParty = proxy.wellKnownPartyFromX500Name(partyX500Name);
+
+
+        try {
+            UniqueIdentifier result = proxy
+                    .startTrackedFlowDynamic(AddInvoiceLineItemRequest.class,
+                            new UniqueIdentifier(null, UUID.fromString(memberStateUniqueIdentifier)),
+                            productNDC,
+                            invoiceId,
+                            invoiceInstant,
+                            new UniqueIdentifier(null, UUID.fromString(bidAwardUniqueIdentifier)),
+                            otherParty
+                    )
+                    .getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction  committed to ledger with identifier as: " + result.getId());
+            // For the purposes of this demo app, we do not differentiate by exception type.
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+
     }
 }
