@@ -2,7 +2,6 @@ package com.modeln.states.membershipstate;
 
 import com.modeln.contracts.membershipstate.MemberShipStateContract;
 import com.modeln.schema.membershipstate.MemberShipStateSchema;
-import com.modeln.schema.memberstate.MemberStateSchema;
 import com.modeln.states.memberstate.MemberState;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearPointer;
@@ -13,9 +12,10 @@ import net.corda.core.identity.Party;
 import net.corda.core.schemas.MappedSchema;
 import net.corda.core.schemas.PersistentState;
 import net.corda.core.schemas.QueryableState;
+import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,11 +26,12 @@ public class MemberShipState implements LinearState, QueryableState {
     private Party owner;
     private Party receiver;
     private LinearPointer<MemberState> memberStateLinearPointer;
-    private Timestamp startDate;
-    private Timestamp endDate;
+    private Instant startDate;
+    private Instant endDate;
 
 
-    public MemberShipState(UniqueIdentifier linearId, Party owner, Party receiver, LinearPointer<MemberState> memberStateLinearPointer, Timestamp startDate, Timestamp endDate) {
+    @ConstructorForDeserialization
+    public MemberShipState(UniqueIdentifier linearId, Party owner, Party receiver, LinearPointer<MemberState> memberStateLinearPointer, Instant startDate, Instant endDate) {
         this.linearId = linearId;
         this.owner = owner;
         this.receiver = receiver;
@@ -67,19 +68,19 @@ public class MemberShipState implements LinearState, QueryableState {
         this.memberStateLinearPointer = memberStateLinearPointer;
     }
 
-    public Timestamp getStartDate() {
+    public Instant getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(Instant startDate) {
         this.startDate = startDate;
     }
 
-    public Timestamp getEndDate() {
+    public Instant getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Timestamp endDate) {
+    public void setEndDate(Instant endDate) {
         this.endDate = endDate;
     }
 

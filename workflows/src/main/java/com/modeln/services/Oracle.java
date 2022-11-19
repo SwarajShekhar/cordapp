@@ -56,4 +56,8 @@ public class Oracle extends SingletonSerializeAsToken {
         response.put("linearId", value);
         return response;
     }
+
+    public boolean isLinerIdvalid(String linearId) {
+        return QueryPG.isLinearId(linearId);
+    }
 }

@@ -1,0 +1,90 @@
+package com.modeln.flows.invoicelineitem.initiator;
+
+import co.paralleluniverse.fibers.Suspendable;
+import com.modeln.contracts.bidawards.BidAwardStateContract;
+import com.modeln.states.bidawards.BidAwardState;
+import com.modeln.states.invoicelineitem.InvoiceLineItemState;
+import com.modeln.states.memberstate.MemberState;
+import net.corda.core.contracts.LinearPointer;
+import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.flows.*;
+import net.corda.core.identity.CordaX500Name;
+import net.corda.core.identity.Party;
+import net.corda.core.transactions.SignedTransaction;
+import net.corda.core.transactions.TransactionBuilder;
+
+import java.time.Instant;
+import java.util.Arrays;
+
+@InitiatingFlow
+@StartableByRPC
+public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
+
+    private final UniqueIdentifier memberStateUniqueIdentifier;
+    private final String productNDC;
+    private final String invoiceId;
+    private final Instant invoiceDate;
+    private final UniqueIdentifier bidAwardUniqueIdentifier;
+    private final Party consumer;
+
+    public AddInvoiceLineItemRequest(UniqueIdentifier memberStateUniqueIdentifier, String productNDC,
+                                     String invoiceId, Instant invoiceDate, UniqueIdentifier bidAwardUniqueIdentifier, Party consumer) {
+        this.memberStateUniqueIdentifier = memberStateUniqueIdentifier;
+        this.productNDC = productNDC;
+        this.invoiceId = invoiceId;
+        this.invoiceDate = invoiceDate;
+        this.bidAwardUniqueIdentifier = bidAwardUniqueIdentifier;
+        this.consumer = consumer;
+
+    }
+
+    @Override
+    @Suspendable
+    public UniqueIdentifier call() throws FlowException {
+
+        LinearPointer<MemberState> memberStateLinearPointer = new LinearPointer<>(
+                new UniqueIdentifier(null, memberStateUniqueIdentifier.getId()),
+                MemberState.class
+        );
+
+        LinearPointer<BidAwardState> bidAwardLinearPointer = new LinearPointer<>(
+                new UniqueIdentifier(null, bidAwardUniqueIdentifier.getId()),
+                BidAwardState.class
+        );
+
+        Party me = getOurIdentity();
+        final Party notary = getServiceHub().getNetworkMapCache().getNotary(CordaX500Name.parse("O=Notary,L=London,C=GB"));
+        UniqueIdentifier linearId = new UniqueIdentifier();
+
+        InvoiceLineItemState invoiceLineItemState = new InvoiceLineItemState(
+                me,
+                this.consumer,
+                memberStateLinearPointer,
+                this.productNDC,
+                this.invoiceId,
+                this.invoiceDate,
+                bidAwardLinearPointer,
+                linearId
+        );
+
+        final TransactionBuilder builder = new TransactionBuilder(notary);
+
+        builder.addOutputState(invoiceLineItemState);
+        builder.addCommand(new BidAwardStateContract.Commands.Send(),
+                Arrays.asList(getOurIdentity().getOwningKey(), consumer.getOwningKey() ));
+        builder.verify(getServiceHub());
+
+        builder.verify(getServiceHub());
+        final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
+
+        // initiate flow
+        FlowSession session = initiateFlow(consumer);
+
+        // collect signatures
+        SignedTransaction stx = subFlow(new CollectSignaturesFlow(ptx, Arrays.asList(session)));
+        subFlow(new FinalityFlow(stx, Arrays.asList(session)));
+
+
+        return linearId;
+    }
+}

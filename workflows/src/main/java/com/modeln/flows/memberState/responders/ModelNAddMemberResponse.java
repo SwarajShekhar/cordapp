@@ -32,6 +32,9 @@ public class ModelNAddMemberResponse extends FlowLogic<Void> {
             protected void checkTransaction(SignedTransaction stx) throws FlowException {
                 ContractState contractState = stx.getTx().getOutputs().get(0).getData();
                 if(contractState instanceof MemberStateProposal) {
+                    /**
+                     * TO-DO: User Interaction for approval
+                     */
                     MemberStateProposal proposal = (MemberStateProposal)contractState;
                     System.out.println(this.getClass().getSimpleName() + " --> subflow starting next for Addmember");
                     UniqueIdentifier uuid = subFlow(new ModelNAddMemberState.Initiator(((MemberStateProposal) contractState).getName(), ((MemberStateProposal) contractState).getType()));

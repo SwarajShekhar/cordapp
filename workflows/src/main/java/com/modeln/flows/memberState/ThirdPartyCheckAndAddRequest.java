@@ -6,6 +6,7 @@ import com.modeln.exceptions.RecordDoesNotExistException;
 import com.modeln.flows.memberState.initiators.ModelNAddMemberRequest;
 import com.modeln.flows.memberState.initiators.QueryOracle;
 import com.modeln.flows.memberState.initiators.SignOracle;
+import com.modeln.states.memberstate.MemberState;
 import com.modeln.states.memberstate.ThirdPartyMemberState;
 import net.corda.core.contracts.*;
 import net.corda.core.crypto.TransactionSignature;
@@ -55,8 +56,10 @@ public class ThirdPartyCheckAndAddRequest {
             if(oracleResponse == null || oracleResponse.get("linearId") == null){
                 throw new RecordDoesNotExistException("Record doesnot exist");
             }
-            thirdPartyMemberState = new ThirdPartyMemberState(new UniqueIdentifier(),
+            thirdPartyMemberState = new ThirdPartyMemberState(new UniqueIdentifier(), new LinearPointer<>(
                     new UniqueIdentifier(null, UUID.fromString(oracleResponse.get("linearId"))),
+                    MemberState.class
+            ),
                     getOurIdentity());
 
             final TransactionBuilder builder = new TransactionBuilder(notary);

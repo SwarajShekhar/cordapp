@@ -28,6 +28,8 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
     private String DEAID;
     private String DDDID;
     private String status;
+    // To be added
+    private String address;
 
     @ConstructorForDeserialization
     public MemberState(Party owner, UniqueIdentifier linearId, String memberName, String memberType, String description, String DEAID, String DDDID, String status) {

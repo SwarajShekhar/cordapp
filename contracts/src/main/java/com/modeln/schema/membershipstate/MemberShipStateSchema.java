@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -31,10 +31,10 @@ public class MemberShipStateSchema extends MappedSchema {
         @Column(name = "receiver") private final String receiver;
         @Column(name = "linear_pointer") @Type(type = "uuid-char") private final UUID linearPointer;
         @Column(name = "linear_id") @Type(type = "uuid-char") private final UUID linearId;
-        @Column(name = "start_date") private final Timestamp startDate;
-        @Column(name = "end_date") private final Timestamp endDate;
+        @Column(name = "start_date") private final Instant startDate;
+        @Column(name = "end_date") private final Instant endDate;
 
-        public PersistMember(String owner, String receiver, UUID linearPointer, UUID linearId, Timestamp startDate, Timestamp endDate) {
+        public PersistMember(String owner, String receiver, UUID linearPointer, UUID linearId, Instant startDate, Instant endDate) {
             this.owner = owner;
             this.receiver = receiver;
             this.linearPointer = linearPointer;
@@ -59,11 +59,11 @@ public class MemberShipStateSchema extends MappedSchema {
             return linearId;
         }
 
-        public Timestamp getStartDate() {
+        public Instant getStartDate() {
             return startDate;
         }
 
-        public Timestamp getEndDate() {
+        public Instant getEndDate() {
             return endDate;
         }
     }
