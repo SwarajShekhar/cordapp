@@ -1,11 +1,13 @@
 package com.modeln.webserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modeln.flows.AddAndBroadcastBidAwardRequest;
+import com.modeln.enums.invoicelineitem.Status;
 import com.modeln.flows.bidaward.initiator.AddAndBroadcastBidAward;
 import com.modeln.flows.invoicelineitem.initiator.AddInvoiceLineItemRequest;
+import com.modeln.flows.invoicelineitem.initiator.RespondToInvoiceLineItemRequest;
 import com.modeln.flows.memberState.initiators.ModelNAddMemberRequest;
 import com.modeln.flows.membershipState.initiator.AddMemberShipStateRequest;
+import com.modeln.schema.invoicelineitem.InvoiceLineItemStateSchema;
 import com.modeln.states.bidawards.BidAwardState;
 import com.modeln.states.invoicelineitem.InvoiceLineItemState;
 import com.modeln.states.membershipstate.MemberShipState;
@@ -19,6 +21,9 @@ import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.node.NodeInfo;
+import net.corda.core.node.services.Vault;
+import net.corda.core.node.services.vault.Builder;
+import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -28,19 +33,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -177,6 +176,35 @@ public class Controller {
         return proxy.vaultQuery(BidAwardState.class).getStates();
     }
 
+    @GetMapping(value = "/invoiceLineItem/{lineItemId}",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<InvoiceLineItemState>> getInvoiceLineItemForId(@PathVariable("lineItemId") String lineItemId) {
+        QueryCriteria.LinearStateQueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria()
+                .withUuid(Arrays.asList(UUID.fromString(lineItemId)));
+        return proxy.vaultQueryByCriteria(queryCriteria, InvoiceLineItemState.class).getStates();
+    }
+
+    @GetMapping(value = "/invoiceLineItem/{lineItemId}/all",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<InvoiceLineItemState>> getAllInvoiceLineItemForId(@PathVariable("lineItemId") String lineItemId) {
+        QueryCriteria.LinearStateQueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria()
+                .withUuid(Arrays.asList(UUID.fromString(lineItemId)))
+                .withStatus(Vault.StateStatus.ALL);
+        return proxy.vaultQueryByCriteria(queryCriteria, InvoiceLineItemState.class).getStates();
+    }
+
+    @GetMapping(value = "/invoiceLineItem/pending",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<InvoiceLineItemState>> getAllInvoiceLineItemForId() throws NoSuchFieldException{
+        Field status = InvoiceLineItemStateSchema.PersistMember.class.getDeclaredField("status");
+        QueryCriteria queryCriteria =
+                new QueryCriteria.VaultCustomQueryCriteria(
+                    Builder.equal(status, 0)
+                )
+                .withStatus(Vault.StateStatus.UNCONSUMED)
+                .withRelevancyStatus(Vault.RelevancyStatus.RELEVANT)
+                ;
+
+        return proxy.vaultQueryByCriteria(queryCriteria, InvoiceLineItemState.class).getStates();
+    }
+
     @PostMapping(value = "/members", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
     public ResponseEntity<String> createMembers(HttpServletRequest request) {
 
@@ -298,6 +326,33 @@ public class Controller {
                             invoiceInstant,
                             new UniqueIdentifier(null, UUID.fromString(bidAwardUniqueIdentifier)),
                             otherParty
+                    )
+                    .getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction  committed to ledger with identifier as: " + result.getId());
+            // For the purposes of this demo app, we do not differentiate by exception type.
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping(value = "/invoiceLineItem/{linearId}", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> createInvoiceLineItem(HttpServletRequest request, @PathVariable("linearId") String linearId) {
+
+        String status = request.getParameter("status");
+
+
+
+        try {
+            UniqueIdentifier result = proxy
+                    .startTrackedFlowDynamic(RespondToInvoiceLineItemRequest.class,
+                            new UniqueIdentifier(null, UUID.fromString(linearId)),
+                            Status.valueOf(status)
                     )
                     .getReturnValue().get();
             // Return the response.

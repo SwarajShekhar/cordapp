@@ -2,6 +2,8 @@ package com.modeln.flows.invoicelineitem.initiator;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.modeln.contracts.bidawards.BidAwardStateContract;
+import com.modeln.contracts.invoicelineitem.InvoiceLineItemStateContract;
+import com.modeln.enums.invoicelineitem.Status;
 import com.modeln.states.bidawards.BidAwardState;
 import com.modeln.states.invoicelineitem.InvoiceLineItemState;
 import com.modeln.states.memberstate.MemberState;
@@ -26,15 +28,17 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
     private final Instant invoiceDate;
     private final UniqueIdentifier bidAwardUniqueIdentifier;
     private final Party consumer;
+    private final Status status;
 
     public AddInvoiceLineItemRequest(UniqueIdentifier memberStateUniqueIdentifier, String productNDC,
-                                     String invoiceId, Instant invoiceDate, UniqueIdentifier bidAwardUniqueIdentifier, Party consumer) {
+                                     String invoiceId, Instant invoiceDate, UniqueIdentifier bidAwardUniqueIdentifier, Party consumer, Status status) {
         this.memberStateUniqueIdentifier = memberStateUniqueIdentifier;
         this.productNDC = productNDC;
         this.invoiceId = invoiceId;
         this.invoiceDate = invoiceDate;
         this.bidAwardUniqueIdentifier = bidAwardUniqueIdentifier;
         this.consumer = consumer;
+        this.status = status;
 
     }
 
@@ -64,13 +68,14 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
                 this.invoiceId,
                 this.invoiceDate,
                 bidAwardLinearPointer,
-                linearId
+                linearId,
+                status
         );
 
         final TransactionBuilder builder = new TransactionBuilder(notary);
 
         builder.addOutputState(invoiceLineItemState);
-        builder.addCommand(new BidAwardStateContract.Commands.Send(),
+        builder.addCommand(new InvoiceLineItemStateContract.Commands.Request(),
                 Arrays.asList(getOurIdentity().getOwningKey(), consumer.getOwningKey() ));
         builder.verify(getServiceHub());
 
@@ -83,7 +88,6 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
         // collect signatures
         SignedTransaction stx = subFlow(new CollectSignaturesFlow(ptx, Arrays.asList(session)));
         subFlow(new FinalityFlow(stx, Arrays.asList(session)));
-
 
         return linearId;
     }

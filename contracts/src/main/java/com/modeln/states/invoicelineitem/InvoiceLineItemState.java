@@ -1,6 +1,7 @@
 package com.modeln.states.invoicelineitem;
 
 import com.modeln.contracts.invoicelineitem.InvoiceLineItemStateContract;
+import com.modeln.enums.invoicelineitem.Status;
 import com.modeln.schema.invoicelineitem.InvoiceLineItemStateSchema;
 import com.modeln.states.bidawards.BidAwardState;
 import com.modeln.states.memberstate.MemberState;
@@ -32,9 +33,15 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
     private LinearPointer<BidAwardState> bidAwardLinearPointer;
     private UniqueIdentifier linearId;
 
+    // This get spopulated by Wholesaler asking for approval
+    // Requires Approval    -   Wholesaler
+    // Approved -   Manufacturer
+    // Rejected -   Manufacturer
+    private Status status;
+
     @ConstructorForDeserialization
     public InvoiceLineItemState(Party owner, Party consumer, LinearPointer<MemberState> memberStateLinearPointer, String productNDC, String invoiceId,
-                                Instant invoiceDate, LinearPointer<BidAwardState> bidAwardLinearPointer, UniqueIdentifier linearId) {
+                                Instant invoiceDate, LinearPointer<BidAwardState> bidAwardLinearPointer, UniqueIdentifier linearId, Status status) {
         this.owner = owner;
         this.consumer = consumer;
         this.memberStateLinearPointer = memberStateLinearPointer;
@@ -43,6 +50,7 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
         this.invoiceDate = invoiceDate;
         this.bidAwardLinearPointer = bidAwardLinearPointer;
         this.linearId = linearId;
+        this.status = status;
     }
 
     public Party getOwner() {
@@ -101,6 +109,14 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
         this.bidAwardLinearPointer = bidAwardLinearPointer;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public void setLinearId(UniqueIdentifier linearId) {
         this.linearId = linearId;
     }
@@ -129,7 +145,8 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
                     this.productNDC,
                     this.invoiceId,
                     this.invoiceDate,
-                    this.bidAwardLinearPointer.getPointer().getId()
+                    this.bidAwardLinearPointer.getPointer().getId(),
+                    status.ordinal()
             );
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");

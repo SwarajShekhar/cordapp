@@ -28,9 +28,22 @@ public class InvoiceLineItemStateSchema extends MappedSchema {
         @Column(name="invoice_id") private final String invoiceId;
         @Column(name="invoice_date") private final Instant invoiceDate;
         @Column(name = "bid_award_linear_pointer") @Type(type = "uuid-char")private final UUID bidAwardLinearPointer;
+        @Column(name = "current_status") private final int status;
+
+        public PersistMember(){
+            owner = null;
+            consumer = null;
+            linearId = null;
+            memberStateLinearPointer = null;
+            productNDC = null;
+            invoiceId = null;
+            invoiceDate = null;
+            bidAwardLinearPointer = null;
+            status = -1;
+        }
 
         public PersistMember(String owner, String consumer, UUID linearId, UUID memberStateLinearPointer, String productNDC, String invoiceId,
-                             Instant invoiceDate, UUID bidAwardLinearPointer) {
+                             Instant invoiceDate, UUID bidAwardLinearPointer, int status) {
             this.owner = owner;
             this.consumer = consumer;
             this.linearId = linearId;
@@ -39,6 +52,7 @@ public class InvoiceLineItemStateSchema extends MappedSchema {
             this.invoiceId = invoiceId;
             this.invoiceDate = invoiceDate;
             this.bidAwardLinearPointer = bidAwardLinearPointer;
+            this.status = status;
         }
 
         public String getConsumer() {
@@ -71,6 +85,10 @@ public class InvoiceLineItemStateSchema extends MappedSchema {
 
         public UUID getBidAwardLinearPointer() {
             return bidAwardLinearPointer;
+        }
+
+        public int getStatus() {
+            return status;
         }
     }
 }

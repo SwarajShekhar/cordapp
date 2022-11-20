@@ -2,19 +2,17 @@ package com.modeln.flows.invoicelineitem.responder;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.modeln.flows.invoicelineitem.initiator.AddInvoiceLineItemRequest;
+import com.modeln.flows.invoicelineitem.initiator.RespondToInvoiceLineItemRequest;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.flows.*;
 import net.corda.core.transactions.SignedTransaction;
 
-import java.util.HashSet;
-import java.util.Set;
-
-@InitiatedBy(AddInvoiceLineItemRequest.class)
-public class AddInvoiceLineItemResponse extends FlowLogic<Void> {
+@InitiatedBy(RespondToInvoiceLineItemRequest.class)
+public class RespondToInvoiceLineItemResponse extends FlowLogic<Void> {
 
     private FlowSession counterpartySession;
 
-    public AddInvoiceLineItemResponse(FlowSession counterpartySession) {
+    public RespondToInvoiceLineItemResponse(FlowSession counterpartySession) {
         this.counterpartySession = counterpartySession;
     }
 
