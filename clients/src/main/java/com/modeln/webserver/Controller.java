@@ -311,6 +311,7 @@ public class Controller {
         String invoiceDate = request.getParameter("invoiceDate");
         String bidAwardUniqueIdentifier = request.getParameter("bidAwardUniqueIdentifier");
         String consumer = request.getParameter("consumer");
+        String status = request.getParameter("status");
 
         Instant invoiceInstant = Instant.parse(invoiceDate);
         CordaX500Name partyX500Name = CordaX500Name.parse(consumer);
@@ -325,7 +326,8 @@ public class Controller {
                             invoiceId,
                             invoiceInstant,
                             new UniqueIdentifier(null, UUID.fromString(bidAwardUniqueIdentifier)),
-                            otherParty
+                            otherParty,
+                            Status.valueOf(status)
                     )
                     .getReturnValue().get();
             // Return the response.
