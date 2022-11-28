@@ -28,11 +28,11 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
     private String DEAID;
     private String DDDID;
     private String status;
-    // To be added
     private String address;
 
     @ConstructorForDeserialization
-    public MemberState(Party owner, UniqueIdentifier linearId, String memberName, String memberType, String description, String DEAID, String DDDID, String status) {
+    public MemberState(Party owner, UniqueIdentifier linearId, String memberName, String memberType,
+                       String description, String DEAID, String DDDID, String status, String address) {
         this.owner = owner;
         this.linearId = linearId;
         this.memberName = memberName;
@@ -41,6 +41,7 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
         this.DEAID = DEAID;
         this.DDDID = DDDID;
         this.status = status;
+        this.address = address;
     }
 
     public void setOwner(Party owner) {
@@ -99,6 +100,14 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
         this.status = status;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public List<AbstractParty> getParticipants() {
         return Arrays.asList(owner);
@@ -128,9 +137,14 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
         if (schema instanceof MemberStateSchema) {
             return new MemberStateSchema.PersistMember(
                     this.owner.getName().toString(),
-                    memberName, memberType, description,
-                    DEAID, DDDID, status,
-                    this.linearId.getId());
+                    memberName,
+                    memberType,
+                    description,
+                    DEAID,
+                    DDDID,
+                    status,
+                    this.linearId.getId(),
+                    address);
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
         }

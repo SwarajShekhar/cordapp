@@ -54,4 +54,16 @@ task runGPO1Server(type: JavaExec, dependsOn: assemble) {
     args '--server.port=8082', '--config.rpc.host=localhost', '--config.rpc.port=10009', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
+task runWholesaler1Server(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.modeln.webserver.Starter'
+    args '--server.port=8084', '--config.rpc.host=localhost', '--config.rpc.port=10219', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
+task runManufacturer1Server(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.modeln.webserver.Starter'
+    args '--server.port=8086', '--config.rpc.host=localhost', '--config.rpc.port=10223', '--config.rpc.username=user1', '--config.rpc.password=test'
+}
+
 

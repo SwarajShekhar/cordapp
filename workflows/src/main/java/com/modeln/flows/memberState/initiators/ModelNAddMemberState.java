@@ -4,10 +4,10 @@ import co.paralleluniverse.fibers.Suspendable;
 import com.modeln.contracts.memberstate.MemberStateContract;
 import com.modeln.exceptions.RecordAlreadyExistsException;
 import com.modeln.states.memberstate.MemberState;
+import com.modeln.utils.FlowUtility;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
-import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
@@ -23,31 +23,32 @@ public class ModelNAddMemberState {
     @StartableByRPC
     public static class Initiator extends FlowLogic<UniqueIdentifier>{
 
-        private Party proposer;
-        private Party sender;
         private String memberName;
         private String memberType;
         private String description;
         private String DEAID;
         private String DDDID;
         private String status;
+        private String addres;
 
-        public Initiator(String memberName, String memberType) {
+        public Initiator(String memberName, String memberType, String description, String DEAID, String DDDID, String status, String addres) {
             this.memberName = memberName;
             this.memberType = memberType;
+            this.description = description;
+            this.DEAID = DEAID;
+            this.DDDID = DDDID;
+            this.status = status;
+            this.addres = addres;
         }
 
         @Override
         @Suspendable
         public UniqueIdentifier call() throws FlowException {
-            //Hello World message
-            System.out.println(this.getClass().getSimpleName() + " call --> Entering...");
-            this.proposer = getOurIdentity();
-            System.out.println(this.getClass().getSimpleName() + " call --> Proposer: " + proposer.getName());
-            this.sender = getServiceHub().getNetworkMapCache().getPeerByLegalName(CordaX500Name.parse("O=ModelN,L=London,C=GB"));
+            Party me = getOurIdentity();
 
             //Compose the Member State
-            final MemberState output = new MemberState(sender,new UniqueIdentifier(), memberName, memberType, description, DEAID, DDDID, status);
+            final MemberState output = new MemberState(me,new UniqueIdentifier(), memberName, memberType, description,
+                    DEAID, DDDID, status, addres);
 
             // Check if the record exists
             QueryCriteria.VaultQueryCriteria inputCriteria = new QueryCriteria.VaultQueryCriteria()
@@ -61,25 +62,17 @@ public class ModelNAddMemberState {
                     throw new RecordAlreadyExistsException("Record Already Exists. " + output);
                 }
             }
-            System.out.println(this.getClass().getSimpleName() + " call --> Query executed...");
-            final Party notary = getServiceHub().getNetworkMapCache().getNotary(CordaX500Name.parse("O=Notary,L=London,C=GB"));
-            System.out.println(this.getClass().getSimpleName() + " call --> Notary set...");
+            final Party notary = FlowUtility.getNotary(getServiceHub());
             final TransactionBuilder builder = new TransactionBuilder(notary);
-            System.out.println(this.getClass().getSimpleName() + " call --> Transaction builder...");
 
             builder.addOutputState(output);
-            builder.addCommand(new MemberStateContract.Commands.Send(), getOurIdentity().getOwningKey() );
-            System.out.println(this.getClass().getSimpleName() + " call --> Command Added...");
+            builder.addCommand(new MemberStateContract.Commands.Approve(), getOurIdentity().getOwningKey() );
 
             builder.verify(getServiceHub());
-            System.out.println(this.getClass().getSimpleName() + " call --> Verification done...");
 
             final SignedTransaction ptx = getServiceHub().signInitialTransaction(builder);
-            System.out.println(this.getClass().getSimpleName() + " call --> Initial Signed Transaction...");
 
             subFlow(new FinalityFlow(ptx, Collections.emptyList()));
-
-            System.out.println(this.getClass().getSimpleName() + " call --> After finality");
 
             return output.getLinearId();
 

@@ -34,8 +34,10 @@ public class MemberStateSchema extends MappedSchema {
         @Column(name = "dddid") private final String DDDID;
         @Column(name = "status") private final String status;
         @Column(name = "linear_id") @Type(type = "uuid-char") private final UUID linearId;
+        @Column(name = "address") private final String address;
 
-        public PersistMember(String owner, String memberName, String memberType, String description, String DEAID, String DDDID, String status, UUID linearId) {
+        public PersistMember(String owner, String memberName, String memberType, String description,
+                             String DEAID, String DDDID, String status, UUID linearId, String address) {
             this.owner = owner;
             this.memberName = memberName;
             this.memberType = memberType;
@@ -44,6 +46,7 @@ public class MemberStateSchema extends MappedSchema {
             this.DDDID = DDDID;
             this.status = status;
             this.linearId = linearId;
+            this.address = address;
         }
 
         public String getOwner() {
@@ -76,6 +79,10 @@ public class MemberStateSchema extends MappedSchema {
 
         public UUID getLinearId() {
             return linearId;
+        }
+
+        public String getAddress() {
+            return address;
         }
     }
 }

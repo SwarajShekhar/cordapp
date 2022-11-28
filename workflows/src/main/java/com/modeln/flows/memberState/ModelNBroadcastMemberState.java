@@ -58,10 +58,9 @@ public class ModelNBroadcastMemberState {
 
     @InitiatedBy(ModelNBroadcastMemberState.Initiator.class)
     public static class Responder extends FlowLogic<Void>{
-        //private variable
+
         private FlowSession counterpartySession;
 
-        //Constructor
         public Responder(FlowSession counterpartySession) {
             this.counterpartySession = counterpartySession;
         }
