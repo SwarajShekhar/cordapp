@@ -273,7 +273,7 @@ public class Controller {
 
         try {
             UniqueIdentifier result = proxy.startTrackedFlowDynamic(RespondToAddMemberRequestProposalRequest.class,
-                    memberStateProposalIdentifier,
+                    new UniqueIdentifier(null, UUID.fromString(memberStateProposalIdentifier)),
                     MemberStateProposalStatus.valueOf(memberStateProposalStatus)).getReturnValue().get();
             // Return the response.
             return ResponseEntity
