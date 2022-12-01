@@ -1,18 +1,19 @@
 import { Col, Layout, Menu, Row } from "antd";
 import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 
 const { Header } = Layout;
 
 const AppHeader = () => {
 
     const items = [
-        { key: 'item-2', label: 'Members' },
-        { key: 'item-3', label: 'Membership' },
-        { key: 'item-4', label: 'Bid Award' },
-        { key: 'item-5', label: 'Invoice Line Item' },
+        { key: 'item-2', label: <Link to="/members">Members</Link> },
+        { key: 'item-3', label: <Link to="/membership">Membership</Link> },
+        { key: 'item-4', label: <Link to="/bidaward">Bid Award</Link> },
+        { key: 'item-5', label: <Link to='/invoicelineitem'>Invoice Line Item</Link> },
     ];
 
-    const [me, setMe] = useState('');
+    const [me, setMe] = useState('');  
 
     useEffect(() => {
         fetch(`/me`)
@@ -35,7 +36,9 @@ const AppHeader = () => {
             <Row>
                 <Col flex='auto'>
                     <div style={{ float: 'left', margin: '0px 24px 16px 0' }}>
-                        <img src={'/modeln-logo.png'} style={{ maxHeight: 20 }} />
+                        <Link to='/'>
+                            <img src={'/modeln-logo.png'} style={{ maxHeight: 20 }} />
+                        </Link>
                     </div>
                     <Menu mode='horizontal' theme='dark' items={items} />
                 </Col>
