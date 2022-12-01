@@ -1,24 +1,21 @@
-import logo from './logo.svg';
+import { Layout} from 'antd';
+import 'antd/dist/reset.css';
 import './App.css';
+import AppHeader from './components/app-header';
+
+const { Content, Footer } = Layout;
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <AppHeader />
+      <Content style={{ marginTop: 20, padding: '0 50px' }}>
+        <div style={{ padding: '24px', background: '#fff' }}>
+          Content will go here...
+        </div>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>&copy; 2022 Model N, Inc.</Footer>
+    </Layout>
   );
 }
 

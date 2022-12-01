@@ -22,11 +22,26 @@ dependencies {
     compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
     compile "org.apache.logging.log4j:log4j-web:${log4j_version}"
     compile "org.slf4j:jul-to-slf4j:$slf4j_version"
+
+    // swagger dependencies (To Add Later)
+    // compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
+    // compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
 }
 
 springBoot {
     mainClassName = "com.modeln.webserver.Server"
 }
+
+/**
+ * Task to build and copy static files from frontend-app
+ */
+task copyWebApp(type: Copy) { 
+    from "$rootDir/frontend-app/build"
+    into "$rootDir/clients/build/resources/main/static/."
+}
+
+bootJar.dependsOn(copyWebApp)
+compileJava.dependsOn ":frontend-app:build"
 
 /* The Client is the communication channel between the external and the node. This task will help you immediately
  * execute your rpc methods in the main method of the client.kt. You can somewhat see this as a quick test of making
