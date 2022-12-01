@@ -2,8 +2,9 @@ package com.modeln.flows.memberState;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.modeln.contracts.memberstate.ThirdPartyMemberStateContract;
+import com.modeln.enums.memberstateproposal.MemberStateProposalStatus;
 import com.modeln.exceptions.RecordDoesNotExistException;
-import com.modeln.flows.memberState.initiators.ModelNAddMemberRequest;
+import com.modeln.flows.memberState.initiators.AddMemberRequestProposal;
 import com.modeln.flows.memberState.initiators.QueryOracle;
 import com.modeln.flows.memberState.initiators.SignOracle;
 import com.modeln.states.memberstate.MemberState;
@@ -24,12 +25,25 @@ public class ThirdPartyCheckAndAddRequest {
     @StartableByRPC
     public static class Initiator extends FlowLogic<Void> {
 
-        private final String name;
-        private final String type;
+        private String memberName;
+        private String memberType;
+        private String description;
+        private String DEAID;
+        private String DDDID;
+        private String memberStatus;
+        private String address;
+        private final MemberStateProposalStatus memberStateProposalStatus;
 
-        public Initiator(String name, String type) {
-            this.name = name;
-            this.type = type;
+        public Initiator(String memberName, String memberType, String description,
+                         String DEAID, String DDDID, String memberStatus, String address, MemberStateProposalStatus memberStateProposalStatus) {
+            this.memberName = memberName;
+            this.memberType = memberType;
+            this.description = description;
+            this.DEAID = DEAID;
+            this.DDDID = DDDID;
+            this.memberStatus = memberStatus;
+            this.address = address;
+            this.memberStateProposalStatus = memberStateProposalStatus;
         }
 
         @Suspendable
@@ -44,13 +58,22 @@ public class ThirdPartyCheckAndAddRequest {
 
             // call oracle
             LinkedHashMap<String, String> oracleRequest = new LinkedHashMap<>();
-            oracleRequest.put("name", name);
-            oracleRequest.put("type", type);
+            oracleRequest.put("name", memberName);
+            oracleRequest.put("type", memberType);
 
             LinkedHashMap<String, String> oracleResponse = subFlow(new QueryOracle(oracle, oracleRequest));
 
             if(oracleResponse == null || oracleResponse.get("linearId") == null){
-                subFlow(new ModelNAddMemberRequest(name, type));
+                subFlow(new AddMemberRequestProposal(
+                        this.memberName,
+                        this.memberType,
+                        this.description,
+                        this.DEAID,
+                        this.DDDID,
+                        this.memberStatus,
+                        this.address,
+                        this.memberStateProposalStatus
+                ));
                 oracleResponse = subFlow(new QueryOracle(oracle, oracleRequest));
             }
             if(oracleResponse == null || oracleResponse.get("linearId") == null){

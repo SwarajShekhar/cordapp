@@ -106,63 +106,78 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         //it to false for quicker project compiling time.
     }
     node {
-        name "O=Notary,L=London,C=GB"
+        name "O=Notary,L=London,C=GB,OU=notary"
         notary = [validating : false]
         p2pPort 10002
         rpcSettings {
             address("localhost:10003")
             adminAddress("localhost:10043")
         }
-        extraConfig = [
+        /*extraConfig = [
                 'dataSourceProperties.dataSourceClassName':'org.postgresql.ds.PGSimpleDataSource',
                 'dataSourceProperties.dataSource.url':'jdbc:postgresql://localhost:5432/notary',
                 'dataSourceProperties.dataSource.password' : 'Notary',
                 'dataSourceProperties.dataSource.user' : 'Notary' ]
-        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]
+        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]*/
     }
     node {
-        name "O=ModelN,L=London,C=GB"
+        name "O=ModelN,L=London,C=GB,OU=modeln"
         p2pPort 10005
         rpcSettings {
             address("localhost:10006")
             adminAddress("localhost:10046")
         }
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
-        extraConfig = [
+        /*extraConfig = [
                 'dataSourceProperties.dataSourceClassName':'org.postgresql.ds.PGSimpleDataSource',
                 'dataSourceProperties.dataSource.url':'jdbc:postgresql://localhost:5432/modeln',
                 'dataSourceProperties.dataSource.password' : 'ModelN',
                 'dataSourceProperties.dataSource.user' : 'ModelN' ]
-        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]
+        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]*/
     }
     node {
-        name "O=GPO1,L=New York,C=US"
+        name "O=MANUFACTURER1,L=New York,C=US,OU=manufacturer"
         p2pPort 10008
         rpcSettings {
             address("localhost:10009")
             adminAddress("localhost:10049")
         }
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
-        extraConfig = [
+        /*extraConfig = [
                 'dataSourceProperties.dataSourceClassName':'org.postgresql.ds.PGSimpleDataSource',
                 'dataSourceProperties.dataSource.url':'jdbc:postgresql://localhost:5432/gpo1',
                 'dataSourceProperties.dataSource.password' : 'GPO1',
                 'dataSourceProperties.dataSource.user' : 'GPO1' ]
-        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]
+        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]*/
     }
     node {
-        name "O=Oracle,L=London,C=GB"
+        name "O=WHOLESALER1,L=London,C=GB,OU=wholesaler"
         p2pPort 10238
         rpcSettings {
             address("localhost:10219")
             adminAddress("localhost:10259")
         }
         rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
-        extraConfig = [
+        /*extraConfig = [
                 'dataSourceProperties.dataSourceClassName':'org.postgresql.ds.PGSimpleDataSource',
                 'dataSourceProperties.dataSource.url':'jdbc:postgresql://localhost:5432/oracle',
                 'dataSourceProperties.dataSource.password' : 'Oracle',
                 'dataSourceProperties.dataSource.user' : 'Oracle' ]
-        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]
+        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]*/
+    }
+    node {
+        name "O=GPO1,L=London,C=GB,OU=gpo"
+        p2pPort 10241
+        rpcSettings {
+            address("localhost:10223")
+            adminAddress("localhost:10261")
+        }
+        rpcUsers = [[ user: "user1", "password": "test", "permissions": ["ALL"]]]
+        /*extraConfig = [
+                'dataSourceProperties.dataSourceClassName':'org.postgresql.ds.PGSimpleDataSource',
+                'dataSourceProperties.dataSource.url':'jdbc:postgresql://localhost:5432/oracle',
+                'dataSourceProperties.dataSource.password' : 'Oracle',
+                'dataSourceProperties.dataSource.user' : 'Oracle' ]
+        drivers = [ '/Users/sshekhar/Downloads/postgresql-42.5.0.jar' ]*/
     }
 }

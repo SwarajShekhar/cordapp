@@ -2,15 +2,19 @@ package com.modeln.webserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modeln.enums.invoicelineitem.Status;
+import com.modeln.enums.memberstateproposal.MemberStateProposalStatus;
 import com.modeln.flows.bidaward.initiator.AddAndBroadcastBidAward;
 import com.modeln.flows.invoicelineitem.initiator.AddInvoiceLineItemRequest;
 import com.modeln.flows.invoicelineitem.initiator.RespondToInvoiceLineItemRequest;
-import com.modeln.flows.memberState.initiators.ModelNAddMemberRequest;
+import com.modeln.flows.memberState.initiators.AddMemberRequestProposal;
+import com.modeln.flows.memberState.initiators.RespondToAddMemberRequestProposalRequest;
 import com.modeln.flows.membershipState.initiator.AddMemberShipStateRequest;
 import com.modeln.schema.invoicelineitem.InvoiceLineItemStateSchema;
+import com.modeln.schema.memberstate.MemberStateProposalSchema;
 import com.modeln.states.bidawards.BidAwardState;
 import com.modeln.states.invoicelineitem.InvoiceLineItemState;
 import com.modeln.states.membershipstate.MemberShipState;
+import com.modeln.states.memberstate.MemberStateProposal;
 import net.corda.client.jackson.JacksonSupport;
 import com.modeln.states.memberstate.MemberState;
 import net.corda.core.contracts.ContractState;
@@ -36,6 +40,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -156,6 +161,25 @@ public class Controller {
         return proxy.vaultQuery(ContractState.class).getStates().toString();
     }
 
+    @GetMapping(value = "/memberProposal",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<MemberStateProposal>> getMemberProposal() {
+        return proxy.vaultQuery(MemberStateProposal.class).getStates();
+    }
+
+    @GetMapping(value = "/memberProposal/pending",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<MemberStateProposal>> getPendingMemberProposals() throws NoSuchFieldException{
+        Field status = MemberStateProposalSchema.PersistMember.class.getDeclaredField("status");
+        QueryCriteria queryCriteria =
+                new QueryCriteria.VaultCustomQueryCriteria(
+                        Builder.equal(status, 0)
+                )
+                        .withStatus(Vault.StateStatus.UNCONSUMED)
+                        .withRelevancyStatus(Vault.RelevancyStatus.RELEVANT)
+                ;
+
+        return proxy.vaultQueryByCriteria(queryCriteria, MemberStateProposal.class).getStates();
+    }
+
     @GetMapping(value = "/members",produces = APPLICATION_JSON_VALUE)
     public List<StateAndRef<MemberState>> getMembers() {
         return proxy.vaultQuery(MemberState.class).getStates();
@@ -205,18 +229,56 @@ public class Controller {
         return proxy.vaultQueryByCriteria(queryCriteria, InvoiceLineItemState.class).getStates();
     }
 
-    @PostMapping(value = "/members", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
-    public ResponseEntity<String> createMembers(HttpServletRequest request) {
+    @PostMapping(value = "/memberProposal", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> createMemberProposal(HttpServletRequest request) {
 
-        String name = request.getParameter("name");
-        String type = request.getParameter("type");
+        String memberName = request.getParameter("memberName");
+        String memberType = request.getParameter("memberType");
+        String description = request.getParameter("description");
+        String DEAID = request.getParameter("DEAID");
+        String DDDID = request.getParameter("DDDID");
+        String memberStatus = request.getParameter("memberStatus");
+        String address = request.getParameter("address");
+        String memberStateProposalStatus = request.getParameter("memberStateProposalStatus");
+
 
         try {
-            SignedTransaction result = proxy.startTrackedFlowDynamic(ModelNAddMemberRequest.class, name,type).getReturnValue().get();
+            UniqueIdentifier result = proxy.startTrackedFlowDynamic(AddMemberRequestProposal.class,
+                    memberName,
+                    memberType,
+                    description,
+                    DEAID,
+                    DDDID,
+                    memberStatus,
+                    address,
+                    MemberStateProposalStatus.valueOf(memberStateProposalStatus)).getReturnValue().get();
             // Return the response.
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Transaction id "+ result.getId() +" committed to ledger.\n " + result.getTx().getOutput(0));
+                    .body("Transaction id "+ result.getId() +" committed to ledger.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping(value = "/memberProposalResponse", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> respondToCreateMemberProposal(HttpServletRequest request) {
+
+        String memberStateProposalIdentifier = request.getParameter("memberStateProposalIdentifier");
+        String memberStateProposalStatus = request.getParameter("memberStateProposalStatus");
+
+
+        try {
+            UniqueIdentifier result = proxy.startTrackedFlowDynamic(RespondToAddMemberRequestProposalRequest.class,
+                    new UniqueIdentifier(null, UUID.fromString(memberStateProposalIdentifier)),
+                    MemberStateProposalStatus.valueOf(memberStateProposalStatus)).getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction id "+ result.getId() +" committed to ledger.");
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
