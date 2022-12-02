@@ -229,6 +229,16 @@ public class Controller {
         return proxy.vaultQueryByCriteria(queryCriteria, InvoiceLineItemState.class).getStates();
     }
 
+    @GetMapping(value = "/memberproposal/statuses",produces = APPLICATION_JSON_VALUE)
+    public List<MemberStateProposalStatus> getMemberProposalStatuses() {
+        return Arrays.asList(MemberStateProposalStatus.values());
+    }
+
+    @GetMapping(value = "/invoiceLineItem/statuses",produces = APPLICATION_JSON_VALUE)
+    public List<Status> getInvoiceLineItemStatuses() {
+        return Arrays.asList(Status.values());
+    }
+
     @PostMapping(value = "/memberProposal", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
     public ResponseEntity<String> createMemberProposal(HttpServletRequest request) {
 
