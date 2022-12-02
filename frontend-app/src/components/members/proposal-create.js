@@ -1,12 +1,14 @@
 import { Form, Input, Select, Typography, Button } from "antd";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { redirect, useNavigate } from 'react-router-dom';
+import { APIEndPointContext } from "../../context";
 
 
 const { Option } = Select;
 const { Title, Text } = Typography;
 
 const MemmberPrposalCreate = () => {
+    const baseUri = useContext(APIEndPointContext);
 
     const [formErr, setFormErr] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -28,7 +30,7 @@ const MemmberPrposalCreate = () => {
                 fdata.push(`${key}=${encodeURIComponent(value)}`);
             }
 
-            const res = await fetch(`/memberProposal`, { method: 'POST', headers, body: fdata.join('&') });
+            const res = await fetch(`${baseUri}/memberProposal`, { method: 'POST', headers, body: fdata.join('&') });
             const txt = await res.text();
             setConfirmLoading(false);
             if (!res.ok) {
@@ -132,7 +134,7 @@ const MemmberPrposalCreate = () => {
                         message: 'Please input the member state proposal status!',
                     },
                 ]}>
-                <Input />
+                <Input disabled />
             </Form.Item>
 
             {formErr ? <Text type='danger'>{formErr}</Text> : null}

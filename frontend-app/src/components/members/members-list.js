@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Table } from 'antd';
+import { APIEndPointContext } from '../../context';
 
 const MembersList = () => {
+    const baseUri = useContext(APIEndPointContext);
+
     const [members, setMembers] = useState([]);
     const fetchMembersData = () => {
         // console.log('Fetching members data...');
-        fetch('/members')
+        fetch(`${baseUri}/members`)
             .then(res => {
                 if (!res.ok || res.headers.get('content-type').toLowerCase().indexOf('application/json') === -1) throw new Error('Failed to get server response');
                 return res.json();
@@ -40,7 +43,7 @@ const MembersList = () => {
 
 
     return (<>        
-        <Table columns={columns} dataSource={members} size='middle' pagination={{ pageSize: 6 }}></Table>
+        <Table columns={columns} dataSource={members} size='middle' pagination={{ pageSize: 10, showTotal: (total,range) => `${range[0]}-${range[1]} of ${total} items`  }}></Table>
     </>);
 }
 

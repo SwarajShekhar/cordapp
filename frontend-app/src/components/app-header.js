@@ -1,11 +1,13 @@
 import { Col, Layout, Menu, Row } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import { APIEndPointContext } from "../context";
 
 const { Header } = Layout;
 
 const AppHeader = () => {
 
+    const baseUri = useContext(APIEndPointContext);
     const items = [
         { key: 'item-2', label: <Link to="/members">Members</Link> },
         { key: 'item-3', label: <Link to="/membership">Membership</Link> },
@@ -16,7 +18,7 @@ const AppHeader = () => {
     const [me, setMe] = useState('');  
 
     useEffect(() => {
-        fetch(`/me`)
+        fetch(`${baseUri}/me`)
             .then(res => {
                 console.log(res);
                 if (!res.ok || res.headers.get('content-type').toLowerCase().indexOf('application/json') === -1) throw new Error('Failed to load response');

@@ -1,4 +1,4 @@
-import { Menu, Space, Typography } from "antd";
+import { Col, Divider, Menu, Row, Space, Typography } from "antd";
 import { Outlet } from "react-router";
 import { Link } from "react-router-dom";
 
@@ -9,11 +9,11 @@ export const Members = () => {
         { key: 'mem-item-1', label: <Link to='/members/list'>List</Link> },
         { key: 'mem-item-2', label: <Link to='/members/proposal'>Proposal</Link> },
         { key: 'mem-item-3', label: <Link to='/members/proposalpending'>Pending</Link> },
-        { key: 'mem-item-4', label: <Link to='/members/proposalcreate'>Create New Proposal</Link> },
+        { key: 'mem-item-4', label: <Link to='/members/proposalcreate'>Add Member</Link> },
     ];
 
     return (<>
-        <Space direction='horizontal' size="middle" style={{ display: 'flex' }}>
+        <Space split={<Divider type="vertical" />}>
             <Title>Members</Title>
             <Menu mode='horizontal' items={items} />
         </Space>
