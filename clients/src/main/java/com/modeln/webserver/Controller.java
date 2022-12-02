@@ -276,6 +276,11 @@ public class Controller {
                     new UniqueIdentifier(null, UUID.fromString(memberStateProposalIdentifier)),
                     MemberStateProposalStatus.valueOf(memberStateProposalStatus)).getReturnValue().get();
             // Return the response.
+            if(result == null){
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body("Proposal rejected");
+            }
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body("Transaction id "+ result.getId() +" committed to ledger.");
