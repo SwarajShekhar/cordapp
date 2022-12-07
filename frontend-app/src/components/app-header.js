@@ -1,6 +1,7 @@
 import { DownOutlined, UserOutlined, UserSwitchOutlined } from "@ant-design/icons";
 import { Col, Dropdown, Layout, Menu, Row, Button, Divider, Space, message, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
+import { useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import { APIEndPointContext } from "../context";
 import { parseUserInfo } from "../utils";
@@ -8,24 +9,20 @@ import { parseUserInfo } from "../utils";
 const { Header } = Layout;
 
 const AppHeader = ({ onChangeUser }) => {
+    const location = useLocation();
+    const topNavKey = location.pathname.split('/')[1];
+    // console.log('appHeader - ', topNavKey);
     const isDevMode = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development');
     const baseUri = useContext(APIEndPointContext);
     const items = [
-        { key: 'item-2', label: <Link to="/members">Members</Link> },
+        { key: 'members', label: <Link to="/members">Members</Link> },
         // { key: 'item-3', label: 'Membership', disabled: true },
-        { key: 'item-4', label: <Link to="/bidaward">Bid Award</Link> },
-        { key: 'item-5', label: <Link to='/invoicelineitem'>Invoice Line Item</Link> },
+        { key: 'bidaward', label: <Link to="/bidaward">Bid Award</Link> },
+        { key: 'invoicelineitem', label: <Link to='/invoicelineitem'>Invoice Line Item</Link> },
     ];
     const [peers, setPeers] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
-
-
-    const onClick = ({ key }) => {
-        // peers.find((peer) => peer.label)
-        // message.info(`Click on item ${key}`);
-        onChangeUser(key);
-    };
-
+    
     useEffect(() => {
         fetch(`${baseUri}/peers`)
             .then(res => res.json())
@@ -60,7 +57,7 @@ const AppHeader = ({ onChangeUser }) => {
                     <div style={{ float: 'left', margin: '0px 24px 16px 0' }}>
                         {currentUser ? (currentUser.ou === 'modeln' ? <img src={`/modeln-logo-2.png`} style={{ maxHeight: 25 }} /> : <Typography.Text style={{ color: '#0B588E', textTransform: 'capitalize', fontSize: 32 }} strong>{currentUser?.ou}</Typography.Text>) : null}
                     </div>
-                    <Menu mode='horizontal' items={items} />
+                    <Menu mode='horizontal' items={items} selectedKeys={topNavKey} />
                 </Col>
                 <Col>
                     {

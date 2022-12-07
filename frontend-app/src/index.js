@@ -3,13 +3,31 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate, Link } from "react-router-dom";
 import ErrorPage from './error-page';
-import { Members, MemberProposalList, MemberPrposalCreate, MembersList } from './components/members';
+import { MemberProposalList, MemberPrposalCreate, MembersList } from './components/members';
 import { Membership } from './components/membership';
-import { BidAward, BidAwardList, BidAwardCreate } from './components/bid-award';
-import { InvoiceLineItem, InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } from './components/invoice-line-item';
-import { DefaultPage } from './components/default-page';
+import { BidAwardList, BidAwardCreate } from './components/bid-award';
+import { InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } from './components/invoice-line-item';
+import { DefaultPage, ContentPage } from './components/default-page';
+import { PlusCircleOutlined } from '@ant-design/icons';
+
+const membersMenuItems = [
+  { key: 'list', label: <Link to='/members/list'>List</Link> },
+  { key: 'proposal', label: <Link to='/members/proposal'>Proposal</Link> },
+  // { key: 'proposalpending', label: <Link to='/members/proposalpending'>Pending</Link> },
+  { key: 'proposalcreate', label: <Link to='/members/proposalcreate'><PlusCircleOutlined /> Add Member</Link> },
+];
+
+const bidAwarditems = [
+  { key: 'list', label: <Link to='/bidaward/list'>List</Link> },
+  { key: 'create', label: <Link to='/bidaward/create'><PlusCircleOutlined /> Create New</Link> },
+];
+
+const invoiceLineMenuitems = [
+  { key: 'list', label: <Link to='/invoicelineitem/list'>List</Link> },
+  { key: 'create', label: <Link to='/invoicelineitem/create'><PlusCircleOutlined /> Create New</Link> },
+];
 
 const router = createBrowserRouter([
   {
@@ -20,7 +38,7 @@ const router = createBrowserRouter([
       { path: '', element: <DefaultPage /> },
       {
         path: 'members',
-        element: <Members />,
+        element: <ContentPage title='Members' items={membersMenuItems} />,
         children: [
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <MembersList /> },
@@ -32,7 +50,7 @@ const router = createBrowserRouter([
       { path: 'membership', element: <Membership /> },
       {
         path: 'bidaward',
-        element: <BidAward />,
+        element: <ContentPage title='Bid Award' items={bidAwarditems} />,
         children: [
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <BidAwardList /> },
@@ -41,7 +59,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'invoicelineitem',
-        element: <InvoiceLineItem />,
+        element: <ContentPage title='Invoice Line Item' items={invoiceLineMenuitems} />,
         children: [
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <InvoiceLineItemList /> },

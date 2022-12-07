@@ -1,5 +1,6 @@
-import { Typography } from 'antd';
+import { Divider, Menu, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router';
 import { APIEndPointContext } from '../../context';
 import { parseUserInfo } from '../../utils';
 const { Title } = Typography;
@@ -29,4 +30,25 @@ export const DefaultPage = () => {
         <p>OU={me.ou}, L={me.l}, C={me.c}</p>
         <p>{baseUri}</p>
     </div >)
+}
+
+export const ContentPage = ({ title, items }) => {
+    const location = useLocation();
+    const curNavkey = location.pathname.split('/')[2];
+    /* const items = [
+        { key: 'list', label: <Link to='/members/list'>List</Link> },
+        { key: 'proposal', label: <Link to='/members/proposal'>Proposal</Link> },
+        // { key: 'mem-item-3', label: <Link to='/members/proposalpending'>Pending</Link> },
+        { key: 'proposalcreate', label: <Link to='/members/proposalcreate'><PlusCircleOutlined /> Add Member</Link> },
+    ]; */
+
+    return (<>
+        <Space split={<Divider type="vertical" />}>
+            <Typography.Title>{title}</Typography.Title>
+            <Menu mode='horizontal' items={items} disabledOverflow selectedKeys={curNavkey} />
+        </Space>
+        <div style={{ marginTop: 20 }}>
+            <Outlet />
+        </div>
+    </>);
 }
