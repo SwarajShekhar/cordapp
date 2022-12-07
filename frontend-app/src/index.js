@@ -7,8 +7,8 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
 import ErrorPage from './error-page';
 import { Members, MemberProposalList, MemberPrposalCreate, MembersList } from './components/members';
 import { Membership } from './components/membership';
-import { BidAward } from './components/bid-award';
-import { InvoiceLineItem } from './components/invoice-line-item';
+import { BidAward, BidAwardList, BidAwardCreate } from './components/bid-award';
+import { InvoiceLineItem, InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } from './components/invoice-line-item';
 import { DefaultPage } from './components/default-page';
 
 const router = createBrowserRouter([
@@ -30,8 +30,25 @@ const router = createBrowserRouter([
         ]
       },
       { path: 'membership', element: <Membership /> },
-      { path: 'bidaward', element: <BidAward /> },
-      { path: 'invoicelineitem', element: <InvoiceLineItem /> },
+      {
+        path: 'bidaward',
+        element: <BidAward />,
+        children: [
+          { path: '', element: <Navigate to="list" /> },
+          { path: 'list', element: <BidAwardList /> },
+          { path: 'create', element: <BidAwardCreate /> },
+        ],
+      },
+      {
+        path: 'invoicelineitem',
+        element: <InvoiceLineItem />,
+        children: [
+          { path: '', element: <Navigate to="list" /> },
+          { path: 'list', element: <InvoiceLineItemList /> },
+          { path: 'create', element: <InvoiceLineItemCreate /> },
+          { path: ':linearid', element: <InvoiceLineItemDetail /> },
+        ],
+      },
     ]
   }
 ]);

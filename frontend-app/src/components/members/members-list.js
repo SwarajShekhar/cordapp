@@ -17,7 +17,8 @@ const MembersList = () => {
                 // console.log('received members list', data);
                 const members = data.map((m, idx) => {
                     const { memberName, memberType, owner, DEAID, DDDID, address, description, status } = m.state.data;
-                    return { key: 'm_' + idx, memberName, memberType, owner, DEAID, DDDID, address, description, status };
+                    const linearId = m.state.data.linearId.id;
+                    return { key: 'm_' + idx, linearId, memberName, memberType, owner, DEAID, DDDID, address, description, status };
                 });
                 setMembers(members);
             })
@@ -31,6 +32,7 @@ const MembersList = () => {
     }, []);
 
     const columns = [
+        { title: 'linearId', dataIndex: 'linearId', key: 'linearId' },
         { title: 'DEAID', dataIndex: 'DEAID', key: 'DEAID' },
         { title: 'DDDID', dataIndex: 'DDDID', key: 'DDDID' },
         { title: 'Name', dataIndex: 'memberName', key: 'memberName' },
@@ -42,8 +44,8 @@ const MembersList = () => {
     ];
 
 
-    return (<>        
-        <Table columns={columns} dataSource={members} size='middle' pagination={{ pageSize: 10, showTotal: (total,range) => `${range[0]}-${range[1]} of ${total} items`  }}></Table>
+    return (<>
+        <Table columns={columns} dataSource={members} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
     </>);
 }
 

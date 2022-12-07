@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Table, Space, Typography, Menu, Button, Spin, notification, Input } from 'antd';
+import { Table, Space, Typography, Menu, Button, Spin, notification, Input, Divider } from 'antd';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { APIEndPointContext } from '../../context';
 
@@ -51,10 +51,13 @@ const ActionColumnMenu = ({ dataid, onActionTaken }) => {
         });
     };
 
-    return (<Space>
-        {loading ? <Spin indicator={<LoadingOutlined />} /> : null}
-        <Button type='link' disabled={loading} onClick={handleApprove}>Approve</Button>
-        <Button type='link' disabled={loading} onClick={handleReject}>Reject</Button>
+    return (<Space split={<Divider type='vertical' />}>
+        {
+            loading ? <Spin indicator={<LoadingOutlined />} /> : <>
+                <Button size='small' type='link' disabled={loading} onClick={handleApprove}>Approve</Button>
+                <Button size='small' type='link' disabled={loading} onClick={handleReject}>Reject</Button>
+            </>
+        }
     </Space>);
 }
 
@@ -118,35 +121,27 @@ const MemberProposalList = ({ uri }) => {
         { title: 'Responder', dataIndex: 'responder', key: 'responder' },
         { title: 'Address', dataIndex: 'address', key: 'address' },
         { title: 'Description', dataIndex: 'description', key: 'description' },
-        {
-            title: 'Member State Proposal Status', dataIndex: 'memberStateProposalStatus', key: 'memberStateProposalStatus',
-            /* sorter: (a, b) => {
-                const aStatus = a.memberStateProposalStatus.toUpperCase();
-                const bStatus = b.memberStateProposalStatus.toUpperCase();
-                if (aStatus < bStatus) {
-                    return -1;
-                }
-                if (aStatus > bStatus) {
-                    return 1;
-                }
-                return 0;
-            },
-            sortDirections: ['descend'], */
-            filters: [
-                { text: 'APPROVED', value: 'APPROVED' },
-                { text: 'REJECTED', value: 'REJECTED' },
-                { text: 'PROPOSED', value: 'PROPOSED' },
-            ],
-            onFilter: (value, record) => (record.memberStateProposalStatus === value),
-        },
     ];
 
+    const proposalStatusColumn = { title: 'Member State Proposal Status', dataIndex: 'memberStateProposalStatus', key: 'memberStateProposalStatus' };
+    const proposalStatusColumnFilter = {
+        filters: [
+            { text: 'APPROVED', value: 'APPROVED' },
+            { text: 'REJECTED', value: 'REJECTED' },
+            { text: 'PROPOSED', value: 'PROPOSED' },
+        ],
+        onFilter: (value, record) => (record.memberStateProposalStatus === value),
+    }
+    const actionColumn = {
+        title: 'Actions', key: 'actions', dataIndex: 'linearId', width: 150, align: 'center',
+        render: (data, record) => (record.memberStateProposalStatus === 'PROPOSED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),
+    };
     // console.log('propsal-list -> uri', uri);
     if (uri === '/memberProposal') {
-        columns.push({
-            title: 'Actions', key: 'actions', dataIndex: 'linearId',
-            render: (data, record) => (record.memberStateProposalStatus === 'PROPOSED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),
-        })
+        columns.push({ ...proposalStatusColumn, ...proposalStatusColumnFilter });
+        columns.push(actionColumn);
+    } else {
+        columns.push(proposalStatusColumn);
     }
 
     return (<>

@@ -3,34 +3,28 @@ import { useContext, useState } from "react";
 import { redirect, useNavigate } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
 
-
 const { Option } = Select;
 const { Title, Text } = Typography;
 
-const MemmberPrposalCreate = () => {
+const BidAwardCreate = () => {
     const baseUri = useContext(APIEndPointContext);
-
     const [formErr, setFormErr] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
     const navigate = useNavigate();
-
 
     const onFinish = async (values) => {
         console.log('Success:', values);
         try {
             setFormErr(null);
             setConfirmLoading(true);
-            const headers = {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            };
+            const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
             const fdata = [];
             for (const [key, value] of Object.entries(values)) {
-                // console.log(`${key}: ${value}`);
                 fdata.push(`${key}=${encodeURIComponent(value)}`);
             }
 
-            const res = await fetch(`${baseUri}/memberProposal`, { method: 'POST', headers, body: fdata.join('&') });
+            const res = await fetch(`${baseUri}/bidAward`, { method: 'POST', headers, body: fdata.join('&') });
             const txt = await res.text();
             setConfirmLoading(false);
             if (!res.ok) {
@@ -38,14 +32,14 @@ const MemmberPrposalCreate = () => {
             }
             form.resetFields();
             // onCreate();
-            navigate('/members/proposal');
+            navigate('/bidaward/list');
         } catch (error) {
             console.log('failed to post request', error);
             if (error.hasOwnProperty('message')) {
                 setFormErr(error.message);
             }
         }
-    };
+    }
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -53,93 +47,100 @@ const MemmberPrposalCreate = () => {
 
     const handleCancel = () => {
         form.resetFields();
-        navigate('/members/proposal');
+        navigate('/bidaward/list');
     }
 
-    return (<div>
+    return (<>
         <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} >
-            <Form.Item name="memberName"
-                label="Member Name"
+            <Form.Item name="bidAwardId"
+                label="bidAwardId"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the name of member!',
+                        message: 'Please input the bidAwardId!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="memberType"
-                label="Member Type"
+            <Form.Item name="memberStateUUID"
+                label="memberStateUUID"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the type of member!',
-                    },
-                ]}>
-                <Select placeholder='Select Member Type'>
-                    <Option value='HOSPITAL'>Hospital</Option>
-                </Select>
-            </Form.Item>
-            <Form.Item name="description"
-                label="Description"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input the description!',
+                        message: 'Please input the type of memberStateUUID!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="DEAID"
-                label="DEAID"
+            <Form.Item name="productNDC"
+                label="productNDC"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the DEAID!',
+                        message: 'Please input the productNDC!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="DDDID"
-                label="DDDID"
+            <Form.Item name="wholesalerId"
+                label="wholesalerId"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the DDDID!',
+                        message: 'Please input the wholesalerId!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="memberStatus"
-                label="Member Status"
+            <Form.Item name="startDate"
+                label="startDate"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the member status!',
+                        message: 'Please input the startDate!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="address"
-                label="Address"
+            <Form.Item name="endDate"
+                label="endDate"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the address!',
+                        message: 'Please input the endDate!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="memberStateProposalStatus"
-                label="Member State Proposal Status"
-                initialValue={'PROPOSED'}
+            <Form.Item name="wacPrice"
+                label="wacPrice"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the member state proposal status!',
+                        message: 'Please input the wacPrice!',
                     },
                 ]}>
-                <Input disabled />
+                <Input />
+            </Form.Item>
+            <Form.Item name="authorizedPrice"
+                label="authorizedPrice"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the authorizedPrice!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="broadcastToMembers"
+                label="broadcastToMembers"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the broadcastToMembers!',
+                    },
+                ]}>
+                <Input />
             </Form.Item>
 
             {formErr ? <Text type='danger'>{formErr}</Text> : null}
@@ -152,7 +153,7 @@ const MemmberPrposalCreate = () => {
             </Form.Item>
 
         </Form>
-    </div>);
+    </>);
 }
 
-export default MemmberPrposalCreate;
+export default BidAwardCreate;
