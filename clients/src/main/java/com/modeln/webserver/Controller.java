@@ -312,9 +312,23 @@ public class Controller {
         return proxy.vaultQuery(MemberState.class).getStates();
     }
 
+    @GetMapping(value = "/members/{memberId}",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<MemberState>> getMember(@PathVariable("memberId") String memberId) {
+        QueryCriteria.LinearStateQueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria()
+                .withUuid(Arrays.asList(UUID.fromString(memberId)));
+        return proxy.vaultQueryByCriteria(queryCriteria, MemberState.class).getStates();
+    }
+
     @GetMapping(value = "/membership",produces = APPLICATION_JSON_VALUE)
-    public List<StateAndRef<MemberShipState>> getMemberShip() {
+    public List<StateAndRef<MemberShipState>> getMemberShips() {
         return proxy.vaultQuery(MemberShipState.class).getStates();
+    }
+
+    @GetMapping(value = "/membership/{memberShipId}",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<MemberShipState>> getMemberShip(@PathVariable("memberShipId") String memberShipId) {
+        QueryCriteria.LinearStateQueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria()
+                .withUuid(Arrays.asList(UUID.fromString(memberShipId)));
+        return proxy.vaultQueryByCriteria(queryCriteria, MemberShipState.class).getStates();
     }
 
     @GetMapping(value = "/invoiceLineItem",produces = APPLICATION_JSON_VALUE)
@@ -323,8 +337,15 @@ public class Controller {
     }
 
     @GetMapping(value = "/bidAward",produces = APPLICATION_JSON_VALUE)
-    public List<StateAndRef<BidAwardState>> getBidAward() {
+    public List<StateAndRef<BidAwardState>> getBidAwards() {
         return proxy.vaultQuery(BidAwardState.class).getStates();
+    }
+
+    @GetMapping(value = "/bidAward/{bidAwardId}",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<BidAwardState>> getBidAward(@PathVariable("bidAwardId") String bidAwardId) {
+        QueryCriteria.LinearStateQueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria()
+                .withUuid(Arrays.asList(UUID.fromString(bidAwardId)));
+        return proxy.vaultQueryByCriteria(queryCriteria, BidAwardState.class).getStates();
     }
 
     @GetMapping(value = "/invoiceLineItem/{lineItemId}",produces = APPLICATION_JSON_VALUE)
