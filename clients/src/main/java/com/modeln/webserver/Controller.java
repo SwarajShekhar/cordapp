@@ -55,7 +55,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
  * Define your API endpoints here.
  */
 @RestController
-@RequestMapping("/") // The paths for HTTP requests are relative to this base path.
+@RequestMapping("/api/") // The paths for HTTP requests are relative to this base path.
 public class Controller {
     private final CordaRPCOps proxy;
     private final static Logger logger = LoggerFactory.getLogger(Controller.class);
@@ -291,6 +291,11 @@ public class Controller {
                             )
                     .getReturnValue().get();
             // Return the response.
+            if(result == null){
+                return ResponseEntity
+                        .status(HttpStatus.OK)
+                        .body("Proposal rejected");
+            }
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body("Transaction id "+ result.getId() +" committed to ledger.");
