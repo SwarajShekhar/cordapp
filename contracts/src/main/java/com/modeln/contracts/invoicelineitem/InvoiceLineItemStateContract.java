@@ -2,6 +2,7 @@ package com.modeln.contracts.invoicelineitem;
 
 import com.modeln.enums.invoicelineitem.Status;
 import com.modeln.states.invoicelineitem.InvoiceLineItemState;
+import com.modeln.utils.ContractsUtil;
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
@@ -29,9 +30,9 @@ public class InvoiceLineItemStateContract implements Contract {
         Command command = tx.getCommand(0);
         InvoiceLineItemState auctionState = (InvoiceLineItemState) tx.getOutput(0);
 
-        if(!(auctionState.getOwner().getName().toString().equals("O=GPO1, L=New York, C=US")
+        if(!(ContractsUtil.isWholesaler(auctionState.getOwner())
             && (auctionState.getStatus() == Status.APPROVAL_NEEDED || auctionState.getStatus() == Status.CANCEL_REQUESTED))){
-            throw new IllegalArgumentException("GPO is not allowed to perfrom this action");
+            throw new IllegalArgumentException("Wholesaler is not allowed to perfrom this action");
         }
     }
 
@@ -39,13 +40,13 @@ public class InvoiceLineItemStateContract implements Contract {
         Command command = tx.getCommand(0);
         InvoiceLineItemState auctionStateOutput = (InvoiceLineItemState) tx.getOutput(0);
 
-        if(auctionStateOutput.getOwner().getName().toString().equals("O=GPO1, L=New York, C=US")
+        if(ContractsUtil.isWholesaler(auctionStateOutput.getOwner())
                 && (!(auctionStateOutput.getStatus() == Status.CANCEL_REQUESTED))){
-            throw new IllegalArgumentException("GPO is not allowed to perfrom any action apart from Cancelling Request");
+            throw new IllegalArgumentException("Wholesaler is not allowed to perfrom any action apart from Cancelling Request");
         }
 
         InvoiceLineItemState auctionStateInput = (InvoiceLineItemState) tx.getInput(0);
-        if(!(auctionStateInput.getOwner().getName().toString().equals("O=GPO1, L=New York, C=US")
+        if(!(ContractsUtil.isWholesaler(auctionStateInput.getOwner())
                 && (auctionStateInput.getStatus() == Status.APPROVAL_NEEDED))){
             throw new IllegalArgumentException("Invalid Input");
         }

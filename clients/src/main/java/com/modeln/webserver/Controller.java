@@ -161,6 +161,10 @@ public class Controller {
         return proxy.vaultQuery(ContractState.class).getStates().toString();
     }
 
+    /*
+    Member Proposal
+     */
+
     @GetMapping(value = "/memberProposal",produces = APPLICATION_JSON_VALUE)
     public List<StateAndRef<MemberStateProposal>> getMemberProposal() {
         return proxy.vaultQuery(MemberStateProposal.class).getStates();
@@ -179,6 +183,108 @@ public class Controller {
 
         return proxy.vaultQueryByCriteria(queryCriteria, MemberStateProposal.class).getStates();
     }
+
+    @GetMapping(value = "/memberProposal/{memberProposalId}/all",produces = APPLICATION_JSON_VALUE)
+    public List<StateAndRef<MemberStateProposal>> getAllMemberStateProposalForId(@PathVariable("memberProposalId") String memberProposalId) {
+        QueryCriteria.LinearStateQueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria()
+                .withUuid(Arrays.asList(UUID.fromString(memberProposalId)))
+                .withStatus(Vault.StateStatus.ALL);
+        return proxy.vaultQueryByCriteria(queryCriteria, MemberStateProposal.class).getStates();
+    }
+
+    @GetMapping(value = "/memberproposal/statuses",produces = APPLICATION_JSON_VALUE)
+    public List<MemberStateProposalStatus> getMemberProposalStatuses() {
+        return Arrays.asList(MemberStateProposalStatus.values());
+    }
+
+    @PostMapping(value = "/memberProposal", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> createMemberProposal(HttpServletRequest request) {
+
+        String memberName = request.getParameter("memberName");
+        String memberType = request.getParameter("memberType");
+        String description = request.getParameter("description");
+        String DEAID = request.getParameter("DEAID");
+        String DDDID = request.getParameter("DDDID");
+        String memberStatus = request.getParameter("memberStatus");
+        String address = request.getParameter("address");
+        String memberStateProposalStatus = request.getParameter("memberStateProposalStatus");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
+
+        try {
+            UniqueIdentifier result = proxy.startTrackedFlowDynamic(AddMemberRequestProposal.class,
+                    memberName,
+                    memberType,
+                    description,
+                    DEAID,
+                    DDDID,
+                    memberStatus,
+                    address,
+                    MemberStateProposalStatus.valueOf(memberStateProposalStatus),
+                            Instant.parse(startDate),
+                            Instant.parse(endDate))
+                    .getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction id "+ result.getId() +" committed to ledger.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping(value = "/memberProposalResponse", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public ResponseEntity<String> respondToCreateMemberProposal(HttpServletRequest request) {
+
+        String memberStateProposalIdentifier = request.getParameter("memberStateProposalIdentifier");
+        String memberStateProposalStatus = request.getParameter("memberStateProposalStatus");
+        String memberName = request.getParameter("memberName");
+        String memberType = request.getParameter("memberType");
+        String description = request.getParameter("description");
+        String DEAID = request.getParameter("DEAID");
+        String DDDID = request.getParameter("DDDID");
+        String memberStatus = request.getParameter("memberStatus");
+        String address = request.getParameter("address");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String memberIdentifier = request.getParameter("memberIdentifier");
+
+
+        try {
+            UniqueIdentifier result = proxy.startTrackedFlowDynamic(RespondToAddMemberRequestProposalRequest.class,
+                    new UniqueIdentifier(null, UUID.fromString(memberStateProposalIdentifier)),
+                    memberName,
+                    memberType,
+                    description,
+                    DEAID,
+                    DDDID,
+                    memberStatus,
+                    address,
+                    MemberStateProposalStatus.valueOf(memberStateProposalStatus),
+                    Instant.parse(startDate),
+                    Instant.parse(endDate)
+                            )
+                    .getReturnValue().get();
+            // Return the response.
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body("Transaction id "+ result.getId() +" committed to ledger.");
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+
+    }
+
+
+    /*
+    Members
+     */
 
     @GetMapping(value = "/members",produces = APPLICATION_JSON_VALUE)
     public List<StateAndRef<MemberState>> getMembers() {
@@ -229,73 +335,14 @@ public class Controller {
         return proxy.vaultQueryByCriteria(queryCriteria, InvoiceLineItemState.class).getStates();
     }
 
-    @GetMapping(value = "/memberproposal/statuses",produces = APPLICATION_JSON_VALUE)
-    public List<MemberStateProposalStatus> getMemberProposalStatuses() {
-        return Arrays.asList(MemberStateProposalStatus.values());
-    }
+
 
     @GetMapping(value = "/invoiceLineItem/statuses",produces = APPLICATION_JSON_VALUE)
     public List<Status> getInvoiceLineItemStatuses() {
         return Arrays.asList(Status.values());
     }
 
-    @PostMapping(value = "/memberProposal", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
-    public ResponseEntity<String> createMemberProposal(HttpServletRequest request) {
 
-        String memberName = request.getParameter("memberName");
-        String memberType = request.getParameter("memberType");
-        String description = request.getParameter("description");
-        String DEAID = request.getParameter("DEAID");
-        String DDDID = request.getParameter("DDDID");
-        String memberStatus = request.getParameter("memberStatus");
-        String address = request.getParameter("address");
-        String memberStateProposalStatus = request.getParameter("memberStateProposalStatus");
-
-
-        try {
-            UniqueIdentifier result = proxy.startTrackedFlowDynamic(AddMemberRequestProposal.class,
-                    memberName,
-                    memberType,
-                    description,
-                    DEAID,
-                    DDDID,
-                    memberStatus,
-                    address,
-                    MemberStateProposalStatus.valueOf(memberStateProposalStatus)).getReturnValue().get();
-            // Return the response.
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Transaction id "+ result.getId() +" committed to ledger.");
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
-
-    }
-
-    @PostMapping(value = "/memberProposalResponse", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
-    public ResponseEntity<String> respondToCreateMemberProposal(HttpServletRequest request) {
-
-        String memberStateProposalIdentifier = request.getParameter("memberStateProposalIdentifier");
-        String memberStateProposalStatus = request.getParameter("memberStateProposalStatus");
-
-
-        try {
-            UniqueIdentifier result = proxy.startTrackedFlowDynamic(RespondToAddMemberRequestProposalRequest.class,
-                    new UniqueIdentifier(null, UUID.fromString(memberStateProposalIdentifier)),
-                    MemberStateProposalStatus.valueOf(memberStateProposalStatus)).getReturnValue().get();
-            // Return the response.
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Transaction id "+ result.getId() +" committed to ledger.");
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
-
-    }
 
     @PostMapping(value = "/membership", produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
     public ResponseEntity<String> createMemberShip(HttpServletRequest request) {
@@ -308,13 +355,13 @@ public class Controller {
         Instant endInstant = Instant.parse(endDate);
 
         try {
-            SignedTransaction result = proxy
+            UniqueIdentifier result = proxy
                     .startTrackedFlowDynamic(AddMemberShipStateRequest.class, memberStateUUID,startInstant, endInstant)
                     .getReturnValue().get();
             // Return the response.
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body("Transaction id "+ result.getId() +" committed to ledger.\n " + result.getTx().getOutput(0));
+                    .body("Membership committed to ledger with id: "+ result.getId());
             // For the purposes of this demo app, we do not differentiate by exception type.
         } catch (Exception e) {
             return ResponseEntity

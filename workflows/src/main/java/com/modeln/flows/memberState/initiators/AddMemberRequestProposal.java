@@ -11,6 +11,7 @@ import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 
+import java.time.Instant;
 import java.util.Arrays;
 
 @InitiatingFlow
@@ -26,9 +27,12 @@ public class AddMemberRequestProposal extends FlowLogic<UniqueIdentifier> {
     private final String memberStatus;
     private final String address;
     private final MemberStateProposalStatus memberStateProposalStatus;
+    private final Instant startDate;
+    private final Instant endDate;
 
     public AddMemberRequestProposal(String memberName, String memberType, String description,
-                                    String DEAID, String DDDID, String memberStatus, String address, MemberStateProposalStatus memberStateProposalStatus) {
+                                    String DEAID, String DDDID, String memberStatus, String address,
+                                    MemberStateProposalStatus memberStateProposalStatus, Instant startDate, Instant endDate) {
         this.memberName = memberName;
         this.memberType = memberType;
         this.description = description;
@@ -37,6 +41,8 @@ public class AddMemberRequestProposal extends FlowLogic<UniqueIdentifier> {
         this.memberStatus = memberStatus;
         this.address = address;
         this.memberStateProposalStatus = memberStateProposalStatus;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     @Override
@@ -55,7 +61,10 @@ public class AddMemberRequestProposal extends FlowLogic<UniqueIdentifier> {
                 this.memberStatus,
                 this.address,
                 this.memberStateProposalStatus,
-                sender
+                sender,
+                "",
+                this.startDate,
+                this.endDate
         );
 
         final Party notary = FlowUtility.getNotary(getServiceHub());

@@ -47,6 +47,18 @@ public class FlowUtility {
         return serviceHub.getNetworkMapCache().getNotary(CordaX500Name.parse("O=Notary,L=London,C=GB,OU=notary"));
     }
 
+    public static Party getGPO1(ServiceHub serviceHub){
+        return serviceHub.getNetworkMapCache().getNotary(CordaX500Name.parse("O=GPO1,L=London,C=GB,OU=gpo"));
+    }
+
+    public static Party getManufacturer1(ServiceHub serviceHub){
+        return serviceHub.getNetworkMapCache().getNotary(CordaX500Name.parse("O=MANUFACTURER1,L=New York,C=US,OU=manufacturer"));
+    }
+
+    public static Party getWholesaler1(ServiceHub serviceHub){
+        return serviceHub.getNetworkMapCache().getNotary(CordaX500Name.parse("O=WHOLESALER1,L=London,C=GB,OU=wholesaler"));
+    }
+
 
 
 }

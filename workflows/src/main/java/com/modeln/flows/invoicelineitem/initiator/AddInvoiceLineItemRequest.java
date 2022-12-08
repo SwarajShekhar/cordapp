@@ -7,6 +7,7 @@ import com.modeln.enums.invoicelineitem.Status;
 import com.modeln.states.bidawards.BidAwardState;
 import com.modeln.states.invoicelineitem.InvoiceLineItemState;
 import com.modeln.states.memberstate.MemberState;
+import com.modeln.utils.FlowUtility;
 import net.corda.core.contracts.LinearPointer;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
@@ -57,7 +58,7 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
         );
 
         Party me = getOurIdentity();
-        final Party notary = getServiceHub().getNetworkMapCache().getNotary(CordaX500Name.parse("O=Notary,L=London,C=GB"));
+        final Party notary = FlowUtility.getNotary(getServiceHub());
         UniqueIdentifier linearId = new UniqueIdentifier();
 
         InvoiceLineItemState invoiceLineItemState = new InvoiceLineItemState(

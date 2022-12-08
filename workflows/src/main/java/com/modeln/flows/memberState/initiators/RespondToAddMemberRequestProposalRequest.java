@@ -4,6 +4,8 @@ import co.paralleluniverse.fibers.Suspendable;
 import com.modeln.contracts.memberstate.MemberStateProposalContract;
 import com.modeln.enums.memberstateproposal.MemberStateProposalStatus;
 import com.modeln.flows.memberState.ModelNBroadcastMemberState;
+import com.modeln.flows.membershipState.initiator.AddMemberShipStateRequest;
+import com.modeln.flows.membershipState.initiator.BroadcastMembershipStateRequest;
 import com.modeln.states.memberstate.MemberStateProposal;
 import com.modeln.utils.FlowUtility;
 import net.corda.core.contracts.StateAndRef;
@@ -16,6 +18,7 @@ import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,11 +27,32 @@ import java.util.List;
 public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueIdentifier> {
 
     private final UniqueIdentifier memberStateProposalIdentifier;
-    private final MemberStateProposalStatus status;
+    private final String memberName;
+    private final String memberType;
+    private final String description;
+    private final String DEAID;
+    private final String DDDID;
+    private final String memberStatus;
+    private final String address;
+    private final MemberStateProposalStatus memberStateProposalStatus;
+    private final Instant startDate;
+    private final Instant endDate;
 
-    public RespondToAddMemberRequestProposalRequest(UniqueIdentifier memberStateProposalIdentifier, MemberStateProposalStatus status) {
+    public RespondToAddMemberRequestProposalRequest(UniqueIdentifier memberStateProposalIdentifier, String memberName, String memberType,
+                                                    String description, String DEAID, String DDDID, String memberStatus, String address,
+                                                    MemberStateProposalStatus memberStateProposalStatus,
+                                                    Instant startDate, Instant endDate) {
         this.memberStateProposalIdentifier = memberStateProposalIdentifier;
-        this.status = status;
+        this.memberName = memberName;
+        this.memberType = memberType;
+        this.description = description;
+        this.DEAID = DEAID;
+        this.DDDID = DDDID;
+        this.memberStatus = memberStatus;
+        this.address = address;
+        this.memberStateProposalStatus = memberStateProposalStatus;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     @Override
@@ -48,22 +72,9 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
         MemberStateProposal memberStateProposalFromQuery =
                 (MemberStateProposal) memberStateProposalStateRef.get(0).getState().getData();
 
-        // create output object
-        MemberStateProposal output = new MemberStateProposal(
-                memberStateProposalIdentifier,
-                getOurIdentity(),
-                memberStateProposalFromQuery.getMemberName(),
-                memberStateProposalFromQuery.getMemberType(),
-                memberStateProposalFromQuery.getDescription(),
-                memberStateProposalFromQuery.getDEAID(),
-                memberStateProposalFromQuery.getDDDID(),
-                memberStateProposalFromQuery.getMemberStatus(),
-                memberStateProposalFromQuery.getAddress(),
-                this.status,
-                memberStateProposalFromQuery.getOwner()
-        );
         UniqueIdentifier uuid = null;
-        if(status == MemberStateProposalStatus.APPROVED){
+        if(memberStateProposalStatus == MemberStateProposalStatus.APPROVED ||
+        memberStateProposalStatus == MemberStateProposalStatus.CHANGED_AND_APPROVED){
             uuid = createMemberState(memberStateProposalFromQuery);
             broadCastMemberState(uuid);
         }
@@ -71,6 +82,24 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
         final Party notary = FlowUtility.getNotary(getServiceHub());
 
         final TransactionBuilder builder = new TransactionBuilder(notary);
+
+        // create output object
+        MemberStateProposal output = new MemberStateProposal(
+                memberStateProposalIdentifier,
+                getOurIdentity(),
+                this.memberName,
+                this.memberType,
+                this.description,
+                this.DEAID,
+                this.DDDID,
+                this.memberStatus,
+                this.address,
+                this.memberStateProposalStatus,
+                memberStateProposalFromQuery.getOwner(),
+                uuid == null ? "" : uuid.getId().toString(),
+                this.startDate,
+                this.endDate
+        );
 
         builder.addOutputState(output).addInputState(memberStateProposalStateRef.get(0));
         builder.addCommand(new MemberStateProposalContract.Commands.Respond(),
@@ -94,13 +123,13 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
     private UniqueIdentifier createMemberState(MemberStateProposal memberStateProposalFromQuery) throws FlowException {
         UniqueIdentifier uuid =
                 subFlow(new ModelNAddMemberState.Initiator(
-                        memberStateProposalFromQuery.getMemberName(),
-                        memberStateProposalFromQuery.getMemberType(),
-                        memberStateProposalFromQuery.getDescription(),
-                        memberStateProposalFromQuery.getDEAID(),
-                        memberStateProposalFromQuery.getDDDID(),
-                        memberStateProposalFromQuery.getMemberStatus(),
-                        memberStateProposalFromQuery.getAddress()
+                        this.memberName,
+                        this.memberType,
+                        this.description,
+                        this.DEAID,
+                        this.DDDID,
+                        this.memberStatus,
+                        this.address
                 ));
         return uuid;
     }
@@ -111,4 +140,6 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
         List<AbstractParty> broadcastingMember = FlowUtility.getAllPartyForBroadcast(getServiceHub(), getOurIdentity());
         subFlow(new ModelNBroadcastMemberState.Initiator(uuid.getId(), broadcastingMember));
     }
+
+
 }
