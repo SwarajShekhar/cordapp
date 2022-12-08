@@ -106,6 +106,27 @@ public class Controller {
         return myMap;
     }
 
+    @GetMapping(value = "myName", produces = APPLICATION_JSON_VALUE)
+    public HashMap<String, String> myName(){
+        HashMap<String, String> myMap = new HashMap<>();
+        myMap.put("myName", me.getOrganisation());
+        return myMap;
+    }
+
+    @GetMapping(value = "name/{nameID}", produces = APPLICATION_JSON_VALUE)
+    public HashMap<String, String> getName(@PathVariable("nameID") String nameID){
+        HashMap<String, String> myMap = new HashMap<>();
+        for(String string: nameID.split(",")){
+            string = string.trim();
+            if(string.startsWith("O=")){
+                myMap.put("name", string.split("=")[1]);
+                return myMap;
+            }
+        }
+        return myMap;
+    }
+
+
     @GetMapping(value = "/status", produces = TEXT_PLAIN_VALUE)
     private String status() {
         return "200";
