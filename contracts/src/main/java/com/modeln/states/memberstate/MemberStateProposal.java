@@ -11,8 +11,10 @@ import net.corda.core.schemas.PersistentState;
 import net.corda.core.schemas.QueryableState;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @BelongsToContract(MemberStateProposalContract.class)
 public class MemberStateProposal implements LinearState, QueryableState {
@@ -28,10 +30,14 @@ public class MemberStateProposal implements LinearState, QueryableState {
     private String memberStatus;
     private String address;
     private MemberStateProposalStatus memberStateProposalStatus;
+    private String memberIdIdentifier;
+    private Instant startDate;
+    private Instant endDate;
 
     public MemberStateProposal(UniqueIdentifier linearId, Party owner, String memberName, String memberType, String description,
                                String DEAID, String DDDID, String memberStatus, String address,
-                               MemberStateProposalStatus memberStateProposalStatus, Party responder) {
+                               MemberStateProposalStatus memberStateProposalStatus, Party responder,
+                               String memberIdIdentifier, Instant startDate, Instant endDate) {
         this.linearId = linearId;
         this.owner = owner;
         this.memberName = memberName;
@@ -43,6 +49,17 @@ public class MemberStateProposal implements LinearState, QueryableState {
         this.address = address;
         this.memberStateProposalStatus = memberStateProposalStatus;
         this.responder = responder;
+        this.memberIdIdentifier = memberIdIdentifier;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public String getMemberIdIdentifier() {
+        return memberIdIdentifier;
+    }
+
+    public void setMemberIdIdentifier(String memberIdIdentifier) {
+        this.memberIdIdentifier = memberIdIdentifier;
     }
 
     public Party getResponder() {
@@ -125,6 +142,22 @@ public class MemberStateProposal implements LinearState, QueryableState {
         this.address = address;
     }
 
+    public Instant getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Instant startDate) {
+        this.startDate = startDate;
+    }
+
+    public Instant getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Instant endDate) {
+        this.endDate = endDate;
+    }
+
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
@@ -145,6 +178,8 @@ public class MemberStateProposal implements LinearState, QueryableState {
     @Override
     public PersistentState generateMappedObject(@NotNull MappedSchema schema) {
         if (schema instanceof MemberStateProposalSchema) {
+            UUID memberIdentifierUUID = this.memberIdIdentifier == null || this.memberIdIdentifier.trim().length() < 1 ?
+                    null : UUID.fromString(this.memberIdIdentifier);
             return new MemberStateProposalSchema.PersistMember(
                     this.linearId.getId(),
                     this.owner,
@@ -156,7 +191,10 @@ public class MemberStateProposal implements LinearState, QueryableState {
                     this.DDDID,
                     this.memberStatus,
                     this.address,
-                    this.memberStateProposalStatus.ordinal());
+                    this.memberStateProposalStatus.ordinal(),
+                    memberIdentifierUUID,
+                    this.startDate,
+                    this.endDate);
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
         }

@@ -3,7 +3,6 @@ package com.modeln.contracts.invoicelineitem;
 import com.modeln.enums.invoicelineitem.Status;
 import com.modeln.states.invoicelineitem.InvoiceLineItemState;
 import com.modeln.utils.ContractsUtil;
-
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.Contract;
@@ -33,7 +32,7 @@ public class InvoiceLineItemStateContract implements Contract {
 
         if(!(ContractsUtil.isWholesaler(auctionState.getOwner())
             && (auctionState.getStatus() == Status.APPROVAL_NEEDED || auctionState.getStatus() == Status.CANCEL_REQUESTED))){
-            throw new IllegalArgumentException("Only Wholesaler is allowed to perfrom this action");
+            throw new IllegalArgumentException("Wholesaler is not allowed to perfrom this action");
         }
     }
 
@@ -43,7 +42,7 @@ public class InvoiceLineItemStateContract implements Contract {
 
         if(ContractsUtil.isWholesaler(auctionStateOutput.getOwner())
                 && (!(auctionStateOutput.getStatus() == Status.CANCEL_REQUESTED))){
-            throw new IllegalArgumentException("You are not allowed to perfrom this action");
+            throw new IllegalArgumentException("Wholesaler is not allowed to perfrom any action apart from Cancelling Request");
         }
 
         InvoiceLineItemState auctionStateInput = (InvoiceLineItemState) tx.getInput(0);
