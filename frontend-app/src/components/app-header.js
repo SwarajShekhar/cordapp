@@ -16,7 +16,7 @@ const AppHeader = ({ onChangeUser }) => {
     const baseUri = useContext(APIEndPointContext);
     const items = [
         { key: 'members', label: <Link to="/members">Members</Link> },
-        // { key: 'item-3', label: 'Membership', disabled: true },
+        { key: 'membership', label: <Link to="/membership">Membership</Link>},
         { key: 'bidaward', label: <Link to="/bidaward">Bid Award</Link> },
         { key: 'invoicelineitem', label: <Link to='/invoicelineitem'>Invoice Line Item</Link> },
     ];

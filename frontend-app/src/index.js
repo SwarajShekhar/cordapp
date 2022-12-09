@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider, Navigate, Link } from "react-router-dom";
 import ErrorPage from './error-page';
 import { MemberProposalList, MemberPrposalCreate, MembersList } from './components/members';
-import { Membership } from './components/membership';
+import { MembershipList } from './components/membership';
 import { BidAwardList, BidAwardCreate } from './components/bid-award';
 import { InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } from './components/invoice-line-item';
 import { DefaultPage, ContentPage } from './components/default-page';
@@ -17,6 +17,10 @@ const membersMenuItems = [
   { key: 'proposal', label: <Link to='/members/proposal'>Proposal</Link> },
   // { key: 'proposalpending', label: <Link to='/members/proposalpending'>Pending</Link> },
   { key: 'proposalcreate', label: <Link to='/members/proposalcreate'><PlusCircleOutlined /> Add Member</Link> },
+];
+
+const membershipMenuItems = [
+  { key: 'list', label: <Link to='/membership/list'>List</Link> }
 ];
 
 const bidAwarditems = [
@@ -47,7 +51,14 @@ const router = createBrowserRouter([
           { path: 'proposalcreate', element: <MemberPrposalCreate /> },
         ]
       },
-      { path: 'membership', element: <Membership /> },
+      {
+        path: 'membership',
+        element: <ContentPage title='Membership' items={membershipMenuItems} />,
+        children: [
+          { path: '', element: <Navigate to='list' /> },
+          { path: 'list', element: <MembershipList /> },
+        ]
+      },
       {
         path: 'bidaward',
         element: <ContentPage title='Bid Award' items={bidAwarditems} />,
