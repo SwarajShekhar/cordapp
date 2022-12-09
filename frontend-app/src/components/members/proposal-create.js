@@ -1,11 +1,11 @@
 import { Form, Input, Select, Typography, Button } from "antd";
 import { useContext, useState } from "react";
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
 
 
 const { Option } = Select;
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const MemmberPrposalCreate = () => {
     const baseUri = useContext(APIEndPointContext);
@@ -126,6 +126,26 @@ const MemmberPrposalCreate = () => {
                     {
                         required: true,
                         message: 'Please input the address!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="startDate"
+                label="Start Date"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the member state proposal start date!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="endDate"
+                label="End Date"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the member state proposal end date!',
                     },
                 ]}>
                 <Input />

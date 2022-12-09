@@ -1,46 +1,41 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Table, Space, Typography, Menu, Button, Spin, notification, Input, Divider } from 'antd';
+import { Table, Space, Typography, Menu, Button, Spin, notification, Input, Divider, Form, Popconfirm, Select } from 'antd';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { APIEndPointContext } from '../../context';
 
-const { Title } = Typography;
-
-
-
-const ActionColumnMenu = ({ dataid, onActionTaken }) => {
-    const baseUri = useContext(APIEndPointContext);
-    const [loading, setLoading] = useState(false);
-
-    const handleApprove = () => {
-        updateProposal('APPROVED');
-    }
-
-    const handleReject = () => {
-        updateProposal('REJECTED');
-    }
-
-    const updateProposal = async (action) => {
-        try {
-            console.log(`handle ${action} for: ${dataid}`);
-            setLoading(true);
-            const headers = {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            };
-            const body = `memberStateProposalIdentifier=${encodeURIComponent(dataid)}&memberStateProposalStatus=${encodeURIComponent(action)}`;
-            const res = await fetch(`${baseUri}/memberProposalResponse`, { method: 'POST', headers, body });
-            const txt = await res.text();
-            setLoading(false);
-            if (!res.ok) {
-                throw new Error(`network response wast not ok. [${res.status} ${res.statusText}] - ${txt}`);
+const EditableCell = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    selectOptions,
+    record,
+    index,
+    children,
+    ...restProps
+}) => {
+    const inputElem = inputType === 'select' ? <Select options={selectOptions} /> : <Input />
+    return (
+        <td {...restProps}>
+            {editing ? (<Form.Item
+                name={dataIndex}
+                style={{ margin: 0, }}
+                rules={[{ required: true, message: `Please Input ${title}!`, },]}>
+                {inputElem}
+            </Form.Item>)
+                : (children)
             }
-            openNotification('Status had been updated');
-        } catch (error) {
-            console.log('failed to post request', error);
-            openNotification(error.toString())
-        }
-        onActionTaken();
-    }
+        </td>
+    );
+};
 
+const MemberProposalList = ({ uri }) => {
+    const [form] = Form.useForm();
+    const [editingKey, setEditingKey] = useState('');
+    const [loading, setLoading] = useState(false);
+    const baseUri = useContext(APIEndPointContext);
+    const [members, setMembers] = useState([]);
+    const isEditing = (record) => record.key === editingKey;
     const openNotification = (description) => {
         notification.open({
             message: 'Member Proposal Response Status',
@@ -51,19 +46,83 @@ const ActionColumnMenu = ({ dataid, onActionTaken }) => {
         });
     };
 
-    return (<Space split={<Divider type='vertical' />}>
-        {
-            loading ? <Spin indicator={<LoadingOutlined />} /> : <>
-                <Button size='small' type='link' disabled={loading} onClick={handleApprove}>Approve</Button>
-                <Button size='small' type='link' disabled={loading} onClick={handleReject}>Reject</Button>
-            </>
-        }
-    </Space>);
-}
+    const edit = (record) => {
+        form.setFieldsValue({
+            address: '',
+            description: '',
+            ...record,
+        });
+        setEditingKey(record.key);
+    };
 
-const MemberProposalList = ({ uri }) => {
-    const baseUri = useContext(APIEndPointContext);
-    const [members, setMembers] = useState([]);
+    const cancel = () => {
+        setEditingKey('');
+    };
+
+    const save = async (key) => {
+        try {
+            const values = await form.validateFields();
+            console.log('save -> ', values, key);
+            // dont make any changes to the proposal just, cancel the edit
+            const { memberStateProposalStatus } = values;
+
+            // cancel edit if Member State Prposal Status is not Approved or Rejected.
+            if (memberStateProposalStatus !== 'APPROVED' && memberStateProposalStatus !== 'REJECTED') {
+                cancel();
+                return;
+            }
+
+            // extract the original data
+            const newData = [...members];
+            const index = newData.findIndex((item) => key === item.key);
+            if (index > -1) {
+                const item = newData[index];
+                let newItem;
+                if (memberStateProposalStatus === 'APPROVED') {
+                    // update data from all editable fields
+                    newItem = {
+                        ...item,
+                        ...values,
+                        memberStateProposalStatus,
+                        memberStateProposalIdentifier: item.linearId,
+                    };
+
+                } else if (memberStateProposalStatus === 'REJECTED') {
+                    // only update memberStateProposalStatus
+                    newItem = {
+                        ...item,
+                        memberStateProposalStatus,
+                        memberStateProposalIdentifier: item.linearId,
+                    };
+                }
+                console.log('new Item', newItem)
+                setLoading(true);
+                const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+                const fdata = [];
+                for (const [key, value] of Object.entries(newItem)) {
+                    fdata.push(`${key}=${encodeURIComponent(value)}`);
+                }
+
+                const res = await fetch(`${baseUri}/memberProposalResponse`, { method: 'POST', headers, body: fdata.join('&') });
+                const txt = await res.text();
+
+                if (!res.ok) {
+                    throw new Error(`network response wast not ok. [${res.status} ${res.statusText}] - ${txt}`);
+                }
+                setLoading(false);
+                openNotification('Status had been updated');
+
+            } else {
+                throw new Error('Could not find matching key');
+            }
+            setEditingKey('');
+        } catch (err) {
+            console.log('validate failed: ', err);
+            openNotification(err.toString());
+        }
+        fetchMembersData();
+    }
+
     const fetchMembersData = () => {
         // console.log('Fetching members data...');
         fetch(`${baseUri}${uri}`)
@@ -74,8 +133,8 @@ const MemberProposalList = ({ uri }) => {
             .then(data => {
                 console.log('received members list', data);
                 const members = data.map((m, idx) => {
-                    const { memberName, memberType, owner, responder, DEAID, DDDID, address, description, memberStateProposalStatus } = m.state.data;
-                    return { key: 'm_' + idx, memberName, memberType, owner, responder, DEAID, DDDID, address, description, memberStateProposalStatus, linearId: m.state.data.linearId.id };
+                    const { memberName, memberType, owner, responder, DEAID, DDDID, address, description, memberStatus, memberStateProposalStatus, startDate, endDate } = m.state.data;
+                    return { key: 'm_' + idx, memberName, memberType, owner, responder, DEAID, DDDID, address, description, memberStatus, memberStateProposalStatus, linearId: m.state.data.linearId.id, startDate, endDate };
                 });
                 setMembers(members);
             })
@@ -84,9 +143,6 @@ const MemberProposalList = ({ uri }) => {
             });
     }
 
-    const handleActionTaken = () => {
-        fetchMembersData();
-    }
     useEffect(() => {
         fetchMembersData();
     }, [uri]);
@@ -119,33 +175,63 @@ const MemberProposalList = ({ uri }) => {
         { title: 'Type', dataIndex: 'memberType', key: 'memberType' },
         { title: 'Owner', dataIndex: 'owner', key: 'owner', ...getColumnSearchProps('owner') },
         { title: 'Responder', dataIndex: 'responder', key: 'responder' },
-        { title: 'Address', dataIndex: 'address', key: 'address' },
-        { title: 'Description', dataIndex: 'description', key: 'description' },
+        { title: 'Address', dataIndex: 'address', key: 'address', editable: true },
+        { title: 'Description', dataIndex: 'description', key: 'description', editable: true, },
+        { title: 'Member Status', dataIndex: 'memberStatus', key: 'memberStatus' },
+        { title: 'Start Date', dataIndex: 'startDate', key: 'startDate' },
+        { title: 'End Date', dataIndex: 'endDate', key: 'endDate' },
+        {
+            title: 'Member State Proposal Status', dataIndex: 'memberStateProposalStatus', key: 'memberStateProposalStatus',
+            filters: [
+                { text: 'APPROVED', value: 'APPROVED' },
+                { text: 'REJECTED', value: 'REJECTED' },
+                { text: 'PROPOSED', value: 'PROPOSED' },
+            ],
+            onFilter: (value, record) => (record.memberStateProposalStatus === value),
+            editable: true,
+        },
+        {
+            title: 'Actions', key: 'actions', dataIndex: 'linearId', width: 150, align: 'center',
+            // render: (data, record) => (record.memberStateProposalStatus === 'PROPOSED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),
+            render: (data, record) => {
+                const editable = isEditing(record);
+                return record.memberStateProposalStatus === 'PROPOSED' ? (editable ? (
+                    <Space direction='vertical'>
+                        {
+                            loading ? <Spin indicator={<LoadingOutlined />} /> : (<>
+                                <Typography.Link disabled={loading} onClick={() => save(record.key)} style={{ marginRight: 8, }}>Save</Typography.Link>
+                                <Typography.Link disabled={loading} onClick={cancel}>Cancel</Typography.Link>
+                            </>)
+                        }
+                    </Space>
+                ) : (<Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>Edit</Typography.Link>)) : null;
+            },
+        },
     ];
 
-    const proposalStatusColumn = { title: 'Member State Proposal Status', dataIndex: 'memberStateProposalStatus', key: 'memberStateProposalStatus' };
-    const proposalStatusColumnFilter = {
-        filters: [
-            { text: 'APPROVED', value: 'APPROVED' },
-            { text: 'REJECTED', value: 'REJECTED' },
-            { text: 'PROPOSED', value: 'PROPOSED' },
-        ],
-        onFilter: (value, record) => (record.memberStateProposalStatus === value),
-    }
-    const actionColumn = {
-        title: 'Actions', key: 'actions', dataIndex: 'linearId', width: 150, align: 'center',
-        render: (data, record) => (record.memberStateProposalStatus === 'PROPOSED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),
-    };
-    // console.log('propsal-list -> uri', uri);
-    if (uri === '/memberProposal') {
-        columns.push({ ...proposalStatusColumn, ...proposalStatusColumnFilter });
-        columns.push(actionColumn);
-    } else {
-        columns.push(proposalStatusColumn);
-    }
+    const mergedColumns = columns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: (record) => ({
+                record,
+                inputType: col.dataIndex === 'memberStateProposalStatus' ? 'select' : 'text',
+                selectOptions: [{ value: 'APPROVED', label: 'Approve' }, { value: 'REJECTED', label: 'Reject' }, { value: 'PROPOSED', label: 'PROPOSED' }],
+                dataIndex: col.dataIndex,
+                title: col.title,
+                editing: isEditing(record),
+            }),
+        };
+    });
 
     return (<>
-        <Table columns={columns} size='middle' dataSource={members} pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
+        <Form form={form} component={false}>
+            <Table components={{
+                body: { cell: EditableCell }
+            }} columns={mergedColumns} size='middle' dataSource={members} pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`, onChange: cancel, }}></Table>
+        </Form>
     </>);
 }
 

@@ -116,19 +116,12 @@ const InvoiceLineItemList = () => {
         },
         { title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer' },
         { title: 'Bid Award Linear Pointer', dataIndex: 'bidAwardLinearPointer', key: 'bidAwardLinearPointer' },
-        { title: 'owner', dataIndex: 'owner', key: 'owner' },
-        { title: 'consumer', dataIndex: 'consumer', key: 'consumer' },
-        { title: 'productNDC', dataIndex: 'productNDC', key: 'productNDC' },
-        { title: 'invoiceId', dataIndex: 'invoiceId', key: 'invoiceId' },
-        { title: 'invoiceDate', dataIndex: 'invoiceDate', key: 'invoiceDate' },
-        { title: 'status', dataIndex: 'status', key: 'status' },
-        {
-            title: 'Action', dataIndex: 'linearId', key: 'action',
-            render: (data, record) => {
-                return record.status === 'APPROVAL_NEEDED' ? <p>Approve </p> : null;
-            }
-
-        },
+        { title: 'Owner', dataIndex: 'owner', key: 'owner' },
+        { title: 'Consumer', dataIndex: 'consumer', key: 'consumer' },
+        { title: 'Product NDC', dataIndex: 'productNDC', key: 'productNDC' },
+        { title: 'Invoice Id', dataIndex: 'invoiceId', key: 'invoiceId' },
+        { title: 'Invoice Date', dataIndex: 'invoiceDate', key: 'invoiceDate' },
+        { title: 'Status', dataIndex: 'status', key: 'status' },
         {
             title: 'Actions', key: 'actions', dataIndex: 'linearId', width: 150, align: 'center',
             render: (data, record) => (record.status === 'APPROVAL_NEEDED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),

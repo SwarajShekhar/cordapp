@@ -49,14 +49,14 @@ const InvoiceLineItemDetail = () => {
                 <Descriptions.Item label='invoiceDate' span={2}>{invoiceLineItem?.invoiceDate}</Descriptions.Item>
                 <Descriptions.Item label='productNDC' span={4}>{invoiceLineItem?.productNDC}</Descriptions.Item>
                 <Descriptions.Item label='status' span={4}>
-                    <Badge status={invoiceLineItem?.status === 'APPROVED' ? 'success' : 'processing'} text={invoiceLineItem?.status}></Badge>
+                    <Badge status={invoiceLineItem?.status === 'APPROVED' ? 'success' : (invoiceLineItem?.status === 'REJECTED' ? 'error' : 'processing')} text={invoiceLineItem?.status}></Badge>
                 </Descriptions.Item>
             </Descriptions>
             <Typography.Title level={5}>History</Typography.Title>
             <Timeline>
                 {
                     invoiceLineItems.map(item => (
-                        <Timeline.Item key={item.key} color={item.status === 'APPROVED' ? 'green' : 'gray'}>
+                        <Timeline.Item key={item.key} color={item.status === 'APPROVED' ? 'green' : (item.status === 'REJECTED' ? 'red' : 'gray')}>
                             <p>owner: {item.owner}</p>
                             <p>consumer: {item.consumer}</p>
                             <p>{item.status}</p>
