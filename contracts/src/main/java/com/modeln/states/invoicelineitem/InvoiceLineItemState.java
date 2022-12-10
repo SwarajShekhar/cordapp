@@ -38,10 +38,13 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
     // Approved -   Manufacturer
     // Rejected -   Manufacturer
     private Status status;
+    private Party manufacturer;
+    private Party wholesaler;
 
     @ConstructorForDeserialization
     public InvoiceLineItemState(Party owner, Party consumer, LinearPointer<MemberState> memberStateLinearPointer, String productNDC, String invoiceId,
-                                Instant invoiceDate, LinearPointer<BidAwardState> bidAwardLinearPointer, UniqueIdentifier linearId, Status status) {
+                                Instant invoiceDate, LinearPointer<BidAwardState> bidAwardLinearPointer, UniqueIdentifier linearId, Status status,
+                                Party wholesaler, Party manufacturer) {
         this.owner = owner;
         this.consumer = consumer;
         this.memberStateLinearPointer = memberStateLinearPointer;
@@ -51,6 +54,8 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
         this.bidAwardLinearPointer = bidAwardLinearPointer;
         this.linearId = linearId;
         this.status = status;
+        this.wholesaler = wholesaler;
+        this.manufacturer = manufacturer;
     }
 
     public Party getOwner() {
@@ -117,6 +122,22 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
         this.status = status;
     }
 
+    public Party getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(Party manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public Party getWholesaler() {
+        return wholesaler;
+    }
+
+    public void setWholesaler(Party wholesaler) {
+        this.wholesaler = wholesaler;
+    }
+
     public void setLinearId(UniqueIdentifier linearId) {
         this.linearId = linearId;
     }
@@ -146,7 +167,9 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
                     this.invoiceId,
                     this.invoiceDate,
                     this.bidAwardLinearPointer.getPointer().getId(),
-                    status.ordinal()
+                    status.ordinal(),
+                    this.wholesaler.getName().toString(),
+                    this.manufacturer.getName().toString()
             );
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");

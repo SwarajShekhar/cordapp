@@ -35,10 +35,12 @@ public class MemberStateProposalSchema extends MappedSchema {
         @Column(name="member_state_linear_id") @Type(type = "uuid-char") private final UUID memberStateLinearId;
         @Column(name = "start_date") private final Instant startDate;
         @Column(name = "end_date") private final Instant endDate;
+        @Column(name = "internal_name") private final String internalName;
+        @Column(name = "additional_info") private final String additionalInfo;
 
         public PersistMember(UUID linearId, Party owner, Party responder, String memberName, String memberType,
                              String description, String DEAID, String DDDID, String memberStatus, String address, int status,
-                             UUID memberStateLinearId, Instant startDate, Instant endDate) {
+                             UUID memberStateLinearId, Instant startDate, Instant endDate, String internalName, String additionalInfo) {
             this.linearId = linearId;
             this.owner = owner;
             this.memberName = memberName;
@@ -53,10 +55,20 @@ public class MemberStateProposalSchema extends MappedSchema {
             this.memberStateLinearId = memberStateLinearId;
             this.startDate = startDate;
             this.endDate = endDate;
+            this.internalName = internalName;
+            this.additionalInfo = additionalInfo;
         }
 
         public UUID getMemberStateLinearId() {
             return memberStateLinearId;
+        }
+
+        public String getInternalName() {
+            return internalName;
+        }
+
+        public String getAdditionalInfo() {
+            return additionalInfo;
         }
 
         public PersistMember() {
@@ -74,6 +86,8 @@ public class MemberStateProposalSchema extends MappedSchema {
             this.memberStateLinearId = null;
             this.startDate = null;
             this.endDate = null;
+            this.additionalInfo = null;
+            this.internalName = null;
         }
 
         public Instant getStartDate() {

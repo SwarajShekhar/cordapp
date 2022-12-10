@@ -29,10 +29,13 @@ public class AddMemberRequestProposal extends FlowLogic<UniqueIdentifier> {
     private final MemberStateProposalStatus memberStateProposalStatus;
     private final Instant startDate;
     private final Instant endDate;
+    private String internalName;
+    private String additionalInfo;
 
     public AddMemberRequestProposal(String memberName, String memberType, String description,
                                     String DEAID, String DDDID, String memberStatus, String address,
-                                    MemberStateProposalStatus memberStateProposalStatus, Instant startDate, Instant endDate) {
+                                    MemberStateProposalStatus memberStateProposalStatus, Instant startDate, Instant endDate,
+                                    String internalName, String additionalInfo) {
         this.memberName = memberName;
         this.memberType = memberType;
         this.description = description;
@@ -43,6 +46,8 @@ public class AddMemberRequestProposal extends FlowLogic<UniqueIdentifier> {
         this.memberStateProposalStatus = memberStateProposalStatus;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.internalName = internalName;
+        this.additionalInfo = additionalInfo;
     }
 
     @Override
@@ -62,9 +67,11 @@ public class AddMemberRequestProposal extends FlowLogic<UniqueIdentifier> {
                 this.address,
                 this.memberStateProposalStatus,
                 sender,
-                "",
+                null,
                 this.startDate,
-                this.endDate
+                this.endDate,
+                this.internalName,
+                this.additionalInfo
         );
 
         final Party notary = FlowUtility.getNotary(getServiceHub());

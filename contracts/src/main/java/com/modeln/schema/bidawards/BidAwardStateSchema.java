@@ -43,6 +43,19 @@ public class BidAwardStateSchema extends MappedSchema {
             this.authorizedPrice = authorizedPrice;
         }
 
+        public PersistMember() {
+            this.owner = null;
+            this.memberStateLinearPointer = null;
+            this.linearId = null;
+            this.bidAwardId = null;
+            this.productNDC = null;
+            this.wholesalerId = null;
+            this.startDate = null;
+            this.endDate = null;
+            this.wacPrice = -1;
+            this.authorizedPrice = -1;
+        }
+
         public String getOwner() {
             return owner;
         }

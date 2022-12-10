@@ -30,14 +30,17 @@ public class MemberStateProposal implements LinearState, QueryableState {
     private String memberStatus;
     private String address;
     private MemberStateProposalStatus memberStateProposalStatus;
-    private String memberIdIdentifier;
+    private LinearPointer<MemberState> memberIdIdentifier;
     private Instant startDate;
     private Instant endDate;
+    private String internalName;
+    private String additionalInfo;
 
     public MemberStateProposal(UniqueIdentifier linearId, Party owner, String memberName, String memberType, String description,
                                String DEAID, String DDDID, String memberStatus, String address,
                                MemberStateProposalStatus memberStateProposalStatus, Party responder,
-                               String memberIdIdentifier, Instant startDate, Instant endDate) {
+                               LinearPointer<MemberState> memberIdIdentifier, Instant startDate, Instant endDate,
+                               String internalName, String additionalInfo) {
         this.linearId = linearId;
         this.owner = owner;
         this.memberName = memberName;
@@ -52,13 +55,15 @@ public class MemberStateProposal implements LinearState, QueryableState {
         this.memberIdIdentifier = memberIdIdentifier;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.internalName = internalName;
+        this.additionalInfo = additionalInfo;
     }
 
-    public String getMemberIdIdentifier() {
+    public LinearPointer<MemberState> getMemberIdIdentifier() {
         return memberIdIdentifier;
     }
 
-    public void setMemberIdIdentifier(String memberIdIdentifier) {
+    public void setMemberIdIdentifier(LinearPointer<MemberState> memberIdIdentifier) {
         this.memberIdIdentifier = memberIdIdentifier;
     }
 
@@ -158,6 +163,22 @@ public class MemberStateProposal implements LinearState, QueryableState {
         this.endDate = endDate;
     }
 
+    public String getInternalName() {
+        return internalName;
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
@@ -178,8 +199,8 @@ public class MemberStateProposal implements LinearState, QueryableState {
     @Override
     public PersistentState generateMappedObject(@NotNull MappedSchema schema) {
         if (schema instanceof MemberStateProposalSchema) {
-            UUID memberIdentifierUUID = this.memberIdIdentifier == null || this.memberIdIdentifier.trim().length() < 1 ?
-                    null : UUID.fromString(this.memberIdIdentifier);
+            UUID memberIdentifierUUID = this.memberIdIdentifier == null ?
+                    null : this.memberIdIdentifier.getPointer().getId();
             return new MemberStateProposalSchema.PersistMember(
                     this.linearId.getId(),
                     this.owner,
@@ -194,7 +215,9 @@ public class MemberStateProposal implements LinearState, QueryableState {
                     this.memberStateProposalStatus.ordinal(),
                     memberIdentifierUUID,
                     this.startDate,
-                    this.endDate);
+                    this.endDate,
+                    this.internalName,
+                    this.additionalInfo);
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
         }

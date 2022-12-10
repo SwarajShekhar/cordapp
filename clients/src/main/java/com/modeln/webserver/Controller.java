@@ -9,6 +9,7 @@ import com.modeln.flows.invoicelineitem.initiator.RespondToInvoiceLineItemReques
 import com.modeln.flows.memberState.initiators.AddMemberRequestProposal;
 import com.modeln.flows.memberState.initiators.RespondToAddMemberRequestProposalRequest;
 import com.modeln.flows.membershipState.initiator.AddMemberShipStateRequest;
+import com.modeln.schema.bidawards.BidAwardStateSchema;
 import com.modeln.schema.invoicelineitem.InvoiceLineItemStateSchema;
 import com.modeln.schema.memberstate.MemberStateProposalSchema;
 import com.modeln.states.bidawards.BidAwardState;
@@ -27,6 +28,8 @@ import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.node.NodeInfo;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.Builder;
+import net.corda.core.node.services.vault.CriteriaExpression;
+import net.corda.core.node.services.vault.FieldInfo;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -231,6 +234,8 @@ public class Controller {
         String memberStateProposalStatus = request.getParameter("memberStateProposalStatus");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
+        String internalName = request.getParameter("internalName");
+        String additionalInfo = request.getParameter("additionalInfo");
 
 
         try {
@@ -244,7 +249,9 @@ public class Controller {
                     address,
                     MemberStateProposalStatus.valueOf(memberStateProposalStatus),
                             Instant.parse(startDate),
-                            Instant.parse(endDate))
+                            Instant.parse(endDate),
+                            internalName,
+                            additionalInfo)
                     .getReturnValue().get();
             // Return the response.
             return ResponseEntity
@@ -346,6 +353,38 @@ public class Controller {
         QueryCriteria.LinearStateQueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria()
                 .withUuid(Arrays.asList(UUID.fromString(bidAwardId)));
         return proxy.vaultQueryByCriteria(queryCriteria, BidAwardState.class).getStates();
+    }
+
+    @PostMapping(value = "/bidAward/query",produces = APPLICATION_JSON_VALUE, headers =  "Content-Type=application/x-www-form-urlencoded")
+    public BidAwardState getBidAwardForQuery(HttpServletRequest request) throws NoSuchFieldException{
+        String member = request.getParameter("member");
+        String productNDC = request.getParameter("productNDC");
+        String invoiceDate = request.getParameter("invoiceDate");
+        Field memberField = BidAwardStateSchema.PersistMember.class.getDeclaredField("memberStateLinearPointer");
+        Field productNDCField = BidAwardStateSchema.PersistMember.class.getDeclaredField("productNDC");
+        /*Field startDateField = BidAwardStateSchema.PersistMember.class.getDeclaredField("startDate");
+        Field endDateField = BidAwardStateSchema.PersistMember.class.getDeclaredField("endDate");*/
+
+        CriteriaExpression productNDCIndex = Builder.equal(productNDCField, productNDC);
+        CriteriaExpression memberIndex = Builder.equal(memberField, UUID.fromString(member));
+
+        QueryCriteria productNDCCriteria = new QueryCriteria.VaultCustomQueryCriteria(productNDCIndex);
+        QueryCriteria memberCriteria = new QueryCriteria.VaultCustomQueryCriteria(memberIndex);
+
+        QueryCriteria criteria = productNDCCriteria.and(memberCriteria);
+
+        Instant invoiceDateInstant = Instant.parse(invoiceDate);
+
+        List<StateAndRef<BidAwardState>> bidAwardStatePage = proxy.vaultQueryByCriteria(criteria, BidAwardState.class).getStates();
+        if(bidAwardStatePage != null && bidAwardStatePage.size() > 0) {
+            for (StateAndRef<BidAwardState> bidAwardStateStateAndRef : bidAwardStatePage) {
+                BidAwardState bidAwardState = bidAwardStateStateAndRef.getState().getData();
+                if(invoiceDateInstant.isAfter(bidAwardState.getStartDate()) &&
+                        invoiceDateInstant.isBefore(bidAwardState.getEndDate()))
+                    return bidAwardState;
+            }
+        }
+        return  null;
     }
 
     @GetMapping(value = "/invoiceLineItem/{lineItemId}",produces = APPLICATION_JSON_VALUE)

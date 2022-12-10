@@ -6,8 +6,6 @@ import net.corda.core.contracts.ContractState;
 import net.corda.core.flows.*;
 import net.corda.core.transactions.SignedTransaction;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @InitiatedBy(AddInvoiceLineItemRequest.class)
 public class AddInvoiceLineItemResponse extends FlowLogic<Void> {

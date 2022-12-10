@@ -1,7 +1,6 @@
 package com.modeln.flows.invoicelineitem.responder;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.modeln.flows.invoicelineitem.initiator.AddInvoiceLineItemRequest;
 import com.modeln.flows.invoicelineitem.initiator.RespondToInvoiceLineItemRequest;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.flows.*;

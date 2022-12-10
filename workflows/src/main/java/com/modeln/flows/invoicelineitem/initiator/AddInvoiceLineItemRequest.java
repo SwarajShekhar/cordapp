@@ -70,7 +70,9 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
                 this.invoiceDate,
                 bidAwardLinearPointer,
                 linearId,
-                status
+                status,
+                me,
+                this.consumer
         );
 
         final TransactionBuilder builder = new TransactionBuilder(notary);
