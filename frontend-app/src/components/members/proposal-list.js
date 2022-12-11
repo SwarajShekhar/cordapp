@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Table, Space, Typography, Menu, Button, Spin, notification, Input, Divider, Form, Popconfirm, Select } from 'antd';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { APIEndPointContext } from '../../context';
+import { UserInfo } from '../../utils';
+import { Link } from 'react-router-dom';
 
 const EditableCell = ({
     editing,
@@ -133,8 +135,8 @@ const MemberProposalList = ({ uri }) => {
             .then(data => {
                 console.log('received members list', data);
                 const members = data.map((m, idx) => {
-                    const { memberName, memberType, owner, responder, DEAID, DDDID, address, description, memberStatus, memberStateProposalStatus, startDate, endDate } = m.state.data;
-                    return { key: 'm_' + idx, memberName, memberType, owner, responder, DEAID, DDDID, address, description, memberStatus, memberStateProposalStatus, linearId: m.state.data.linearId.id, startDate, endDate };
+                    const { DDDID, DEAID, additionalInfo, address, description, endDate, internalName, linearId, memberIdIdentifier, memberName, memberStateProposalStatus, memberStatus, memberType, owner, responder, startDate } = m.state.data;
+                    return { key: 'm_' + idx, memberName, memberType, owner: new UserInfo(owner).toString(), responder: new UserInfo(responder).toString(), DEAID, DDDID, address, description, memberStatus, memberStateProposalStatus, linearId: linearId.id, startDate, endDate, additionalInfo, internalName, memberIdIdentifier: memberIdIdentifier ? memberIdIdentifier.pointer.id : null };
                 });
                 setMembers(members);
             })
@@ -169,6 +171,11 @@ const MemberProposalList = ({ uri }) => {
     });
 
     const columns = [
+        { title: 'Linear ID', dataIndex: 'linearId', key: 'linearId' },
+        {
+            title: 'Member Id Identifier', dataIndex: 'memberIdIdentifier', key: 'memberIdIdentifier',
+            render: (data, record) => (data ? <Link to={`/members/${data}`}>{data}</Link> : <span>{record.memberStateProposalStatus}</span>)
+        },
         { title: 'DEAID', dataIndex: 'DEAID', key: 'DEAID' },
         { title: 'DDDID', dataIndex: 'DDDID', key: 'DDDID' },
         { title: 'Name', dataIndex: 'memberName', key: 'memberName', ...getColumnSearchProps('memberName') },
@@ -180,6 +187,8 @@ const MemberProposalList = ({ uri }) => {
         { title: 'Member Status', dataIndex: 'memberStatus', key: 'memberStatus' },
         { title: 'Start Date', dataIndex: 'startDate', key: 'startDate' },
         { title: 'End Date', dataIndex: 'endDate', key: 'endDate' },
+        { title: 'Additional Info', dataIndex: 'additionalInfo', key: 'additionalInfo' },
+        { title: 'Internal Name', dataIndex: 'internalName', key: 'internalName' },
         {
             title: 'Member State Proposal Status', dataIndex: 'memberStateProposalStatus', key: 'memberStateProposalStatus',
             filters: [
@@ -191,7 +200,7 @@ const MemberProposalList = ({ uri }) => {
             editable: true,
         },
         {
-            title: 'Actions', key: 'actions', dataIndex: 'linearId', width: 150, align: 'center',
+            title: 'Action', key: 'action', dataIndex: 'linearId', width: 150, align: 'center',
             // render: (data, record) => (record.memberStateProposalStatus === 'PROPOSED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),
             render: (data, record) => {
                 const editable = isEditing(record);
@@ -204,7 +213,7 @@ const MemberProposalList = ({ uri }) => {
                             </>)
                         }
                     </Space>
-                ) : (<Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>Edit</Typography.Link>)) : null;
+                ) : (<Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>Update</Typography.Link>)) : null;
             },
         },
     ];

@@ -10,11 +10,11 @@ const InvoiceLineItemDetail = () => {
 
     const params = useParams();
     const mapdata = (m, idx) => {
-        const { owner, consumer, productNDC, invoiceId, invoiceDate, status } = m.state.data;
+        const { owner, consumer, productNDC, invoiceId, invoiceDate, status, manufacturer, wholesaler } = m.state.data;
         const linearId = m.state.data.linearId.id;
         const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
         const bidAwardLinearPointer = m.state.data.bidAwardLinearPointer.pointer.id;
-        return { key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner, consumer, productNDC, invoiceId, invoiceDate, status }
+        return { key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner, consumer, productNDC, invoiceId, invoiceDate, status, manufacturer, wholesaler }
     }
 
     useEffect(() => {
@@ -45,6 +45,8 @@ const InvoiceLineItemDetail = () => {
                 <Descriptions.Item label='bidAwardLinearPointer' span={4}>{invoiceLineItem?.bidAwardLinearPointer}</Descriptions.Item>
                 <Descriptions.Item label='owner' span={2}>{invoiceLineItem?.owner}</Descriptions.Item>
                 <Descriptions.Item label='consumer' span={2}>{invoiceLineItem?.consumer}</Descriptions.Item>
+                <Descriptions.Item label='manufacturer' span={2}>{invoiceLineItem?.manufacturer}</Descriptions.Item>
+                <Descriptions.Item label='wholesaler' span={2}>{invoiceLineItem?.wholesaler}</Descriptions.Item>
                 <Descriptions.Item label='invoiceId' span={2}>{invoiceLineItem?.invoiceId}</Descriptions.Item>
                 <Descriptions.Item label='invoiceDate' span={2}>{invoiceLineItem?.invoiceDate}</Descriptions.Item>
                 <Descriptions.Item label='productNDC' span={4}>{invoiceLineItem?.productNDC}</Descriptions.Item>

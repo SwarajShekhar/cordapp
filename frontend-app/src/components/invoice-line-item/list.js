@@ -3,6 +3,7 @@ import { Table, Space, Typography, Menu, Button, Spin, notification, Input, Divi
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { APIEndPointContext } from '../../context';
 import { Link } from 'react-router-dom';
+import { UserInfo } from '../../utils';
 
 
 const ActionColumnMenu = ({ dataid, onActionTaken }) => {
@@ -72,25 +73,13 @@ const InvoiceLineItemList = () => {
                 return res.json();
             })
             .then(data => {
-                console.log('received invoicelineitem list', data);
-                /* const bidawards = data.map((m, idx) => {
-                    const { authorizedPrice, bidAwardId, endDate, owner, productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName } = m.state.data;
-                    const linearId = m.state.data.linearId.id;
-                    
-                    return { key: 'm_' + idx, authorizedPrice, bidAwardId, endDate, linearId, memberStateLinearPointer, owner, productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName };
-                });
-                setInvoiceLineItems(bidawards); */
-
-
-                /*
-                
-                */
+                // console.log('received invoicelineitem list', data);                
                 const invoiceLineItems = data.map((m, idx) => {
-                    const { owner, consumer, productNDC, invoiceId, invoiceDate, status } = m.state.data;
+                    const { owner, consumer, productNDC, invoiceId, invoiceDate, status, manufacturer, wholesaler } = m.state.data;
                     const linearId = m.state.data.linearId.id;
                     const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
                     const bidAwardLinearPointer = m.state.data.bidAwardLinearPointer.pointer.id;
-                    return { key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner, consumer, productNDC, invoiceId, invoiceDate, status }
+                    return { key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner: new UserInfo(owner).toString(), consumer: new UserInfo(consumer).toString(), productNDC, invoiceId, invoiceDate, status, manufacturer: new UserInfo(manufacturer).toString(), wholesaler: new UserInfo(wholesaler).toString() }
                 });
                 setInvoiceLineItems(invoiceLineItems);
             })
@@ -114,10 +103,15 @@ const InvoiceLineItemList = () => {
                 return <Link to={`/invoicelineitem/${data}`}>{data}</Link>
             }
         },
-        { title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer' },
+        {
+            title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
+            render: (data) => (<Link to={`/members/${data}`}>{data}</Link>)
+        },
         { title: 'Bid Award Linear Pointer', dataIndex: 'bidAwardLinearPointer', key: 'bidAwardLinearPointer' },
         { title: 'Owner', dataIndex: 'owner', key: 'owner' },
         { title: 'Consumer', dataIndex: 'consumer', key: 'consumer' },
+        { title: 'Manufacturer', dataIndex: 'manufacturer', key: 'manufacturer' },
+        { title: 'wholesaler', dataIndex: 'wholesaler', key: 'wholesaler' },
         { title: 'Product NDC', dataIndex: 'productNDC', key: 'productNDC' },
         { title: 'Invoice Id', dataIndex: 'invoiceId', key: 'invoiceId' },
         { title: 'Invoice Date', dataIndex: 'invoiceDate', key: 'invoiceDate' },

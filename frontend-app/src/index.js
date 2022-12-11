@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider, Navigate, Link } from "react-router-dom";
 import ErrorPage from './error-page';
-import { MemberProposalList, MemberPrposalCreate, MembersList } from './components/members';
+import { MemberDetail, MemberProposalList, MemberPrposalCreate, MembersList } from './components/members';
 import { MembershipList } from './components/membership';
 import { BidAwardList, BidAwardCreate } from './components/bid-award';
 import { InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } from './components/invoice-line-item';
@@ -46,6 +46,7 @@ const router = createBrowserRouter([
         children: [
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <MembersList /> },
+          { path: ':memberId', element: <MemberDetail /> },
           { path: 'proposal', element: <MemberProposalList uri='/memberProposal' /> },
           { path: 'proposalpending', element: <MemberProposalList uri='/memberProposal/pending' /> },
           { path: 'proposalcreate', element: <MemberPrposalCreate /> },

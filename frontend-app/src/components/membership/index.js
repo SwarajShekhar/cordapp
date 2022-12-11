@@ -1,6 +1,8 @@
-import { Table, Typography } from "antd";
+import { Table, Tooltip, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
+import { UserInfo } from "../../utils";
 
 
 export const MembershipList = () => {
@@ -10,7 +12,10 @@ export const MembershipList = () => {
 
     const columns = [
         { title: 'Linear Id', dataIndex: 'linearId', key: 'linearId' },
-        { title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer' },
+        {
+            title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
+            render: (data, record) => (<Link to={`/members/${data}`}>{data}</Link>)
+        },
         { title: 'Owner', dataIndex: 'owner', key: 'owner' },
         { title: 'Receiver', dataIndex: 'receiver', key: 'receiver' },
         { title: 'Start Date', dataIndex: 'startDate', key: 'startDate' },
@@ -24,10 +29,13 @@ export const MembershipList = () => {
                 console.log(data);
                 const memberships = data.map((d, idx) => {
                     return {
-                        ...d.state.data,
                         key: 'm_' + idx,
                         linearId: d.state.data.linearId.id,
-                        memberStateLinearPointer: d.state.data.memberStateLinearPointer.pointer.id
+                        memberStateLinearPointer: d.state.data.memberStateLinearPointer.pointer.id,
+                        owner: new UserInfo(d.state.data.owner).toString(),
+                        receiver: new UserInfo(d.state.data.receiver).toString(),
+                        startDate: d.state.data.startDate,
+                        endDate: d.state.data.endDate,
                     };
                 });
                 setData(memberships);

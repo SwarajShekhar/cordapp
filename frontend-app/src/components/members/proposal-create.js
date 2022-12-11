@@ -150,6 +150,26 @@ const MemmberPrposalCreate = () => {
                 ]}>
                 <Input />
             </Form.Item>
+            <Form.Item name="internalName"
+                label="Internal Name"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the internal name!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="additionalInfo"
+                label="Additional Info"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the additional info!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
             <Form.Item name="memberStateProposalStatus"
                 label="Member State Proposal Status"
                 initialValue={'PROPOSED'}
