@@ -29,6 +29,8 @@ public class InvoiceLineItemStateSchema extends MappedSchema {
         @Column(name="invoice_date") private final Instant invoiceDate;
         @Column(name = "bid_award_linear_pointer") @Type(type = "uuid-char")private final UUID bidAwardLinearPointer;
         @Column(name = "current_status") private final int status;
+        @Column(name = "wholesaler") private final String wholesaler;
+        @Column(name = "manufacturer") private final String manufacturer;
 
         public PersistMember(){
             owner = null;
@@ -40,10 +42,12 @@ public class InvoiceLineItemStateSchema extends MappedSchema {
             invoiceDate = null;
             bidAwardLinearPointer = null;
             status = -1;
+            wholesaler = null;
+            manufacturer = null;
         }
 
         public PersistMember(String owner, String consumer, UUID linearId, UUID memberStateLinearPointer, String productNDC, String invoiceId,
-                             Instant invoiceDate, UUID bidAwardLinearPointer, int status) {
+                             Instant invoiceDate, UUID bidAwardLinearPointer, int status, String wholesaler, String manufacturer) {
             this.owner = owner;
             this.consumer = consumer;
             this.linearId = linearId;
@@ -53,6 +57,8 @@ public class InvoiceLineItemStateSchema extends MappedSchema {
             this.invoiceDate = invoiceDate;
             this.bidAwardLinearPointer = bidAwardLinearPointer;
             this.status = status;
+            this.wholesaler = wholesaler;
+            this.manufacturer = manufacturer;
         }
 
         public String getConsumer() {
@@ -89,6 +95,14 @@ public class InvoiceLineItemStateSchema extends MappedSchema {
 
         public int getStatus() {
             return status;
+        }
+
+        public String getWholesaler() {
+            return wholesaler;
+        }
+
+        public String getManufacturer() {
+            return manufacturer;
         }
     }
 }

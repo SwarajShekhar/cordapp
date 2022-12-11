@@ -6,8 +6,10 @@ import com.modeln.enums.memberstateproposal.MemberStateProposalStatus;
 import com.modeln.flows.memberState.ModelNBroadcastMemberState;
 import com.modeln.flows.membershipState.initiator.AddMemberShipStateRequest;
 import com.modeln.flows.membershipState.initiator.BroadcastMembershipStateRequest;
+import com.modeln.states.memberstate.MemberState;
 import com.modeln.states.memberstate.MemberStateProposal;
 import com.modeln.utils.FlowUtility;
+import net.corda.core.contracts.LinearPointer;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
@@ -96,9 +98,11 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
                 this.address,
                 this.memberStateProposalStatus,
                 memberStateProposalFromQuery.getOwner(),
-                uuid == null ? "" : uuid.getId().toString(),
+                uuid == null ? null : new LinearPointer<>(uuid, MemberState.class),
                 this.startDate,
-                this.endDate
+                this.endDate,
+                memberStateProposalFromQuery.getInternalName(),
+                memberStateProposalFromQuery.getAdditionalInfo()
         );
 
         builder.addOutputState(output).addInputState(memberStateProposalStateRef.get(0));

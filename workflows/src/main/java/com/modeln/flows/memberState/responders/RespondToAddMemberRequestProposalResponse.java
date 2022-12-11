@@ -36,7 +36,7 @@ public class RespondToAddMemberRequestProposalResponse extends FlowLogic<Void> {
                 MemberStateProposal memberStateProposal = (MemberStateProposal)contractState;
                 if(memberStateProposal.getMemberStateProposalStatus() == MemberStateProposalStatus.APPROVED ||
                 memberStateProposal.getMemberStateProposalStatus() == MemberStateProposalStatus.CHANGED_AND_APPROVED) {
-                    addAndBroadcastMemberShip(memberStateProposal.getMemberIdIdentifier(),
+                    addAndBroadcastMemberShip(memberStateProposal.getMemberIdIdentifier().getPointer().getId().toString(),
                             memberStateProposal.getStartDate(), memberStateProposal.getEndDate());
                 }
             }

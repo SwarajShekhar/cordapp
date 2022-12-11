@@ -8,7 +8,6 @@ import com.modeln.utils.FlowUtility;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
-import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
@@ -58,7 +57,9 @@ public class RespondToInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier>
                 invoiceLineItemStateFromQuery.getInvoiceDate(),
                 invoiceLineItemStateFromQuery.getBidAwardLinearPointer(),
                 this.invoiceLineItemIdentifier,
-                this.status
+                this.status,
+                invoiceLineItemStateFromQuery.getWholesaler(),
+                invoiceLineItemStateFromQuery.getManufacturer()
         );
 
         final Party notary = FlowUtility.getNotary(getServiceHub());
