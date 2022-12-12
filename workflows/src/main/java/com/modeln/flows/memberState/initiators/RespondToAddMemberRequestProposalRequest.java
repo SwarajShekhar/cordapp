@@ -102,7 +102,8 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
                 this.startDate,
                 this.endDate,
                 memberStateProposalFromQuery.getInternalName(),
-                memberStateProposalFromQuery.getAdditionalInfo()
+                memberStateProposalFromQuery.getAdditionalInfo(),
+                Instant.now()
         );
 
         builder.addOutputState(output).addInputState(memberStateProposalStateRef.get(0));

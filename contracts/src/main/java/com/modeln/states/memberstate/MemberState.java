@@ -11,6 +11,7 @@ import net.corda.core.schemas.QueryableState;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,10 +30,11 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
     private String DDDID;
     private String status;
     private String address;
+    private Instant eventDate;
 
     @ConstructorForDeserialization
     public MemberState(Party owner, UniqueIdentifier linearId, String memberName, String memberType,
-                       String description, String DEAID, String DDDID, String status, String address) {
+                       String description, String DEAID, String DDDID, String status, String address, Instant eventDate) {
         this.owner = owner;
         this.linearId = linearId;
         this.memberName = memberName;
@@ -42,6 +44,7 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
         this.DDDID = DDDID;
         this.status = status;
         this.address = address;
+        this.eventDate = eventDate;
     }
 
     public void setOwner(Party owner) {
@@ -108,6 +111,14 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
         this.address = address;
     }
 
+    public Instant getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
+
     @Override
     public List<AbstractParty> getParticipants() {
         return Arrays.asList(owner);
@@ -144,7 +155,8 @@ public class MemberState implements LinearState, OwnableState, QueryableState {
                     DDDID,
                     status,
                     this.linearId.getId(),
-                    address);
+                    address,
+                    this.eventDate);
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
         }

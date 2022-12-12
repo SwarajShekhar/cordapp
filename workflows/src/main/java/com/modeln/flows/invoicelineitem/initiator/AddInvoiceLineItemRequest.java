@@ -72,7 +72,8 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
                 linearId,
                 status,
                 me,
-                this.consumer
+                this.consumer,
+                Instant.now()
         );
 
         final TransactionBuilder builder = new TransactionBuilder(notary);

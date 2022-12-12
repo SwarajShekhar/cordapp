@@ -41,10 +41,12 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
     private Party manufacturer;
     private Party wholesaler;
 
+    private Instant eventDate;
+
     @ConstructorForDeserialization
     public InvoiceLineItemState(Party owner, Party consumer, LinearPointer<MemberState> memberStateLinearPointer, String productNDC, String invoiceId,
                                 Instant invoiceDate, LinearPointer<BidAwardState> bidAwardLinearPointer, UniqueIdentifier linearId, Status status,
-                                Party wholesaler, Party manufacturer) {
+                                Party wholesaler, Party manufacturer, Instant eventDate) {
         this.owner = owner;
         this.consumer = consumer;
         this.memberStateLinearPointer = memberStateLinearPointer;
@@ -56,6 +58,7 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
         this.status = status;
         this.wholesaler = wholesaler;
         this.manufacturer = manufacturer;
+        this.eventDate = eventDate;
     }
 
     public Party getOwner() {
@@ -138,6 +141,14 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
         this.wholesaler = wholesaler;
     }
 
+    public Instant getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
+
     public void setLinearId(UniqueIdentifier linearId) {
         this.linearId = linearId;
     }
@@ -169,7 +180,8 @@ public class InvoiceLineItemState implements QueryableState, LinearState {
                     this.bidAwardLinearPointer.getPointer().getId(),
                     status.ordinal(),
                     this.wholesaler.getName().toString(),
-                    this.manufacturer.getName().toString()
+                    this.manufacturer.getName().toString(),
+                    this.eventDate
             );
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
