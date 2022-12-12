@@ -1,7 +1,9 @@
 import { Badge, Card, Descriptions, Divider, Space, Timeline, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { APIEndPointContext } from "../../context";
+import { UserInfo } from "../../utils";
 
 const InvoiceLineItemDetail = () => {
     const baseUri = useContext(APIEndPointContext);
@@ -14,7 +16,7 @@ const InvoiceLineItemDetail = () => {
         const linearId = m.state.data.linearId.id;
         const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
         const bidAwardLinearPointer = m.state.data.bidAwardLinearPointer.pointer.id;
-        return { key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner, consumer, productNDC, invoiceId, invoiceDate, status, manufacturer, wholesaler }
+        return { key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner: new UserInfo(owner).toString(), consumer: new UserInfo(consumer).toString(), productNDC, invoiceId, invoiceDate, status, manufacturer: new UserInfo(manufacturer).toString(), wholesaler: new UserInfo(wholesaler).toString() }
     }
 
     useEffect(() => {
@@ -38,20 +40,24 @@ const InvoiceLineItemDetail = () => {
             });
     }, [])
 
+    if (invoiceLineItem === null) {
+        return <>Loading data!</>
+    }
+
     return (<>
         <Space direction="vertical">
-            <Descriptions title={invoiceLineItem?.linearId} bordered column={4}>
-                <Descriptions.Item label='memberStateLinearPointer' span={4}>{invoiceLineItem?.memberStateLinearPointer}</Descriptions.Item>
-                <Descriptions.Item label='bidAwardLinearPointer' span={4}>{invoiceLineItem?.bidAwardLinearPointer}</Descriptions.Item>
-                <Descriptions.Item label='owner' span={2}>{invoiceLineItem?.owner}</Descriptions.Item>
-                <Descriptions.Item label='consumer' span={2}>{invoiceLineItem?.consumer}</Descriptions.Item>
-                <Descriptions.Item label='manufacturer' span={2}>{invoiceLineItem?.manufacturer}</Descriptions.Item>
-                <Descriptions.Item label='wholesaler' span={2}>{invoiceLineItem?.wholesaler}</Descriptions.Item>
-                <Descriptions.Item label='invoiceId' span={2}>{invoiceLineItem?.invoiceId}</Descriptions.Item>
-                <Descriptions.Item label='invoiceDate' span={2}>{invoiceLineItem?.invoiceDate}</Descriptions.Item>
-                <Descriptions.Item label='productNDC' span={4}>{invoiceLineItem?.productNDC}</Descriptions.Item>
-                <Descriptions.Item label='status' span={4}>
-                    <Badge status={invoiceLineItem?.status === 'APPROVED' ? 'success' : (invoiceLineItem?.status === 'REJECTED' ? 'error' : 'processing')} text={invoiceLineItem?.status}></Badge>
+            <Descriptions title={invoiceLineItem.linearId} bordered>
+                <Descriptions.Item label='memberStateLinearPointer' span={3}><Link to={`/members/${invoiceLineItem.memberStateLinearPointer}`}>{invoiceLineItem.memberStateLinearPointer}</Link></Descriptions.Item>
+                <Descriptions.Item label='bidAwardLinearPointer' span={3}>{invoiceLineItem.bidAwardLinearPointer}</Descriptions.Item>
+                <Descriptions.Item label='owner' span={2}>{invoiceLineItem.owner}</Descriptions.Item>
+                <Descriptions.Item label='consumer' span={1}>{invoiceLineItem.consumer}</Descriptions.Item>
+                <Descriptions.Item label='manufacturer' span={2}>{invoiceLineItem.manufacturer}</Descriptions.Item>
+                <Descriptions.Item label='wholesaler' span={1}>{invoiceLineItem.wholesaler}</Descriptions.Item>
+                <Descriptions.Item label='invoiceId' span={2}>{invoiceLineItem.invoiceId}</Descriptions.Item>
+                <Descriptions.Item label='invoiceDate' span={1}>{invoiceLineItem.invoiceDate}</Descriptions.Item>
+                <Descriptions.Item label='productNDC' span={3}>{invoiceLineItem.productNDC}</Descriptions.Item>
+                <Descriptions.Item label='status' span={3}>
+                    <Badge status={invoiceLineItem.status === 'APPROVED' ? 'success' : (invoiceLineItem.status === 'REJECTED' ? 'error' : 'processing')} text={invoiceLineItem?.status}></Badge>
                 </Descriptions.Item>
             </Descriptions>
             <Typography.Title level={5}>History</Typography.Title>
