@@ -1,12 +1,12 @@
 import { Descriptions } from 'antd';
-import { useContext, useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { APIEndPointContext } from '../../context';
 import { UserInfo } from '../../utils';
 
 const BidAwardDetail = () => {
     const params = useParams();
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [bidAward, setBidAward] = useState(null);
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const BidAwardDetail = () => {
                 setBidAward(bidAward)
             });
 
-    }, [])
+    }, [baseUri, params.linearId])
 
     if (bidAward === null) {
         return <>Loading data!</>

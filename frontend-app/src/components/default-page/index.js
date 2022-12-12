@@ -7,7 +7,7 @@ const { Title } = Typography;
 
 export const DefaultPage = () => {
     const [me, setMe] = useState('');
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
 
     useEffect(() => {
         fetch(`${baseUri}/me`)

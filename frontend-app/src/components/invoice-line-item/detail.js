@@ -1,4 +1,4 @@
-import { Badge, Card, Descriptions, Divider, Space, Timeline, Typography } from "antd";
+import { Badge, Descriptions, Space, Timeline, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
@@ -6,7 +6,7 @@ import { APIEndPointContext } from "../../context";
 import { UserInfo } from "../../utils";
 
 const InvoiceLineItemDetail = () => {
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [invoiceLineItem, setInvoiceLineItem] = useState(null);
     const [invoiceLineItems, setInvoiceLineItems] = useState([]);
 

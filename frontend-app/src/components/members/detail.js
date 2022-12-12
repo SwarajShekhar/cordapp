@@ -6,7 +6,7 @@ import { UserInfo } from "../../utils";
 
 const MemberDetail = () => {
     const params = useParams();
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [member, setMember] = useState(null);
 
     useEffect(() => {

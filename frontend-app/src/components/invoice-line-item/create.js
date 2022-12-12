@@ -1,13 +1,10 @@
-import { Form, Input, Select, Typography, Button } from "antd";
+import { Form, Input, Typography, Button } from "antd";
 import { useContext, useState } from "react";
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
 
-const { Option } = Select;
-const { Title, Text } = Typography;
-
 const InvoiceLineItemCreate = () => {
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [formErr, setFormErr] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
@@ -124,7 +121,7 @@ const InvoiceLineItemCreate = () => {
                 <Input disabled />
             </Form.Item>
 
-            {formErr ? <Text type='danger'>{formErr}</Text> : null}
+            {formErr ? <Typography.Text type='danger'>{formErr}</Typography.Text> : null}
 
             <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
                 <Button type="primary" htmlType="submit" loading={confirmLoading}>

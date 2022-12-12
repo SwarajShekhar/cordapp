@@ -16,7 +16,7 @@ function App() {
   const [apiEndPoint, setApiEndPoint] = useState(apiuri);
   const navigate = useNavigate();
   // for quick change of user during development mode
-  const changeUser = ({ key }) => {
+  const changeBaseUri = ({ key }) => {
     let port = {
       modeln: '8080',
       wholesaler: '8084',
@@ -38,9 +38,9 @@ function App() {
   ].concat(segments.map((m, idx) => <Breadcrumb.Item key={idx}>{m}</Breadcrumb.Item>));
 
   return (<>
-    <APIEndPointContext.Provider value={apiEndPoint}>
+    <APIEndPointContext.Provider value={{ baseUri: apiEndPoint, changeBaseUri }}>
       <Layout>
-        <AppHeader onChangeUser={changeUser} />
+        <AppHeader />
         <Content style={{ marginTop: 20, padding: '0 50px' }}>
           <div style={{ padding: '24px', backgroundColor: 'white' }}>
             <Breadcrumb>{breadcrumbItems}</Breadcrumb>

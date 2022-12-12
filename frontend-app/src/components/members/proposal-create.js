@@ -8,7 +8,7 @@ const { Option } = Select;
 const { Text } = Typography;
 
 const MemmberPrposalCreate = () => {
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
 
     const [formErr, setFormErr] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);

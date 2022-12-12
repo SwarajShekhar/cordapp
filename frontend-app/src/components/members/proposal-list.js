@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Table, Space, Typography, Menu, Button, Spin, notification, Input, Divider, Form, Popconfirm, Select } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { Table, Space, Typography, Button, Spin, notification, Input, Form, Select } from 'antd';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { APIEndPointContext } from '../../context';
 import { UserInfo } from '../../utils';
@@ -35,7 +35,7 @@ const MemberProposalList = ({ uri }) => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [loading, setLoading] = useState(false);
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [members, setMembers] = useState([]);
     const isEditing = (record) => record.key === editingKey;
     const openNotification = (description) => {

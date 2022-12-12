@@ -5,7 +5,7 @@ import { UserInfo } from '../../utils';
 import { Link } from 'react-router-dom';
 
 const MembersList = () => {
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
 
     const [members, setMembers] = useState([]);
     const fetchMembersData = () => {

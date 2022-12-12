@@ -1,4 +1,4 @@
-import { Table, Tooltip, Typography } from "antd";
+import { Table } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
@@ -7,7 +7,7 @@ import { UserInfo } from "../../utils";
 
 export const MembershipList = () => {
 
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [data, setData] = useState([]);
 
     const columns = [

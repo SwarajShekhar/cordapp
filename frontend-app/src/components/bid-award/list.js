@@ -6,7 +6,7 @@ import { UserInfo } from "../../utils";
 
 const BidAwardList = () => {
     const [bidawards, setBidawards] = useState([]);
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
 
     const fetchData = () => {
         fetch(`${baseUri}/bidAward`)

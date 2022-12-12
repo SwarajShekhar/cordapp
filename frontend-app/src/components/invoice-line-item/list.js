@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Table, Space, Typography, Menu, Button, Spin, notification, Input, Divider } from 'antd';
-import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import React, { useContext, useEffect, useState } from 'react';
+import { Table, Space, Button, Spin, notification, Divider } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { APIEndPointContext } from '../../context';
 import { Link } from 'react-router-dom';
 import { UserInfo } from '../../utils';
 
 
 const ActionColumnMenu = ({ dataid, onActionTaken }) => {
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [loading, setLoading] = useState(false);
 
     const handleApprove = () => {
@@ -63,7 +63,7 @@ const ActionColumnMenu = ({ dataid, onActionTaken }) => {
 
 const InvoiceLineItemList = () => {
 
-    const baseUri = useContext(APIEndPointContext);
+    const { baseUri } = useContext(APIEndPointContext);
     const [invoiceLineItems, setInvoiceLineItems] = useState([]);
     // const [bidAwards, setBidAwards] = useState([]);
 
