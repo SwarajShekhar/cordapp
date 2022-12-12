@@ -7,7 +7,7 @@ import { createBrowserRouter, RouterProvider, Navigate, Link } from "react-route
 import ErrorPage from './error-page';
 import { MemberDetail, MemberProposalList, MemberPrposalCreate, MembersList } from './components/members';
 import { MembershipList } from './components/membership';
-import { BidAwardList, BidAwardCreate } from './components/bid-award';
+import { BidAwardList, BidAwardCreate, BidAwardDetail } from './components/bid-award';
 import { InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } from './components/invoice-line-item';
 import { DefaultPage, ContentPage } from './components/default-page';
 import { PlusCircleOutlined } from '@ant-design/icons';
@@ -67,6 +67,7 @@ const router = createBrowserRouter([
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <BidAwardList /> },
           { path: 'create', element: <BidAwardCreate /> },
+          { path: ':linearId', element: <BidAwardDetail /> },
         ],
       },
       {

@@ -53,91 +53,91 @@ const BidAwardCreate = () => {
     return (<>
         <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} >
             <Form.Item name="bidAwardId"
-                label="bidAwardId"
+                label="Bid Award Id"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the bidAwardId!',
+                        message: 'Please input the Bid Award Id!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="memberStateUUID"
-                label="memberStateUUID"
+                label="Member State UUID"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the type of memberStateUUID!',
+                        message: 'Please input the type of Member State UUID!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="productNDC"
-                label="productNDC"
+                label="Product NDC"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the productNDC!',
+                        message: 'Please input the Product NDC!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="wholesalerId"
-                label="wholesalerId"
+                label="Wholesaler Id"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the wholesalerId!',
+                        message: 'Please input the Wholesaler Id!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="startDate"
-                label="startDate"
+                label="Start Date"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the startDate!',
+                        message: 'Please input the Start Date!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="endDate"
-                label="endDate"
+                label="End Date"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the endDate!',
+                        message: 'Please input the End Date!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="wacPrice"
-                label="wacPrice"
+                label="WAC Price"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the wacPrice!',
+                        message: 'Please input the WAC Price!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="authorizedPrice"
-                label="authorizedPrice"
+                label="Authorized Price"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the authorizedPrice!',
+                        message: 'Please input the Authorized Price!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="broadcastToMembers"
-                label="broadcastToMembers"
+                label="Broadcast To Members"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the broadcastToMembers!',
+                        message: 'Please input Broadcast To Members!',
                     },
                 ]}>
                 <Input />

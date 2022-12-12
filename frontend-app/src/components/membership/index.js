@@ -26,7 +26,7 @@ export const MembershipList = () => {
         fetch(`${baseUri}/membership`)
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                console.log('received membership data', data);
                 const memberships = data.map((d, idx) => {
                     return {
                         key: 'm_' + idx,
