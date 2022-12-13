@@ -61,7 +61,8 @@ public class RespondToInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier>
                 this.status,
                 invoiceLineItemStateFromQuery.getWholesaler(),
                 invoiceLineItemStateFromQuery.getManufacturer(),
-                Instant.now()
+                Instant.now(),
+                invoiceLineItemStateFromQuery.getQuantity()
         );
 
         final Party notary = FlowUtility.getNotary(getServiceHub());

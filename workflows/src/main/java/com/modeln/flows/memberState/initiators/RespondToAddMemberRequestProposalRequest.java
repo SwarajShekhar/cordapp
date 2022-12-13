@@ -88,7 +88,7 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
         // create output object
         MemberStateProposal output = new MemberStateProposal(
                 memberStateProposalIdentifier,
-                getOurIdentity(),
+                memberStateProposalFromQuery.getOwner(),
                 this.memberName,
                 this.memberType,
                 this.description,
@@ -97,7 +97,7 @@ public class RespondToAddMemberRequestProposalRequest extends FlowLogic<UniqueId
                 this.memberStatus,
                 this.address,
                 this.memberStateProposalStatus,
-                memberStateProposalFromQuery.getOwner(),
+                getOurIdentity(),
                 uuid == null ? null : new LinearPointer<>(uuid, MemberState.class),
                 this.startDate,
                 this.endDate,

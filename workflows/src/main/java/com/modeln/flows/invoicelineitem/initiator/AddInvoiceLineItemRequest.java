@@ -30,9 +30,11 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
     private final UniqueIdentifier bidAwardUniqueIdentifier;
     private final Party consumer;
     private final Status status;
+    private final int quantity;
 
     public AddInvoiceLineItemRequest(UniqueIdentifier memberStateUniqueIdentifier, String productNDC,
-                                     String invoiceId, Instant invoiceDate, UniqueIdentifier bidAwardUniqueIdentifier, Party consumer, Status status) {
+                                     String invoiceId, Instant invoiceDate, UniqueIdentifier bidAwardUniqueIdentifier,
+                                     Party consumer, Status status, int quantity) {
         this.memberStateUniqueIdentifier = memberStateUniqueIdentifier;
         this.productNDC = productNDC;
         this.invoiceId = invoiceId;
@@ -40,6 +42,7 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
         this.bidAwardUniqueIdentifier = bidAwardUniqueIdentifier;
         this.consumer = consumer;
         this.status = status;
+        this.quantity = quantity;
 
     }
 
@@ -73,7 +76,8 @@ public class AddInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier> {
                 status,
                 me,
                 this.consumer,
-                Instant.now()
+                Instant.now(),
+                this.quantity
         );
 
         final TransactionBuilder builder = new TransactionBuilder(notary);
