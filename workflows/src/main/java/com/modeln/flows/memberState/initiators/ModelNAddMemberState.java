@@ -14,6 +14,7 @@ import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class ModelNAddMemberState {
 
             //Compose the Member State
             final MemberState output = new MemberState(me,new UniqueIdentifier(), memberName, memberType, description,
-                    DEAID, DDDID, status, addres);
+                    DEAID, DDDID, status, addres, Instant.now());
 
             // Check if the record exists
             QueryCriteria.VaultQueryCriteria inputCriteria = new QueryCriteria.VaultQueryCriteria()

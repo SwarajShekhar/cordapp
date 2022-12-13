@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -35,9 +36,10 @@ public class MemberStateSchema extends MappedSchema {
         @Column(name = "status") private final String status;
         @Column(name = "linear_id") @Type(type = "uuid-char") private final UUID linearId;
         @Column(name = "address") private final String address;
+        @Column(name = "event_date") private final Instant eventDate;
 
         public PersistMember(String owner, String memberName, String memberType, String description,
-                             String DEAID, String DDDID, String status, UUID linearId, String address) {
+                             String DEAID, String DDDID, String status, UUID linearId, String address, Instant eventDate) {
             this.owner = owner;
             this.memberName = memberName;
             this.memberType = memberType;
@@ -47,6 +49,7 @@ public class MemberStateSchema extends MappedSchema {
             this.status = status;
             this.linearId = linearId;
             this.address = address;
+            this.eventDate = eventDate;
         }
 
         public String getOwner() {
@@ -83,6 +86,10 @@ public class MemberStateSchema extends MappedSchema {
 
         public String getAddress() {
             return address;
+        }
+
+        public Instant getEventDate() {
+            return eventDate;
         }
     }
 }

@@ -14,6 +14,7 @@ import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,7 +60,9 @@ public class RespondToInvoiceLineItemRequest extends FlowLogic<UniqueIdentifier>
                 this.invoiceLineItemIdentifier,
                 this.status,
                 invoiceLineItemStateFromQuery.getWholesaler(),
-                invoiceLineItemStateFromQuery.getManufacturer()
+                invoiceLineItemStateFromQuery.getManufacturer(),
+                Instant.now(),
+                invoiceLineItemStateFromQuery.getQuantity()
         );
 
         final Party notary = FlowUtility.getNotary(getServiceHub());

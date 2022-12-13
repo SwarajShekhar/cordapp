@@ -35,12 +35,13 @@ public class MemberStateProposal implements LinearState, QueryableState {
     private Instant endDate;
     private String internalName;
     private String additionalInfo;
+    private Instant eventDate;
 
     public MemberStateProposal(UniqueIdentifier linearId, Party owner, String memberName, String memberType, String description,
                                String DEAID, String DDDID, String memberStatus, String address,
                                MemberStateProposalStatus memberStateProposalStatus, Party responder,
                                LinearPointer<MemberState> memberIdIdentifier, Instant startDate, Instant endDate,
-                               String internalName, String additionalInfo) {
+                               String internalName, String additionalInfo, Instant eventDate) {
         this.linearId = linearId;
         this.owner = owner;
         this.memberName = memberName;
@@ -57,6 +58,7 @@ public class MemberStateProposal implements LinearState, QueryableState {
         this.endDate = endDate;
         this.internalName = internalName;
         this.additionalInfo = additionalInfo;
+        this.eventDate = eventDate;
     }
 
     public LinearPointer<MemberState> getMemberIdIdentifier() {
@@ -179,6 +181,14 @@ public class MemberStateProposal implements LinearState, QueryableState {
         this.additionalInfo = additionalInfo;
     }
 
+    public Instant getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
+
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
@@ -217,7 +227,8 @@ public class MemberStateProposal implements LinearState, QueryableState {
                     this.startDate,
                     this.endDate,
                     this.internalName,
-                    this.additionalInfo);
+                    this.additionalInfo,
+                    this.eventDate);
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
         }

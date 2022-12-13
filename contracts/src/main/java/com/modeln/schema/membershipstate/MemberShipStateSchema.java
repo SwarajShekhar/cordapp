@@ -33,14 +33,16 @@ public class MemberShipStateSchema extends MappedSchema {
         @Column(name = "linear_id") @Type(type = "uuid-char") private final UUID linearId;
         @Column(name = "start_date") private final Instant startDate;
         @Column(name = "end_date") private final Instant endDate;
+        @Column(name = "event_date") private final Instant eventDate;
 
-        public PersistMember(String owner, String receiver, UUID linearPointer, UUID linearId, Instant startDate, Instant endDate) {
+        public PersistMember(String owner, String receiver, UUID linearPointer, UUID linearId, Instant startDate, Instant endDate, Instant eventDate) {
             this.owner = owner;
             this.receiver = receiver;
             this.linearPointer = linearPointer;
             this.linearId = linearId;
             this.startDate = startDate;
             this.endDate = endDate;
+            this.eventDate = eventDate;
         }
 
         public String getOwner() {
@@ -65,6 +67,10 @@ public class MemberShipStateSchema extends MappedSchema {
 
         public Instant getEndDate() {
             return endDate;
+        }
+
+        public Instant getEventDate() {
+            return eventDate;
         }
     }
 }
