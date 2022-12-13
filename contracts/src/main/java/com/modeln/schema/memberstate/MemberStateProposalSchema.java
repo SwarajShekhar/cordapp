@@ -37,10 +37,11 @@ public class MemberStateProposalSchema extends MappedSchema {
         @Column(name = "end_date") private final Instant endDate;
         @Column(name = "internal_name") private final String internalName;
         @Column(name = "additional_info") private final String additionalInfo;
+        @Column(name = "event_date") private final Instant eventDate;
 
         public PersistMember(UUID linearId, Party owner, Party responder, String memberName, String memberType,
                              String description, String DEAID, String DDDID, String memberStatus, String address, int status,
-                             UUID memberStateLinearId, Instant startDate, Instant endDate, String internalName, String additionalInfo) {
+                             UUID memberStateLinearId, Instant startDate, Instant endDate, String internalName, String additionalInfo, Instant eventDate) {
             this.linearId = linearId;
             this.owner = owner;
             this.memberName = memberName;
@@ -57,6 +58,7 @@ public class MemberStateProposalSchema extends MappedSchema {
             this.endDate = endDate;
             this.internalName = internalName;
             this.additionalInfo = additionalInfo;
+            this.eventDate = eventDate;
         }
 
         public UUID getMemberStateLinearId() {
@@ -88,6 +90,7 @@ public class MemberStateProposalSchema extends MappedSchema {
             this.endDate = null;
             this.additionalInfo = null;
             this.internalName = null;
+            this.eventDate = null;
         }
 
         public Instant getStartDate() {
@@ -140,6 +143,10 @@ public class MemberStateProposalSchema extends MappedSchema {
 
         public Party getResponder() {
             return responder;
+        }
+
+        public Instant getEventDate() {
+            return eventDate;
         }
     }
 }

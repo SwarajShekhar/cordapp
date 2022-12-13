@@ -37,9 +37,12 @@ public class BidAwardState implements OwnableState, LinearState, QueryableState 
     private UniqueIdentifier linearId;
     private Party owner;
 
+    private Instant eventDate;
+
     @ConstructorForDeserialization
     public BidAwardState(String bidAwardId, LinearPointer<MemberState> memberStateLinearPointer, String productNDC, String wholesalerId, Instant startDate,
-                         float wacPrice, float authorizedPrice, Instant endDate, String wholesalerPartyName, UniqueIdentifier linearId, Party owner) {
+                         float wacPrice, float authorizedPrice, Instant endDate, String wholesalerPartyName, UniqueIdentifier linearId, Party owner,
+                         Instant eventDate) {
         this.bidAwardId = bidAwardId;
         this.memberStateLinearPointer = memberStateLinearPointer;
         this.productNDC = productNDC;
@@ -51,6 +54,7 @@ public class BidAwardState implements OwnableState, LinearState, QueryableState 
         this.wholesalerPartyName = wholesalerPartyName;
         this.linearId = linearId;
         this.owner = owner;
+        this.eventDate = eventDate;
     }
 
     public String getBidAwardId() {
@@ -133,6 +137,14 @@ public class BidAwardState implements OwnableState, LinearState, QueryableState 
         this.owner = owner;
     }
 
+    public Instant getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
+
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
@@ -171,7 +183,8 @@ public class BidAwardState implements OwnableState, LinearState, QueryableState 
                     this.startDate,
                     this.endDate,
                     this.wacPrice,
-                    this.authorizedPrice
+                    this.authorizedPrice,
+                    this.eventDate
             );
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");

@@ -71,7 +71,8 @@ public class AddMemberRequestProposal extends FlowLogic<UniqueIdentifier> {
                 this.startDate,
                 this.endDate,
                 this.internalName,
-                this.additionalInfo
+                this.additionalInfo,
+                Instant.now()
         );
 
         final Party notary = FlowUtility.getNotary(getServiceHub());

@@ -52,7 +52,7 @@ public class AddMemberShipStateRequest extends FlowLogic<UniqueIdentifier> {
                 MemberState.class
         );
         MemberShipState memberShipState = new MemberShipState(
-                new UniqueIdentifier(), getOurIdentity(), modeln, memberStateLinearPointer, startDate, endDate);
+                new UniqueIdentifier(), getOurIdentity(), modeln, memberStateLinearPointer, startDate, endDate, Instant.now());
 
         // create the transaction
         final TransactionBuilder builder = new TransactionBuilder(notary);

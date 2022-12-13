@@ -28,9 +28,11 @@ public class BidAwardStateSchema extends MappedSchema {
         @Column(name = "end_date") private final Instant endDate;
         @Column(name="wac_price") private final float wacPrice;
         @Column(name="authorized_price") private final float authorizedPrice;
+        @Column(name = "event_date") private final Instant eventDate;
 
         public PersistMember(String owner, UUID memberStateLinearPointer, UUID linearId, String bidAwardId, String productNDC,
-                             String wholesalerId, Instant startDate, Instant endDate, float wacPrice, float authorizedPrice) {
+                             String wholesalerId, Instant startDate, Instant endDate, float wacPrice, float authorizedPrice,
+                             Instant eventDate) {
             this.owner = owner;
             this.memberStateLinearPointer = memberStateLinearPointer;
             this.linearId = linearId;
@@ -41,6 +43,7 @@ public class BidAwardStateSchema extends MappedSchema {
             this.endDate = endDate;
             this.wacPrice = wacPrice;
             this.authorizedPrice = authorizedPrice;
+            this.eventDate = eventDate;
         }
 
         public PersistMember() {
@@ -54,6 +57,7 @@ public class BidAwardStateSchema extends MappedSchema {
             this.endDate = null;
             this.wacPrice = -1;
             this.authorizedPrice = -1;
+            this.eventDate = null;
         }
 
         public String getOwner() {
@@ -94,6 +98,10 @@ public class BidAwardStateSchema extends MappedSchema {
 
         public float getAuthorizedPrice() {
             return authorizedPrice;
+        }
+
+        public Instant getEventDate() {
+            return eventDate;
         }
     }
 }

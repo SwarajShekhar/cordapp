@@ -8,7 +8,6 @@ import com.modeln.utils.FlowUtility;
 import net.corda.core.contracts.LinearPointer;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.flows.*;
-import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
@@ -72,7 +71,8 @@ public class AddBidAward extends FlowLogic<UniqueIdentifier> {
                 this.endDate,
                 this.wholesalerPartyName,
                 new UniqueIdentifier(),
-                getOurIdentity()
+                getOurIdentity(),
+                Instant.now()
 
         );
 

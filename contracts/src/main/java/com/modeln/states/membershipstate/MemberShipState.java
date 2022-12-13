@@ -28,16 +28,19 @@ public class MemberShipState implements LinearState, QueryableState {
     private LinearPointer<MemberState> memberStateLinearPointer;
     private Instant startDate;
     private Instant endDate;
+    private Instant eventDate;
 
 
     @ConstructorForDeserialization
-    public MemberShipState(UniqueIdentifier linearId, Party owner, Party receiver, LinearPointer<MemberState> memberStateLinearPointer, Instant startDate, Instant endDate) {
+    public MemberShipState(UniqueIdentifier linearId, Party owner, Party receiver, LinearPointer<MemberState> memberStateLinearPointer,
+                           Instant startDate, Instant endDate, Instant eventDate) {
         this.linearId = linearId;
         this.owner = owner;
         this.receiver = receiver;
         this.memberStateLinearPointer = memberStateLinearPointer;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.eventDate = eventDate;
     }
 
     public void setLinearId(UniqueIdentifier linearId) {
@@ -84,6 +87,14 @@ public class MemberShipState implements LinearState, QueryableState {
         this.endDate = endDate;
     }
 
+    public Instant getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(Instant eventDate) {
+        this.eventDate = eventDate;
+    }
+
     @NotNull
     @Override
     public List<AbstractParty> getParticipants() {
@@ -106,7 +117,8 @@ public class MemberShipState implements LinearState, QueryableState {
                     this.memberStateLinearPointer.getPointer().getId(),
                     this.linearId.getId(),
                     this.startDate,
-                    this.endDate
+                    this.endDate,
+                    this.eventDate
                     );
         } else {
             throw new IllegalArgumentException("Unrecognised schema $schema");
