@@ -112,28 +112,28 @@ const InvoiceLineItemList = () => {
 
     const columns = [
         {
-            title: 'linearId', dataIndex: 'linearId', key: 'linearId',
+            title: 'Ledger Linear ID', dataIndex: 'linearId', key: 'linearId',
             render: (data, recrod) => {
                 return <Link to={`/invoicelineitem/${data}`}>{data}</Link>
             }
         },
         {
-            title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
+            title: 'Global Member Linear ID', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
             render: (data) => (<Link to={`/members/${data}`}>{data}</Link>)
         },
         {
-            title: 'Bid Award Linear Pointer', dataIndex: 'bidAwardLinearPointer', key: 'bidAwardLinearPointer',
+            title: 'Bid Award Linear ID', dataIndex: 'bidAwardLinearPointer', key: 'bidAwardLinearPointer',
             render: (data) => (<Link to={`/bidaward/${data}`}>{data}</Link>)
         },
         { title: 'Bid Award WAC Price', dataIndex: 'bidAwardWacPrice', key: 'bidAwardWacPrice' },
         { title: 'Bid Award Authorized Price', dataIndex: 'bidAwardAuthorizedPrice', key: 'bidAwardAuthorizedPrice' },
         { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
-        { title: 'Owner', dataIndex: 'owner', key: 'owner' },
-        { title: 'Consumer', dataIndex: 'consumer', key: 'consumer' },
+        // { title: 'Owner', dataIndex: 'owner', key: 'owner' },
+        // { title: 'Consumer', dataIndex: 'consumer', key: 'consumer' },
         { title: 'Manufacturer', dataIndex: 'manufacturer', key: 'manufacturer' },
         { title: 'Wholesaler', dataIndex: 'wholesaler', key: 'wholesaler' },
-        { title: 'Product NDC', dataIndex: 'productNDC', key: 'productNDC' },
-        { title: 'Invoice Id', dataIndex: 'invoiceId', key: 'invoiceId' },
+        { title: 'Product Name', dataIndex: 'productNDC', key: 'productNDC' },
+        { title: 'Invoice ID', dataIndex: 'invoiceId', key: 'invoiceId' },
         { title: 'Invoice Date', dataIndex: 'invoiceDate', key: 'invoiceDate' },
         { title: 'Status', dataIndex: 'status', key: 'status' },
         {

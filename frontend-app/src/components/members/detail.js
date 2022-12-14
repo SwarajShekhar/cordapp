@@ -22,11 +22,11 @@ const MemberDetail = () => {
     if (member === null) return <>Loading data!</>;
     return (<>
         <Descriptions title={member.memberName} bordered column={2}>
-            <Descriptions.Item label='Liner ID' span={2}>{member.linearId}</Descriptions.Item>
+            <Descriptions.Item label='Ledger Linear ID' span={2}>{member.linearId}</Descriptions.Item>
             <Descriptions.Item label='Member Name'>{member.memberName}</Descriptions.Item>
             <Descriptions.Item label='Member Type'>{member.memberType}</Descriptions.Item>
-            <Descriptions.Item label='DDDID'>{member.DDDID}</Descriptions.Item>
-            <Descriptions.Item label='DEAID'>{member.DEAID}</Descriptions.Item>
+            <Descriptions.Item label='GLN ID'>{member.DDDID}</Descriptions.Item>
+            <Descriptions.Item label='DEA ID'>{member.DEAID}</Descriptions.Item>
             <Descriptions.Item label='Status'>{member.status}</Descriptions.Item>
             <Descriptions.Item label='Owner'>{member.owner}</Descriptions.Item>
             <Descriptions.Item label='Address' span={2}>{member.address}</Descriptions.Item>

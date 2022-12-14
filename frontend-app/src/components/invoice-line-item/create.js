@@ -49,32 +49,12 @@ const InvoiceLineItemCreate = () => {
 
     return (<>
         <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} >
-            <Form.Item name="memberStateUniqueIdentifier"
-                label="Member State Unique Identifier"
+        <Form.Item name="invoiceId"
+                label="Invoice ID"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the Member State Unique Identifier!',
-                    },
-                ]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="productNDC"
-                label="Product NDC"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input the Product NDC!',
-                    },
-                ]}>
-                <Input />
-            </Form.Item>
-            <Form.Item name="invoiceId"
-                label="Invoice Id"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input the Invoice Id!',
+                        message: 'Please input the Invoice ID!',
                     },
                 ]}>
                 <Input />
@@ -89,12 +69,42 @@ const InvoiceLineItemCreate = () => {
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="bidAwardUniqueIdentifier"
-                label="Bid Award Unique Identifier"
+            <Form.Item name="memberStateUniqueIdentifier"
+                label="Member State Unique Identifier"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the Bid Award Unique Identifier!',
+                        message: 'Please input the Member State Unique Identifier!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="productNDC"
+                label="Product Name"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the Product Name!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="consumer"
+                label="Manufacturer Party"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the Manufacturer Party!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+            <Form.Item name="bidAwardUniqueIdentifier"
+                label="Bid Award Linear ID"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the Bid Award Linear ID!',
                     },
                 ]}>
                 <Input />
@@ -109,18 +119,8 @@ const InvoiceLineItemCreate = () => {
                 ]}>
                 <Input />
             </Form.Item>
-            <Form.Item name="consumer"
-                label="Consumer"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input the consumer!',
-                    },
-                ]}>
-                <Input />
-            </Form.Item>
             <Form.Item name="status"
-                label="Member status"
+                label="Ledger status"
                 initialValue={'APPROVAL_NEEDED'}
                 rules={[
                     {

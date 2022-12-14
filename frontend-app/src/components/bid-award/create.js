@@ -50,11 +50,11 @@ const BidAwardCreate = () => {
     return (<>
         <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} >
             <Form.Item name="bidAwardId"
-                label="Bid Award Id"
+                label="Bid Award ID"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the Bid Award Id!',
+                        message: 'Please input the Bid Award ID!',
                     },
                 ]}>
                 <Input />
@@ -70,21 +70,21 @@ const BidAwardCreate = () => {
                 <Input />
             </Form.Item>
             <Form.Item name="productNDC"
-                label="Product NDC"
+                label="Product Name"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the Product NDC!',
+                        message: 'Please input the Product Name!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="wholesalerId"
-                label="Wholesaler Id"
+                label="Wholesaler ID"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the Wholesaler Id!',
+                        message: 'Please input the Wholesaler ID!',
                     },
                 ]}>
                 <Input />

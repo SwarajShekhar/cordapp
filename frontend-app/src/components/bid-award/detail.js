@@ -32,10 +32,10 @@ const BidAwardDetail = () => {
 
     return (<>
         <Descriptions title={bidAward.linearId} bordered>
-            <Descriptions.Item label='Bid Award Id' span={3}>{bidAward.bidAwardId}</Descriptions.Item>
-            <Descriptions.Item label='Member State Linear Pointer' span={3}><Link to={`/members/${bidAward.memberStateLinearPointer}`}>{bidAward.memberStateLinearPointer}</Link></Descriptions.Item>
-            <Descriptions.Item label='Product NDC' span={1}>{bidAward.productNDC}</Descriptions.Item>
-            <Descriptions.Item label='Wholesaler Id' span={2}>{bidAward.wholesalerId}</Descriptions.Item>
+            <Descriptions.Item label='Bid Award ID' span={3}>{bidAward.bidAwardId}</Descriptions.Item>
+            <Descriptions.Item label='Global Member Linear ID' span={3}><Link to={`/members/${bidAward.memberStateLinearPointer}`}>{bidAward.memberStateLinearPointer}</Link></Descriptions.Item>
+            <Descriptions.Item label='Product Name' span={1}>{bidAward.productNDC}</Descriptions.Item>
+            <Descriptions.Item label='Wholesaler ID' span={2}>{bidAward.wholesalerId}</Descriptions.Item>
             <Descriptions.Item label='WAC Price' span={1}>{bidAward.wacPrice}</Descriptions.Item>
             <Descriptions.Item label='Authorized Price' span={2}>{bidAward.authorizedPrice}</Descriptions.Item>
             <Descriptions.Item label='StartDate' span={1}>{bidAward.startDate}</Descriptions.Item>

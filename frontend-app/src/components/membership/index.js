@@ -11,9 +11,9 @@ export const MembershipList = () => {
     const [data, setData] = useState([]);
 
     const columns = [
-        { title: 'Linear Id', dataIndex: 'linearId', key: 'linearId' },
+        { title: 'Ledger Linear ID', dataIndex: 'linearId', key: 'linearId' },
         {
-            title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
+            title: 'Global Member Linear ID', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
             render: (data, record) => (<Link to={`/members/${data}`}>{data}</Link>)
         },
         { title: 'Owner', dataIndex: 'owner', key: 'owner' },

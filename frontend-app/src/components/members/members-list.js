@@ -35,11 +35,11 @@ const MembersList = () => {
 
     const columns = [
         {
-            title: 'linearId', dataIndex: 'linearId', key: 'linearId',
+            title: 'Ledger Linear ID', dataIndex: 'linearId', key: 'linearId',
             render: (data) => (<Link to={`/members/${data}`}>{data}</Link>)
         },
-        { title: 'DEAID', dataIndex: 'DEAID', key: 'DEAID' },
-        { title: 'DDDID', dataIndex: 'DDDID', key: 'DDDID' },
+        { title: 'DEA ID', dataIndex: 'DEAID', key: 'DEAID' },
+        { title: 'GLN ID', dataIndex: 'DDDID', key: 'DDDID' },
         { title: 'Name', dataIndex: 'memberName', key: 'memberName' },
         { title: 'Type', dataIndex: 'memberType', key: 'memberType' },
         { title: 'Status', dataIndex: 'status', key: 'status' },

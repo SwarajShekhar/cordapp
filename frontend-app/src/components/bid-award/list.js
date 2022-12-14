@@ -35,21 +35,21 @@ const BidAwardList = () => {
 
     const columns = [
         {
-            title: 'Linear Id', dataIndex: 'linearId', key: 'linearId',
+            title: 'Ledger Linear ID', dataIndex: 'linearId', key: 'linearId',
             render: (data) => (<Link to={`/bidaward/${data}`}>{data}</Link>)
         },
-        { title: 'Bid Award Id', dataIndex: 'bidAwardId', key: 'bidAwardId' },
+        { title: 'Bid Award ID', dataIndex: 'bidAwardId', key: 'bidAwardId' },
         { title: 'Start Date', dataIndex: 'startDate', key: 'startDate', align: 'center' },
         { title: 'End Date', dataIndex: 'endDate', key: 'endDate', align: 'center' },
         {
-            title: 'Member State Linear Pointer', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
+            title: 'Global Member Linear ID', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
             render: (data) => (<Link to={`/members/${data}`}>{data}</Link>)
         },
         { title: 'Owner', dataIndex: 'owner', key: 'owner' },
-        { title: 'Product NDC', dataIndex: 'productNDC', key: 'productNDC' },
+        { title: 'Product Name', dataIndex: 'productNDC', key: 'productNDC' },
         { title: 'WAC Price', dataIndex: 'wacPrice', key: 'wacPrice', align: 'center' },
         { title: 'Authorized Price', dataIndex: 'authorizedPrice', key: 'authorizedPrice', align: 'center' },
-        { title: 'Wholesaler Id', dataIndex: 'wholesalerId', key: 'wholesalerId', align: 'center' },
+        { title: 'Wholesaler ID', dataIndex: 'wholesalerId', key: 'wholesalerId', align: 'center' },
         { title: 'Wholesaler Party Name', dataIndex: 'wholesalerPartyName', key: 'wholesalerPartyName', align: 'center' },
         // { title: '', dataIndex: '', key: '' },
     ];

@@ -171,13 +171,13 @@ const MemberProposalList = ({ uri }) => {
     });
 
     const columns = [
-        { title: 'Linear ID', dataIndex: 'linearId', key: 'linearId' },
+        { title: 'Ledger Linear ID', dataIndex: 'linearId', key: 'linearId' },
         {
-            title: 'Member Id Identifier', dataIndex: 'memberIdIdentifier', key: 'memberIdIdentifier',
+            title: 'Global Member Linear ID', dataIndex: 'memberIdIdentifier', key: 'memberIdIdentifier',
             render: (data, record) => (data ? <Link to={`/members/${data}`}>{data}</Link> : <span>{record.memberStateProposalStatus}</span>)
         },
-        { title: 'DEAID', dataIndex: 'DEAID', key: 'DEAID' },
-        { title: 'DDDID', dataIndex: 'DDDID', key: 'DDDID' },
+        { title: 'DEA ID', dataIndex: 'DEAID', key: 'DEAID' },
+        { title: 'GLN ID', dataIndex: 'DDDID', key: 'DDDID' },
         { title: 'Name', dataIndex: 'memberName', key: 'memberName', ...getColumnSearchProps('memberName') },
         { title: 'Type', dataIndex: 'memberType', key: 'memberType' },
         { title: 'Owner', dataIndex: 'owner', key: 'owner', ...getColumnSearchProps('owner') },
@@ -190,7 +190,7 @@ const MemberProposalList = ({ uri }) => {
         { title: 'Additional Info', dataIndex: 'additionalInfo', key: 'additionalInfo' },
         { title: 'Internal Name', dataIndex: 'internalName', key: 'internalName' },
         {
-            title: 'Member State Proposal Status', dataIndex: 'memberStateProposalStatus', key: 'memberStateProposalStatus',
+            title: 'Ledger Status', dataIndex: 'memberStateProposalStatus', key: 'memberStateProposalStatus',
             filters: [
                 { text: 'APPROVED', value: 'APPROVED' },
                 { text: 'REJECTED', value: 'REJECTED' },

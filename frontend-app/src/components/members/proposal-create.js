@@ -78,6 +78,7 @@ const MemmberPrposalCreate = () => {
                 ]}>
                 <Select placeholder='Select Member Type'>
                     <Option value='HOSPITAL'>Hospital</Option>
+                    <Option value='PHARMACY'>Pharmacy</Option>
                 </Select>
             </Form.Item>
             <Form.Item name="description"
@@ -91,21 +92,21 @@ const MemmberPrposalCreate = () => {
                 <Input />
             </Form.Item>
             <Form.Item name="DEAID"
-                label="DEAID"
+                label="DEA ID"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the DEAID!',
+                        message: 'Please input the DEA ID!',
                     },
                 ]}>
                 <Input />
             </Form.Item>
             <Form.Item name="DDDID"
-                label="DDDID"
+                label="GLN ID"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the DDDID!',
+                        message: 'Please input the GLN ID!',
                     },
                 ]}>
                 <Input />
@@ -171,12 +172,12 @@ const MemmberPrposalCreate = () => {
                 <Input />
             </Form.Item>
             <Form.Item name="memberStateProposalStatus"
-                label="Member State Proposal Status"
+                label="Ledger Status"
                 initialValue={'PROPOSED'}
                 rules={[
                     {
                         required: true,
-                        message: 'Please input the member state proposal status!',
+                        message: 'Please input the Ledger Status!',
                     },
                 ]}>
                 <Input disabled />
