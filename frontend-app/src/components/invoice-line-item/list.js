@@ -81,7 +81,7 @@ const InvoiceLineItemList = () => {
             });
 
             const invoiceLineItems = invoiceData.map((m, idx) => {
-                const { owner, consumer, productNDC, invoiceId, invoiceDate, status, manufacturer, wholesaler } = m.state.data;
+                const { owner, consumer, productNDC, invoiceId, invoiceDate, status, manufacturer, wholesaler, quantity } = m.state.data;
                 const linearId = m.state.data.linearId.id;
                 const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
                 const bidAwardLinearPointer = m.state.data.bidAwardLinearPointer.pointer.id;
@@ -89,7 +89,12 @@ const InvoiceLineItemList = () => {
                 const bidAward = bidAwards.find((b) => b.linearId === bidAwardLinearPointer);
                 const bidAwardWacPrice = (bidAward) ? bidAward.wacPrice : null;
                 const bidAwardAuthorizedPrice = (bidAward) ? bidAward.authorizedPrice : null;
-                return { key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, bidAwardWacPrice, bidAwardAuthorizedPrice, owner: new UserInfo(owner).toString(), consumer: new UserInfo(consumer).toString(), productNDC, invoiceId, invoiceDate, status, manufacturer: new UserInfo(manufacturer).toString(), wholesaler: new UserInfo(wholesaler).toString() }
+                return {
+                    key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, bidAwardWacPrice, bidAwardAuthorizedPrice, owner: new UserInfo(owner).toString(), consumer: new UserInfo(consumer).toString(), productNDC, invoiceId, invoiceDate, status,
+                    manufacturer: new UserInfo(manufacturer).toString(),
+                    wholesaler: new UserInfo(wholesaler).toString(),
+                    quantity
+                }
             });
             setInvoiceLineItems(invoiceLineItems);
         } catch (error) {
@@ -122,6 +127,7 @@ const InvoiceLineItemList = () => {
         },
         { title: 'Bid Award WAC Price', dataIndex: 'bidAwardWacPrice', key: 'bidAwardWacPrice' },
         { title: 'Bid Award Authorized Price', dataIndex: 'bidAwardAuthorizedPrice', key: 'bidAwardAuthorizedPrice' },
+        { title: 'Quantity', dataIndex: 'quantity', key: 'quantity' },
         { title: 'Owner', dataIndex: 'owner', key: 'owner' },
         { title: 'Consumer', dataIndex: 'consumer', key: 'consumer' },
         { title: 'Manufacturer', dataIndex: 'manufacturer', key: 'manufacturer' },

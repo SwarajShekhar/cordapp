@@ -99,6 +99,16 @@ const InvoiceLineItemCreate = () => {
                 ]}>
                 <Input />
             </Form.Item>
+            <Form.Item name="quantity"
+                label="Quantity"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input the Quantity!',
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
             <Form.Item name="consumer"
                 label="Consumer"
                 rules={[

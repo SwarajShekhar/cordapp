@@ -36,7 +36,7 @@ const BidAwardList = () => {
     const columns = [
         {
             title: 'Linear Id', dataIndex: 'linearId', key: 'linearId',
-            render: (data) => (<Link to={`/bidaward/${data}`}>${data}</Link>)
+            render: (data) => (<Link to={`/bidaward/${data}`}>{data}</Link>)
         },
         { title: 'Bid Award Id', dataIndex: 'bidAwardId', key: 'bidAwardId' },
         { title: 'Start Date', dataIndex: 'startDate', key: 'startDate', align: 'center' },

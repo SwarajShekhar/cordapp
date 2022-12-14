@@ -11,6 +11,7 @@ import { BidAwardList, BidAwardCreate, BidAwardDetail } from './components/bid-a
 import { InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } from './components/invoice-line-item';
 import { DefaultPage, ContentPage } from './components/default-page';
 import { PlusCircleOutlined } from '@ant-design/icons';
+import { LoginPage } from './pages';
 
 const membersMenuItems = [
   { key: 'list', label: <Link to='/members/list'>List</Link> },
@@ -39,7 +40,8 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
-      { path: '', element: <DefaultPage /> },
+      { path: '', element: <LoginPage /> },
+      { path: 'dashboard', element: <ContentPage title='Dashboard'><DefaultPage /></ContentPage> },
       {
         path: 'members',
         element: <ContentPage title='Members' items={membersMenuItems} />,

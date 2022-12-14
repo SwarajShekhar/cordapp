@@ -5,3 +5,5 @@ export const APIEndPointContext = createContext({
     baseUri: 'http://localhost:8080/api',
     changeBaseUri: null,
 });
+
+export const AuthContext = createContext(null);

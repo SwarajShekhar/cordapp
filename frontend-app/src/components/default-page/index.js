@@ -1,9 +1,8 @@
 import { Divider, Menu, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router';
-import { APIEndPointContext } from '../../context';
+import { Outlet, useLocation, Navigate } from 'react-router-dom';
+import { APIEndPointContext, AuthContext } from '../../context';
 import { parseUserInfo } from '../../utils';
-const { Title } = Typography;
 
 export const DefaultPage = () => {
     const [me, setMe] = useState('');
@@ -25,14 +24,14 @@ export const DefaultPage = () => {
             });
     }, [baseUri]);
 
-    return (<div style={{ paddingTop: 50 }}>
-        <Title>{me.o}</Title>
-        <p>OU={me.ou}, L={me.l}, C={me.c}</p>
-        <p>{baseUri}</p>
-    </div >)
+    return (<Typography.Paragraph>
+        Logged in as: {me.o}<br />
+        O={me.o}, OU={me.ou}, L={me.l}, C={me.c}<br />
+        API endpoint: {baseUri}
+    </Typography.Paragraph>)
 }
 
-export const ContentPage = ({ title, items }) => {
+export const ContentPage = ({ title, items, children }) => {
     const location = useLocation();
     const curNavkey = location.pathname.split('/')[2];
     /* const items = [
@@ -42,13 +41,19 @@ export const ContentPage = ({ title, items }) => {
         { key: 'proposalcreate', label: <Link to='/members/proposalcreate'><PlusCircleOutlined /> Add Member</Link> },
     ]; */
 
+    let auth = useContext(AuthContext);
+    if (!auth.user) {
+        // Redirect them to the /login page, but save the current location
+        return <Navigate to="/" state={{ from: location }} replace />;
+    }
+
     return (<>
         <Space split={<Divider type="vertical" />}>
             <Typography.Title>{title}</Typography.Title>
             <Menu mode='horizontal' items={items} disabledOverflow selectedKeys={curNavkey} />
         </Space>
-        <div style={{ marginTop: 20 }}>
-            <Outlet />
-        </div>
+        <section>
+            {children ? children : <Outlet />}
+        </section>
     </>);
 }
