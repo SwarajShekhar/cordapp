@@ -52,8 +52,10 @@ const InvoiceLineItemDetail = () => {
         <Descriptions title={invoiceLineItem.linearId} bordered>
             <Descriptions.Item label='Global Member Linear ID' span={3}><Link to={`/members/${invoiceLineItem.memberStateLinearPointer}`}>{invoiceLineItem.memberStateLinearPointer}</Link></Descriptions.Item>
             <Descriptions.Item label='Bid Award Linear ID' span={3}><Link to={`/bidaward/${invoiceLineItem.bidAwardLinearPointer}`}>{invoiceLineItem.bidAwardLinearPointer}</Link></Descriptions.Item>
-            <Descriptions.Item label='Owner' span={2}>{invoiceLineItem.owner}</Descriptions.Item>
-            <Descriptions.Item label='Consumer' span={1}>{invoiceLineItem.consumer}</Descriptions.Item>
+            {/*
+                <Descriptions.Item label='Owner' span={2}>{invoiceLineItem.owner}</Descriptions.Item>
+                <Descriptions.Item label='Consumer' span={1}>{invoiceLineItem.consumer}</Descriptions.Item>
+            */}
             <Descriptions.Item label='Manufacturer' span={2}>{invoiceLineItem.manufacturer}</Descriptions.Item>
             <Descriptions.Item label='Wholesaler' span={1}>{invoiceLineItem.wholesaler}</Descriptions.Item>
             <Descriptions.Item label='Invoice ID' span={2}>{invoiceLineItem.invoiceId}</Descriptions.Item>

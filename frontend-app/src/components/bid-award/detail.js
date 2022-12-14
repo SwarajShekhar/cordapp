@@ -17,8 +17,8 @@ const BidAwardDetail = () => {
 
                 const bidAward = {
                     bidAwardId, memberStateLinearPointer: memberStateLinearPointer.pointer.id,
-                    productNDC, wholesalerId: new UserInfo(wholesalerId).toString(),
-                    startDate, wacPrice, authorizedPrice, endDate, wholesalerPartyName: new UserInfo(wholesalerPartyName).toString(),
+                    productNDC, wholesalerId,
+                    startDate, wacPrice, authorizedPrice, endDate, wholesalerPartyName,
                     linearId: linearId.id, owner: new UserInfo(owner).toString()
                 };
                 setBidAward(bidAward)
