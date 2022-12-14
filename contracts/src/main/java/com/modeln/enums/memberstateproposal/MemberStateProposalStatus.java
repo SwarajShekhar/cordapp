@@ -8,6 +8,7 @@ public enum MemberStateProposalStatus {
     PROPOSED,
     APPROVED,
     REJECTED,
-    CHANGED_AND_APPROVED
+    CHANGED_AND_APPROVED,
+    ADDED
 
 }
