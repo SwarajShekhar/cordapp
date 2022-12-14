@@ -24,12 +24,15 @@ public class MemberStateProposalContract implements Contract {
             verifyMemberStateProposalAddRequest(tx);
         else if(command.getValue() instanceof Commands.Respond)
             verifyMemberStateProposalRespondRequest(tx);
+        else if(command.getValue() instanceof Commands.Add)
+            verifyMemberStateProposalAddRequestFromWHoleOrManuf(tx);
 
     }
 
     public interface Commands extends CommandData {
         class Send implements MemberStateProposalContract.Commands {}
         class Respond implements MemberStateProposalContract.Commands {}
+        class Add implements MemberStateProposalContract.Commands {}
     }
 
     private void verifyMemberStateProposalAddRequest(LedgerTransaction tx){
@@ -46,9 +49,13 @@ public class MemberStateProposalContract implements Contract {
     private void verifyMemberStateProposalRespondRequest(LedgerTransaction tx){
         MemberStateProposal memberStateProposalOutput = (MemberStateProposal) tx.getOutput(0);
 
-        Party owner = memberStateProposalOutput.getOwner();
-        if( (!ContractsUtil.isModelN(owner)) || memberStateProposalOutput.getMemberStateProposalStatus()==MemberStateProposalStatus.PROPOSED)
-            throw new IllegalStateException("This party: " + owner + " is not supposed to initiate the call or the status: " +
+        Party responder = memberStateProposalOutput.getResponder();
+        if( !(ContractsUtil.isModelN(responder)) || memberStateProposalOutput.getMemberStateProposalStatus()==MemberStateProposalStatus.PROPOSED)
+            throw new IllegalStateException("This party: " + responder + " is not supposed to initiate the call or the status: " +
                     memberStateProposalOutput.getMemberStateProposalStatus().toString() + " is wrong.");
+    }
+
+    private void verifyMemberStateProposalAddRequestFromWHoleOrManuf(LedgerTransaction tx){
+
     }
 }
