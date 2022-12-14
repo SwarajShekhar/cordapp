@@ -49,7 +49,7 @@ const InvoiceLineItemCreate = () => {
 
     return (<>
         <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} >
-        <Form.Item name="invoiceId"
+            <Form.Item name="invoiceId"
                 label="Invoice ID"
                 rules={[
                     {

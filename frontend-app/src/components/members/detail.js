@@ -13,8 +13,8 @@ const MemberDetail = () => {
         fetch(`${baseUri}/members/${params.memberId}`)
             .then(res => res.json())
             .then(data => {
-                const { DDDID, DEAID, address, description, linearId, memberName, memberType, owner, status } = data[0].state.data;
-                const member = { DDDID, DEAID, address, description, linearId: linearId.id, memberName, memberType, owner: new UserInfo(owner).toString(), status }
+                const { DDDID, DEAID, address, description, linearId, memberName, memberType, owner, status, eventDate } = data[0].state.data;
+                const member = { DDDID, DEAID, address, description, linearId: linearId.id, memberName, memberType, owner: new UserInfo(owner).toString(), status, eventDate }
                 setMember(member);
             })
     }, []);
@@ -31,6 +31,7 @@ const MemberDetail = () => {
             <Descriptions.Item label='Owner'>{member.owner}</Descriptions.Item>
             <Descriptions.Item label='Address' span={2}>{member.address}</Descriptions.Item>
             <Descriptions.Item label='Description' span={2}>{member.description}</Descriptions.Item>
+            <Descriptions.Item label='Event Date'>{member.eventDate}</Descriptions.Item>
         </Descriptions>
     </>);
 }

@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Table, Space, Typography, Button, Spin, notification, Input, Form, Select } from 'antd';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
-import { APIEndPointContext } from '../../context';
+import { APIEndPointContext, AuthContext } from '../../context';
 import { UserInfo } from '../../utils';
 import { Link } from 'react-router-dom';
+import { ROLES } from '../../roles';
 
 const EditableCell = ({
     editing,
@@ -32,6 +33,7 @@ const EditableCell = ({
 };
 
 const MemberProposalList = ({ uri }) => {
+    const auth = useContext(AuthContext);
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [loading, setLoading] = useState(false);
@@ -199,7 +201,10 @@ const MemberProposalList = ({ uri }) => {
             onFilter: (value, record) => (record.memberStateProposalStatus === value),
             editable: true,
         },
-        {
+    ];
+    if (auth.user === ROLES.MODELN) {
+        // add action column if only current user is with MODELN role..
+        columns.push({
             title: 'Action', key: 'action', dataIndex: 'linearId', width: 150, align: 'center',
             // render: (data, record) => (record.memberStateProposalStatus === 'PROPOSED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),
             render: (data, record) => {
@@ -215,8 +220,8 @@ const MemberProposalList = ({ uri }) => {
                     </Space>
                 ) : (<Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>Update</Typography.Link>)) : null;
             },
-        },
-    ];
+        });
+    }
 
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {

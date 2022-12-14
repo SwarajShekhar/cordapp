@@ -32,6 +32,7 @@ export const DefaultPage = () => {
 }
 
 export const ContentPage = ({ title, items, children }) => {
+
     const location = useLocation();
     const curNavkey = location.pathname.split('/')[2];
     /* const items = [
@@ -47,10 +48,18 @@ export const ContentPage = ({ title, items, children }) => {
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
+    const navItems = items ? items.filter(item => {
+        if (item.permissions) {
+            return item.permissions.indexOf(auth.user) > -1;
+        }
+        return true;
+    }) : [];
+    // console.log(title, auth.user, 'navitems', navItems);
+
     return (<>
         <Space split={<Divider type="vertical" />}>
             <Typography.Title>{title}</Typography.Title>
-            <Menu mode='horizontal' items={items} disabledOverflow selectedKeys={curNavkey} />
+            <Menu mode='horizontal' items={navItems} disabledOverflow selectedKeys={curNavkey} />
         </Space>
         <section>
             {children ? children : <Outlet />}

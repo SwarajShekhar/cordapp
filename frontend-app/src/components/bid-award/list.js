@@ -20,7 +20,7 @@ const BidAwardList = () => {
                     const { authorizedPrice, bidAwardId, endDate, owner, productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName } = m.state.data;
                     const linearId = m.state.data.linearId.id;
                     const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
-                    return { key: 'm_' + idx, authorizedPrice, bidAwardId, endDate, linearId, memberStateLinearPointer, owner: new UserInfo(owner).toString(), productNDC, startDate, wacPrice, wholesalerId: new UserInfo(wholesalerId).toString(), wholesalerPartyName: new UserInfo(wholesalerPartyName).toString() };
+                    return { key: 'm_' + idx, authorizedPrice, bidAwardId, endDate, linearId, memberStateLinearPointer, owner: new UserInfo(owner).toString(), productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName };
                 });
                 setBidawards(bidawards);
             })

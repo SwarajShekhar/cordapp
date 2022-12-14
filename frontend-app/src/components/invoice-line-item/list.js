@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Table, Space, Button, Spin, notification, Divider } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-import { APIEndPointContext } from '../../context';
+import { APIEndPointContext, AuthContext } from '../../context';
 import { Link } from 'react-router-dom';
 import { UserInfo } from '../../utils';
+import { ROLES } from '../../roles';
 
 
 const ActionColumnMenu = ({ dataid, onActionTaken }) => {
@@ -62,7 +63,7 @@ const ActionColumnMenu = ({ dataid, onActionTaken }) => {
 
 
 const InvoiceLineItemList = () => {
-
+    const auth = useContext(AuthContext);
     const { baseUri } = useContext(APIEndPointContext);
     const [invoiceLineItems, setInvoiceLineItems] = useState([]);
     // const [bidAwards, setBidAwards] = useState([]);
@@ -136,11 +137,16 @@ const InvoiceLineItemList = () => {
         { title: 'Invoice ID', dataIndex: 'invoiceId', key: 'invoiceId' },
         { title: 'Invoice Date', dataIndex: 'invoiceDate', key: 'invoiceDate' },
         { title: 'Status', dataIndex: 'status', key: 'status' },
-        {
+
+    ];
+
+    if (auth.user === ROLES.MANUFACTURER) {
+        // add action column if current user has manufacturer role
+        columns.push({
             title: 'Actions', key: 'actions', dataIndex: 'linearId', width: 150, align: 'center',
             render: (data, record) => (record.status === 'APPROVAL_NEEDED' ? <ActionColumnMenu dataid={data} onActionTaken={handleActionTaken} /> : null),
-        },
-    ];
+        })
+    }
     return (<>
         <Table columns={columns} dataSource={invoiceLineItems} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
     </>);

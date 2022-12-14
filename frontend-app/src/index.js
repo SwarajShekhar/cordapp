@@ -12,26 +12,22 @@ import { InvoiceLineItemList, InvoiceLineItemCreate, InvoiceLineItemDetail } fro
 import { DefaultPage, ContentPage } from './components/default-page';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { LoginPage } from './pages';
+import { ROLES } from './roles';
 
 const membersMenuItems = [
   { key: 'list', label: <Link to='/members/list'>List</Link> },
   { key: 'proposal', label: <Link to='/members/proposal'>Proposal</Link> },
-  // { key: 'proposalpending', label: <Link to='/members/proposalpending'>Pending</Link> },
-  { key: 'proposalcreate', label: <Link to='/members/proposalcreate'><PlusCircleOutlined /> Add Member</Link> },
+  { key: 'proposalcreate', label: <Link to='/members/proposalcreate'><PlusCircleOutlined /> Add Member</Link>, permissions: [ROLES.GPO] },
 ];
 
-const membershipMenuItems = [
-  { key: 'list', label: <Link to='/membership/list'>List</Link> }
+const bidAwardMenuItems = [
+  { key: 'list', label: <Link to='/bidaward/list'>List</Link>, permissions: [ROLES.MODELN, ROLES.MANUFACTURER, ROLES.WHOLESALER] },
+  { key: 'create', label: <Link to='/bidaward/create'><PlusCircleOutlined /> Create New</Link>, permissions: [ROLES.MANUFACTURER] },
 ];
 
-const bidAwarditems = [
-  { key: 'list', label: <Link to='/bidaward/list'>List</Link> },
-  { key: 'create', label: <Link to='/bidaward/create'><PlusCircleOutlined /> Create New</Link> },
-];
-
-const invoiceLineMenuitems = [
+const invoiceLineMenuItems = [
   { key: 'list', label: <Link to='/invoicelineitem/list'>List</Link> },
-  { key: 'create', label: <Link to='/invoicelineitem/create'><PlusCircleOutlined /> Create New</Link> },
+  { key: 'create', label: <Link to='/invoicelineitem/create'><PlusCircleOutlined /> Create New</Link>, permissions: [ROLES.WHOLESALER] },
 ];
 
 const router = createBrowserRouter([
@@ -50,21 +46,17 @@ const router = createBrowserRouter([
           { path: 'list', element: <MembersList /> },
           { path: ':memberId', element: <MemberDetail /> },
           { path: 'proposal', element: <MemberProposalList uri='/memberProposal' /> },
-          { path: 'proposalpending', element: <MemberProposalList uri='/memberProposal/pending' /> },
+          // { path: 'proposalpending', element: <MemberProposalList uri='/memberProposal/pending' /> },
           { path: 'proposalcreate', element: <MemberPrposalCreate /> },
         ]
       },
       {
         path: 'membership',
-        element: <ContentPage title='Membership' items={membershipMenuItems} />,
-        children: [
-          { path: '', element: <Navigate to='list' /> },
-          { path: 'list', element: <MembershipList /> },
-        ]
+        element: <ContentPage title='Membership'><MembershipList /></ContentPage>,
       },
       {
         path: 'bidaward',
-        element: <ContentPage title='Bid Award' items={bidAwarditems} />,
+        element: <ContentPage title='Bid Award' items={bidAwardMenuItems} />,
         children: [
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <BidAwardList /> },
@@ -74,7 +66,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'invoicelineitem',
-        element: <ContentPage title='Invoice Line Item' items={invoiceLineMenuitems} />,
+        element: <ContentPage title='Invoice Line Item' items={invoiceLineMenuItems} />,
         children: [
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <InvoiceLineItemList /> },

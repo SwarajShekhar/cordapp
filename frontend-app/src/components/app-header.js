@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { APIEndPointContext, AuthContext } from "../context";
+import { ROLES } from "../roles";
 import { parseUserInfo } from "../utils";
 import AppTitle from "./app-title";
 
@@ -21,9 +22,16 @@ const AppHeader = () => {
         { key: 'dashboard', label: <Link to="/dashboard">Dashboard</Link> },
         { key: 'members', label: <Link to="/members">Members</Link> },
         { key: 'membership', label: <Link to="/membership">Membership</Link> },
-        { key: 'bidaward', label: <Link to="/bidaward">Bid Award</Link> },
-        { key: 'invoicelineitem', label: <Link to='/invoicelineitem'>Invoice Line Item</Link> },
+        { key: 'bidaward', label: <Link to="/bidaward">Bid Award</Link>, permissions: [ROLES.MODELN, ROLES.MANUFACTURER, ROLES.WHOLESALER] },
+        { key: 'invoicelineitem', label: <Link to='/invoicelineitem'>Invoice Line Item</Link>, permissions: [ROLES.MANUFACTURER, ROLES.WHOLESALER] },
     ];
+
+    const navItems = items.filter((item) => {
+        if (item.permissions) {
+            return item.permissions.indexOf(auth.user) > -1;
+        }
+        return true;
+    });
     // const [peers, setPeers] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
 
@@ -62,7 +70,7 @@ const AppHeader = () => {
                     <div style={{ float: 'left', margin: '0px 24px 16px 0' }}>
                         <AppTitle title={currentUser?.ou} />
                     </div>
-                    <Menu mode='horizontal' items={items} selectedKeys={topNavKey} />
+                    <Menu mode='horizontal' items={navItems} selectedKeys={topNavKey} />
                 </Col>
                 <Col>
                     <Space>
