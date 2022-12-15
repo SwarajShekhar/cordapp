@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-# TODO: shell script to launch spring boot development servers on linux environment
+# shell script to launch spring boot development servers on linux environment
 
 set -eo pipefail
 
-xterm -title "ModelN Server" -e "./gradlew runModelNServer;" && 
-xterm -title "Manufacturer Server" -e "./gradlew runManufacturer1Server;" &&
-xterm -title "Wholesaler Server" -e "./gradlew runWholesaler1Server;" &&
-xterm -title "GPO1 Server" -e "./gradlew runGPO1Server;" &&
+xterm -title "ModelN Server" -e "./gradlew runModelNServer;" &
+xterm -title "Manufacturer Server" -e "./gradlew runManufacturer1Server;" &
+xterm -title "Wholesaler Server" -e "./gradlew runWholesaler1Server;" &
+xterm -title "GPO1 Server" -e "./gradlew runGPO1Server;" &
 
 
 
