@@ -1,9 +1,10 @@
-import { Form, Input, Typography, Button } from "antd";
-import { useContext, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { Form, Input, Typography, Button, Select } from "antd";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
 
 const InvoiceLineItemCreate = () => {
+    const params = useParams();
     const { baseUri } = useContext(APIEndPointContext);
     const [formErr, setFormErr] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -47,8 +48,32 @@ const InvoiceLineItemCreate = () => {
         navigate('/invoicelineitem/list');
     }
 
+    const fetchBidAwardData = async () => {
+        if (!params.bidawardid) {
+            return;
+        }
+        try {
+            console.log('fetchBidAwardData', params.bidawardid)
+            const res = await fetch(`${baseUri}/bidAward/${params.bidawardid}`);
+            const data = await res.json();
+
+            form.setFieldsValue({
+                productNDC: data[0].state.data.productNDC,
+                memberStateUniqueIdentifier: data[0].state.data.memberStateLinearPointer.pointer.id,
+                bidAwardUniqueIdentifier: data[0].state.data.linearId.id,
+                consumer: data[0].state.data.owner
+            });
+        } catch (error) {
+            console.log('somethingwen wrong', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchBidAwardData();
+    }, [])
+
     return (<>
-        <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} >
+        <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed}>
             <Form.Item name="invoiceId"
                 label="Invoice ID"
                 rules={[

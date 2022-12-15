@@ -232,7 +232,7 @@ const MemberProposalList = ({ uri }) => {
             onCell: (record) => ({
                 record,
                 inputType: col.dataIndex === 'memberStateProposalStatus' ? 'select' : 'text',
-                selectOptions: [{ value: 'APPROVED', label: 'Approve' }, { value: 'REJECTED', label: 'Reject' }, { value: 'PROPOSED', label: 'PROPOSED' }],
+                selectOptions: [{ value: 'APPROVED', label: 'APPROVE' }, { value: 'REJECTED', label: 'REJECT' }, { value: 'PROPOSED', label: 'PROPOSED' }],
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),

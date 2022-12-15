@@ -1,7 +1,8 @@
 import { Divider, Menu, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
-import { Outlet, useLocation, Navigate } from 'react-router-dom';
+import { Outlet, useLocation, Navigate, useMatch, matchPath, Link } from 'react-router-dom';
 import { APIEndPointContext, AuthContext } from '../../context';
+import { ROLES } from '../../roles';
 import { parseUserInfo } from '../../utils';
 
 export const DefaultPage = () => {
@@ -54,7 +55,12 @@ export const ContentPage = ({ title, items, children }) => {
         }
         return true;
     }) : [];
-    // console.log(title, auth.user, 'navitems', navItems);
+
+    //console.log('matchPath', !!matchPath('/members/*', location.pathname), (auth.user), (auth.user === ROLES.MODELN));
+    if (!!matchPath('/members/*', location.pathname) && auth.user === ROLES.MODELN) {
+        // FIX hardcoded change of label for /members/proposal for modeln view
+        navItems[1].label = <Link to='/members/proposal'>Proposal</Link>
+    }
 
     return (<>
         <Space split={<Divider type="vertical" />}>

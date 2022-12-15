@@ -15,8 +15,8 @@ import { LoginPage } from './pages';
 import { ROLES } from './roles';
 
 const membersMenuItems = [
-  { key: 'list', label: <Link to='/members/list'>List</Link> },
-  { key: 'proposal', label: <Link to='/members/proposal'>Proposal</Link> },
+  { key: 'list', label: <Link to='/members/list'>Global List</Link> },
+  { key: 'proposal', label: <Link to='/members/proposal'>My List</Link> },
   { key: 'proposalcreate', label: <Link to='/members/proposalcreate'><PlusCircleOutlined /> Add Member</Link>, permissions: [ROLES.GPO] },
 ];
 
@@ -71,6 +71,7 @@ const router = createBrowserRouter([
           { path: '', element: <Navigate to="list" /> },
           { path: 'list', element: <InvoiceLineItemList /> },
           { path: 'create', element: <InvoiceLineItemCreate /> },
+          { path: 'create/:bidawardid', element: <InvoiceLineItemCreate /> },
           { path: ':linearid', element: <InvoiceLineItemDetail /> },
         ],
       },

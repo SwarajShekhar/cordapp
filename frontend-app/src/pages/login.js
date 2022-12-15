@@ -27,7 +27,7 @@ const LoginPage = () => {
             form.setFieldsValue({ username: terminal.o });
         }
     }
-    
+
     const itnitialValues = currentPort === '3000' ? null : { username: terminals[0].o, terminal: terminals[0].ou };
 
     const onFinish = (values) => {
@@ -62,12 +62,12 @@ const LoginPage = () => {
                             message: 'Please input your username!',
                         },
                     ]}>
-                    <Input placeholder="Username" disabled />
+                    <Input placeholder="Username" />
                 </Form.Item>
                 <Form.Item label='Connect to' name='terminal' rules={[
                     { required: true, message: 'Please select a node to connect to!' }
                 ]}>
-                    <Select onChange={onTerminalChange} disabled={terminals.length === 1}>
+                    <Select onChange={onTerminalChange}>
                         {terminals.map((t, idx) => <Select.Option key={idx} value={t.ou}>{t.ou.toUpperCase()}</Select.Option>)}
                     </Select>
                 </Form.Item>
