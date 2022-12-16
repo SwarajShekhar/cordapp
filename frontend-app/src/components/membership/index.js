@@ -9,6 +9,7 @@ export const MembershipList = () => {
 
     const { baseUri } = useContext(APIEndPointContext);
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const columns = [
         { title: 'Ledger Linear ID', dataIndex: 'linearId', key: 'linearId' },
@@ -23,6 +24,7 @@ export const MembershipList = () => {
     ];
 
     useEffect(() => {
+        setLoading(true);
         fetch(`${baseUri}/membership`)
             .then(res => res.json())
             .then(data => {
@@ -39,10 +41,15 @@ export const MembershipList = () => {
                     };
                 });
                 setData(memberships);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error(error);
+                setLoading(false);
             })
     }, []);
 
     return (<>
-        <Table columns={columns} dataSource={data} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
+        <Table loading={loading} columns={columns} dataSource={data} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
     </>);
 }

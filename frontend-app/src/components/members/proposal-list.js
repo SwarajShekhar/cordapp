@@ -37,6 +37,7 @@ const MemberProposalList = ({ uri }) => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [loading, setLoading] = useState(false);
+    const [loadingData, setLoadingData] = useState(false);
     const { baseUri } = useContext(APIEndPointContext);
     const [members, setMembers] = useState([]);
     const isEditing = (record) => record.key === editingKey;
@@ -128,6 +129,7 @@ const MemberProposalList = ({ uri }) => {
     }
 
     const fetchMembersData = () => {
+        setLoadingData(true);
         // console.log('Fetching members data...');
         fetch(`${baseUri}${uri}`)
             .then(res => {
@@ -141,9 +143,11 @@ const MemberProposalList = ({ uri }) => {
                     return { key: 'm_' + idx, memberName, memberType, owner: new UserInfo(owner).toString(), responder: new UserInfo(responder).toString(), DEAID, DDDID, address, description, memberStatus, memberStateProposalStatus, linearId: linearId.id, startDate, endDate, additionalInfo, internalName, memberIdIdentifier: memberIdIdentifier ? memberIdIdentifier.pointer.id : null };
                 });
                 setMembers(members);
+                setLoadingData(false);
             })
             .catch(error => {
                 console.error(error);
+                setLoadingData(false);
             });
     }
 
@@ -244,7 +248,7 @@ const MemberProposalList = ({ uri }) => {
         <Form form={form} component={false}>
             <Table components={{
                 body: { cell: EditableCell }
-            }} columns={mergedColumns} size='middle' dataSource={members} pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`, onChange: cancel, }}></Table>
+            }} loading={loadingData} columns={mergedColumns} size='middle' dataSource={members} pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`, onChange: cancel, }}></Table>
         </Form>
     </>);
 }

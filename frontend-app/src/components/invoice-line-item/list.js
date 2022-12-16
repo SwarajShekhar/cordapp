@@ -67,8 +67,10 @@ const InvoiceLineItemList = () => {
     const { baseUri } = useContext(APIEndPointContext);
     const [invoiceLineItems, setInvoiceLineItems] = useState([]);
     // const [bidAwards, setBidAwards] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const fetchData = async () => {
+        setLoading(true);
         try {
             const invoiceRes = await fetch(`${baseUri}/invoiceLineItem`);
             if (!invoiceRes.ok || invoiceRes.headers.get('content-type').toLowerCase().indexOf('application/json') === -1) throw new Error('Failed to get server response');
@@ -101,6 +103,7 @@ const InvoiceLineItemList = () => {
         } catch (error) {
             console.error(error);
         }
+        setLoading(false);
     }
 
     const handleActionTaken = () => {
@@ -148,7 +151,7 @@ const InvoiceLineItemList = () => {
         })
     }
     return (<>
-        <Table columns={columns} dataSource={invoiceLineItems} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
+        <Table loading={loading} columns={columns} dataSource={invoiceLineItems} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
     </>);
 }
 

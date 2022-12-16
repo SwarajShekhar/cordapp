@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Input, Space, Table } from 'antd';
+import { Button, Input, Space, Spin, Table } from 'antd';
 import { APIEndPointContext } from '../../context';
 import { UserInfo } from '../../utils';
 import { Link } from 'react-router-dom';
-import { SearchOutlined } from '@ant-design/icons';
+import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 
 const MembersList = () => {
     const { baseUri } = useContext(APIEndPointContext);
-
+    const [loading, setLoading] = useState([]);
     const [members, setMembers] = useState([]);
     const fetchMembersData = () => {
         // console.log('Fetching members data...');
+        setLoading(true);
         fetch(`${baseUri}/members`)
             .then(res => {
                 if (!res.ok || res.headers.get('content-type').toLowerCase().indexOf('application/json') === -1) throw new Error('Failed to get server response');
@@ -24,9 +25,11 @@ const MembersList = () => {
                     return { key: 'm_' + idx, linearId, memberName, memberType, owner: new UserInfo(owner).toString(), DEAID, DDDID, address, description, status };
                 });
                 setMembers(members);
+                setLoading(false);
             })
             .catch(error => {
                 console.error(error);
+                setLoading(false);
             });
     }
 
@@ -79,7 +82,7 @@ const MembersList = () => {
 
 
     return (<>
-        <Table columns={columns} dataSource={members} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
+        <Table columns={columns} loading={loading} dataSource={members} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
     </>);
 }
 

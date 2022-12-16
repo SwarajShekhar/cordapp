@@ -8,8 +8,10 @@ import { UserInfo } from "../../utils";
 const BidAwardList = () => {
     const [bidawards, setBidawards] = useState([]);
     const { baseUri } = useContext(APIEndPointContext);
+    const [loading, setLoading] = useState(false);
 
     const fetchData = () => {
+        setLoading(true);
         fetch(`${baseUri}/bidAward`)
             .then(res => {
                 if (!res.ok || res.headers.get('content-type').toLowerCase().indexOf('application/json') === -1) throw new Error('Failed to get server response');
@@ -24,9 +26,11 @@ const BidAwardList = () => {
                     return { key: 'm_' + idx, authorizedPrice, bidAwardId, endDate, linearId, memberStateLinearPointer, owner: new UserInfo(owner).toString(), productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName };
                 });
                 setBidawards(bidawards);
+                setLoading(false);
             })
             .catch(error => {
                 console.error(error);
+                setLoading(false);
             });
     }
 
@@ -77,7 +81,7 @@ const BidAwardList = () => {
         // { title: '', dataIndex: '', key: '' },
     ];
     return (<>
-        <Table columns={columns} dataSource={bidawards} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
+        <Table loading={loading} columns={columns} dataSource={bidawards} size='middle' pagination={{ pageSize: 10, showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items` }}></Table>
     </>);
 }
 

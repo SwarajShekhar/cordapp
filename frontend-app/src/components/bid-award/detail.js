@@ -1,7 +1,8 @@
 import { Button, Descriptions, Divider, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { APIEndPointContext } from '../../context';
+import { APIEndPointContext, AuthContext } from '../../context';
+import { ROLES } from '../../roles';
 import { UserInfo } from '../../utils';
 
 const BidAwardDetail = () => {
@@ -9,6 +10,7 @@ const BidAwardDetail = () => {
     const { baseUri } = useContext(APIEndPointContext);
     const [member, setMember] = useState(null);
     const [bidAward, setBidAward] = useState(null);
+    const auth = useContext(AuthContext);
 
     const fetchData = async () => {
         try {
@@ -42,12 +44,13 @@ const BidAwardDetail = () => {
     }
 
     return (<>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
-            <Typography.Text>Ledger Linear ID: {bidAward.linearId}</Typography.Text>
-            <Link to={`/invoicelineitem/create/${bidAward.linearId}`}>Create New Invoice Line</Link>
-        </div>
-
         <Descriptions bordered>
+            <Descriptions.Item label='Ledger Linear ID' span={3}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{bidAward.linearId}</span>
+                    {auth.user === ROLES.WHOLESALER ? <Link to={`/invoicelineitem/create/${bidAward.linearId}`}>Create New Invoice Line</Link> : null}
+                </div>
+            </Descriptions.Item>
             <Descriptions.Item label='Bid Award ID' span={3}>{bidAward.bidAwardId}</Descriptions.Item>
             <Descriptions.Item label='Product Name' span={1}>{bidAward.productNDC}</Descriptions.Item>
             <Descriptions.Item label='Wholesaler ID' span={2}>{bidAward.wholesalerId}</Descriptions.Item>

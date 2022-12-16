@@ -64,7 +64,7 @@ const AppHeader = () => {
             });
     }, [baseUri]);
     return (<>
-        <Header style={{ backgroundColor: 'white', color: '#333', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%)' }}>
+        <Header style={{ position: 'sticky', top: 0, zIndex: 2, width: '100%', backgroundColor: 'white', color: '#333', boxShadow: '0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%)' }}>
             <Row>
                 <Col flex='auto'>
                     <div style={{ float: 'left', margin: '0px 24px 16px 0' }}>
