@@ -3,7 +3,7 @@ import { Table, Space, Button, Spin, notification, Divider } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { APIEndPointContext, AuthContext } from '../../context';
 import { Link } from 'react-router-dom';
-import { UserInfo } from '../../utils';
+import { formatDateInfoShort, UserInfo } from '../../utils';
 import { ROLES } from '../../roles';
 
 
@@ -51,7 +51,7 @@ const ActionColumnMenu = ({ dataid, onActionTaken }) => {
         });
     };
 
-    return (<Space split={<Divider type='vertical' />}>
+    return (<Space direction='vertical'>
         {
             loading ? <Spin indicator={<LoadingOutlined />} /> : <>
                 <Button size='small' type='link' disabled={loading} onClick={handleApprove}>Approve</Button>
@@ -138,8 +138,16 @@ const InvoiceLineItemList = () => {
         { title: 'Wholesaler', dataIndex: 'wholesaler', key: 'wholesaler' },
         { title: 'Product Name', dataIndex: 'productNDC', key: 'productNDC' },
         { title: 'Invoice ID', dataIndex: 'invoiceId', key: 'invoiceId' },
-        { title: 'Invoice Date', dataIndex: 'invoiceDate', key: 'invoiceDate' },
-        { title: 'Status', dataIndex: 'status', key: 'status' },
+        { title: 'Invoice Date', dataIndex: 'invoiceDate', key: 'invoiceDate', render: formatDateInfoShort },
+        {
+            title: 'Status', dataIndex: 'status', key: 'status',
+            filters: [
+                { text: 'APPROVED', value: 'APPROVED' },
+                { text: 'REJECTED', value: 'REJECTED' },
+                { text: 'APPROVAL_NEEDED', value: 'APPROVAL_NEEDED' },
+            ],
+            onFilter: (value, record) => (record.status === value),
+        },
 
     ];
 

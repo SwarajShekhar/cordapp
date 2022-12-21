@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { APIEndPointContext, AuthContext } from '../../context';
 import { ROLES } from '../../roles';
-import { UserInfo } from '../../utils';
+import { formatDateInfo, UserInfo } from '../../utils';
 
 const BidAwardDetail = () => {
     const params = useParams();
@@ -20,14 +20,14 @@ const BidAwardDetail = () => {
             const bidAward = {
                 bidAwardId, memberStateLinearPointer: memberStateLinearPointer.pointer.id,
                 productNDC, wholesalerId,
-                startDate, wacPrice, authorizedPrice, endDate, wholesalerPartyName,
+                startDate: formatDateInfo(startDate), wacPrice, authorizedPrice, endDate: formatDateInfo(endDate), wholesalerPartyName,
                 linearId: linearId.id, owner: new UserInfo(owner).toString()
             };
 
             const mres = await fetch(`${baseUri}/members/${memberStateLinearPointer.pointer.id}`);
             const mdata = await mres.json();
-            const { memberName, memberType } = mdata[0].state.data;
-            const member = { memberName, memberType };
+            const { memberName, memberType, DDDID, DEAID, address, description } = mdata[0].state.data;
+            const member = { memberName, memberType, DDDID, DEAID, address, description };
             setMember(member);
             setBidAward(bidAward);
 
@@ -44,28 +44,31 @@ const BidAwardDetail = () => {
     }
 
     return (<>
-        <Descriptions bordered>
-            <Descriptions.Item label='Ledger Linear ID' span={3}>
+        <Descriptions bordered column={2}>
+            <Descriptions.Item label='Ledger Linear ID' span={2}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span>{bidAward.linearId}</span>
                     {auth.user === ROLES.WHOLESALER ? <Link to={`/invoicelineitem/create/${bidAward.linearId}`}>Create New Invoice Line</Link> : null}
                 </div>
             </Descriptions.Item>
-            <Descriptions.Item label='Bid Award ID' span={3}>{bidAward.bidAwardId}</Descriptions.Item>
-            <Descriptions.Item label='Product Name' span={1}>{bidAward.productNDC}</Descriptions.Item>
-            <Descriptions.Item label='Wholesaler ID' span={2}>{bidAward.wholesalerId}</Descriptions.Item>
-            <Descriptions.Item label='WAC Price' span={1}>{bidAward.wacPrice}</Descriptions.Item>
-            <Descriptions.Item label='Authorized Price' span={2}>{bidAward.authorizedPrice}</Descriptions.Item>
-            <Descriptions.Item label='StartDate' span={1}>{bidAward.startDate}</Descriptions.Item>
-            <Descriptions.Item label='End Date' span={2}>{bidAward.endDate}</Descriptions.Item>
-            <Descriptions.Item label='Wholesaler Party Name' span={1}>{bidAward.wholesalerPartyName}</Descriptions.Item>
-            <Descriptions.Item label='Owner' span={2}>{bidAward.owner}</Descriptions.Item>
+            <Descriptions.Item label='Bid Award ID' span={2}>{bidAward.bidAwardId}</Descriptions.Item>
+            <Descriptions.Item label='Product Name'>{bidAward.productNDC}</Descriptions.Item>
+            <Descriptions.Item label='Wholesaler ID'>{bidAward.wholesalerId}</Descriptions.Item>
+            <Descriptions.Item label='WAC Price'>{bidAward.wacPrice}</Descriptions.Item>
+            <Descriptions.Item label='Authorized Price'>{bidAward.authorizedPrice}</Descriptions.Item>
+            <Descriptions.Item label='StartDate'>{bidAward.startDate}</Descriptions.Item>
+            <Descriptions.Item label='End Date'>{bidAward.endDate}</Descriptions.Item>
+            <Descriptions.Item label='Wholesaler Party Name'>{bidAward.wholesalerPartyName}</Descriptions.Item>
+            <Descriptions.Item label='Owner'>{bidAward.owner}</Descriptions.Item>
         </Descriptions>
-        <Divider plain>Member Details</Divider>
-        <Descriptions bordered>
-            <Descriptions.Item label='Global Member Linear ID' span={3}><Link to={`/members/${bidAward.memberStateLinearPointer}`}>{bidAward.memberStateLinearPointer}</Link></Descriptions.Item>
+        <Divider orientation='left' plain>Global Member Linear ID: <Link to={`/members/${bidAward.memberStateLinearPointer}`}>{bidAward.memberStateLinearPointer}</Link></Divider>
+        <Descriptions bordered column={2}>
             <Descriptions.Item label='Member Name'>{member.memberName}</Descriptions.Item>
             <Descriptions.Item label='Member Type'>{member.memberType}</Descriptions.Item>
+            <Descriptions.Item label='GLN ID'>{member.DDDID}</Descriptions.Item>
+            <Descriptions.Item label='DEA ID'>{member.DEAID}</Descriptions.Item>
+            <Descriptions.Item label='Address'>{member.address}</Descriptions.Item>
+            <Descriptions.Item label='Description'>{member.description}</Descriptions.Item>
         </Descriptions>
         <br />
 

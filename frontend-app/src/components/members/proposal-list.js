@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Table, Space, Typography, Button, Spin, notification, Input, Form, Select } from 'antd';
 import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
 import { APIEndPointContext, AuthContext } from '../../context';
-import { UserInfo } from '../../utils';
+import { formatDateInfoShort, UserInfo } from '../../utils';
 import { Link } from 'react-router-dom';
 import { ROLES } from '../../roles';
 
@@ -114,7 +114,7 @@ const MemberProposalList = ({ uri }) => {
                 if (!res.ok) {
                     throw new Error(`network response wast not ok. [${res.status} ${res.statusText}] - ${txt}`);
                 }
-                setLoading(false);
+
                 openNotification('Status had been updated');
 
             } else {
@@ -125,6 +125,7 @@ const MemberProposalList = ({ uri }) => {
             console.log('validate failed: ', err);
             openNotification(err.toString());
         }
+        setLoading(false);
         fetchMembersData();
     }
 
@@ -140,7 +141,11 @@ const MemberProposalList = ({ uri }) => {
                 console.log('received members list', data);
                 const members = data.map((m, idx) => {
                     const { DDDID, DEAID, additionalInfo, address, description, endDate, internalName, linearId, memberIdIdentifier, memberName, memberStateProposalStatus, memberStatus, memberType, owner, responder, startDate } = m.state.data;
-                    return { key: 'm_' + idx, memberName, memberType, owner: new UserInfo(owner).toString(), responder: new UserInfo(responder).toString(), DEAID, DDDID, address, description, memberStatus, memberStateProposalStatus, linearId: linearId.id, startDate, endDate, additionalInfo, internalName, memberIdIdentifier: memberIdIdentifier ? memberIdIdentifier.pointer.id : null };
+                    return {
+                        key: 'm_' + idx, memberName, memberType, owner: new UserInfo(owner).toString(), responder: new UserInfo(responder).toString(), DEAID, DDDID,
+                        address, description, memberStatus, memberStateProposalStatus, linearId: linearId.id,
+                        startDate, endDate, additionalInfo, internalName, memberIdIdentifier: memberIdIdentifier ? memberIdIdentifier.pointer.id : null
+                    };
                 });
                 setMembers(members);
                 setLoadingData(false);
@@ -191,8 +196,8 @@ const MemberProposalList = ({ uri }) => {
         { title: 'Address', dataIndex: 'address', key: 'address', editable: true },
         { title: 'Description', dataIndex: 'description', key: 'description', editable: true, },
         { title: 'Member Status', dataIndex: 'memberStatus', key: 'memberStatus' },
-        { title: 'Start Date', dataIndex: 'startDate', key: 'startDate' },
-        { title: 'End Date', dataIndex: 'endDate', key: 'endDate' },
+        { title: 'Start Date', dataIndex: 'startDate', key: 'startDate', render: formatDateInfoShort },
+        { title: 'End Date', dataIndex: 'endDate', key: 'endDate', render: formatDateInfoShort },
         { title: 'Additional Info', dataIndex: 'additionalInfo', key: 'additionalInfo' },
         { title: 'Internal Name', dataIndex: 'internalName', key: 'internalName' },
         {

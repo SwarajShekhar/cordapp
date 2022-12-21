@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { APIEndPointContext } from "../../context";
-import { UserInfo } from "../../utils";
+import { formatDateInfo, UserInfo } from "../../utils";
 
 const InvoiceLineItemDetail = () => {
     const { baseUri } = useContext(APIEndPointContext);
@@ -17,8 +17,9 @@ const InvoiceLineItemDetail = () => {
         const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
         const bidAwardLinearPointer = m.state.data.bidAwardLinearPointer.pointer.id;
         return {
-            key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner: new UserInfo(owner).toString(), consumer: new UserInfo(consumer).toString(), productNDC, invoiceId, invoiceDate, status,
-            manufacturer: new UserInfo(manufacturer).toString(), wholesaler: new UserInfo(wholesaler).toString(), eventDate
+            key: 'm_' + idx, linearId, memberStateLinearPointer, bidAwardLinearPointer, owner: new UserInfo(owner).toString(), consumer: new UserInfo(consumer).toString(), productNDC, invoiceId,
+            invoiceDate: formatDateInfo(invoiceDate), status,
+            manufacturer: new UserInfo(manufacturer).toString(), wholesaler: new UserInfo(wholesaler).toString(), eventDate: formatDateInfo(eventDate)
         }
     }
 

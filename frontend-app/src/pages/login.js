@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Form, Typography, Select, Button, Input, Space } from "antd";
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { AuthContext } from '../context';
@@ -9,7 +9,7 @@ const LoginPage = () => {
     const location = useLocation();
     const auth = useContext(AuthContext);
     const [form] = Form.useForm();
-    const from = location.state?.from?.pathname || "/dashboard";
+    const from = location.state?.from?.pathname || "/members";
 
     const currentPort = window.location.port; //; //
     const terminals = ([
@@ -46,11 +46,16 @@ const LoginPage = () => {
         console.log('Failed:', errorInfo);
     };
 
+    useEffect(() => {
+        // capitalize first letter and set as document title
+        document.title = APP_TITLE.length <= 3 ? APP_TITLE.toUpperCase() : APP_TITLE.charAt(0).toUpperCase() + APP_TITLE.substring(1);
+    }, []);
+
     return (
         <div style={{ margin: `100px auto`, width: 350, backgroundColor: 'white', padding: 20, boxShadow: '0 1px 2px 0 rgb(0 0 0 / 3%), 0 1px 6px -1px rgb(0 0 0 / 2%), 0 2px 4px 0 rgb(0 0 0 / 2%)' }}>
             <Space direction='vertical'>
                 <AppTitle title={APP_TITLE}></AppTitle>
-                <Typography.Paragraph >Please sign in contiue to: {from}</Typography.Paragraph>
+                <Typography.Paragraph >Please sign in to continue to: {from}</Typography.Paragraph>
             </Space>
             <Form form={form} layout='vertical' onFinish={onFinish}
                 onFinishFailed={onFinishFailed} initialValues={itnitialValues}>

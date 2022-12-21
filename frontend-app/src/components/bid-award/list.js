@@ -3,35 +3,44 @@ import { Button, Input, Space, Table } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { APIEndPointContext } from "../../context";
-import { UserInfo } from "../../utils";
+import { formatDateInfoShort, UserInfo } from "../../utils";
 
 const BidAwardList = () => {
     const [bidawards, setBidawards] = useState([]);
     const { baseUri } = useContext(APIEndPointContext);
     const [loading, setLoading] = useState(false);
 
-    const fetchData = () => {
-        setLoading(true);
-        fetch(`${baseUri}/bidAward`)
-            .then(res => {
-                if (!res.ok || res.headers.get('content-type').toLowerCase().indexOf('application/json') === -1) throw new Error('Failed to get server response');
-                return res.json();
-            })
-            .then(data => {
-                console.log('received bidaward list', data);
-                const bidawards = data.map((m, idx) => {
-                    const { authorizedPrice, bidAwardId, endDate, owner, productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName } = m.state.data;
-                    const linearId = m.state.data.linearId.id;
-                    const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
-                    return { key: 'm_' + idx, authorizedPrice, bidAwardId, endDate, linearId, memberStateLinearPointer, owner: new UserInfo(owner).toString(), productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName };
-                });
-                setBidawards(bidawards);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error(error);
-                setLoading(false);
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch(`${baseUri}/bidAward`);
+            if (!res.ok || res.headers.get('content-type').toLowerCase().indexOf('application/json') === -1) throw new Error('Failed to get server response');
+            const data = await res.json();
+            console.log('received bidaward list', data);
+            const mres = await fetch(`${baseUri}/members`);
+            const mdata = await mres.json();
+            console.log('received members data', mdata);
+            const members = mdata.map((m, idx) => {
+                return { linearId: m.state.data.linearId.id, memberName: m.state.data.memberName }
             });
+
+            const bidawards = data.map((m, idx) => {
+                const { authorizedPrice, bidAwardId, endDate, owner, productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName } = m.state.data;
+                const linearId = m.state.data.linearId.id;
+                const memberStateLinearPointer = m.state.data.memberStateLinearPointer.pointer.id;
+                const member = members.find((member) => (member.linearId === memberStateLinearPointer));
+                return {
+                    key: 'm_' + idx, authorizedPrice, bidAwardId, endDate, linearId,
+                    memberStateLinearPointer,
+                    memberName: member?.memberName,
+                    owner: new UserInfo(owner).toString(), productNDC, startDate, wacPrice, wholesalerId, wholesalerPartyName
+                };
+            });
+            setBidawards(bidawards);
+        } catch (error) {
+            console.error(error);
+        };
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -66,12 +75,13 @@ const BidAwardList = () => {
             render: (data) => (<Link to={`/bidaward/${data}`}>{data}</Link>)
         },
         { title: 'Bid Award ID', dataIndex: 'bidAwardId', key: 'bidAwardId' },
-        { title: 'Start Date', dataIndex: 'startDate', key: 'startDate', align: 'center' },
-        { title: 'End Date', dataIndex: 'endDate', key: 'endDate', align: 'center' },
+        { title: 'Start Date', dataIndex: 'startDate', key: 'startDate', align: 'center', render: formatDateInfoShort },
+        { title: 'End Date', dataIndex: 'endDate', key: 'endDate', align: 'center', render: formatDateInfoShort },
         {
             title: 'Global Member Linear ID', dataIndex: 'memberStateLinearPointer', key: 'memberStateLinearPointer',
             render: (data) => (<Link to={`/members/${data}`}>{data}</Link>), ...getColumnSearchProps('memberStateLinearPointer')
         },
+        { title: 'Global Member Name', dataIndex: 'memberName', key: 'memberName' },
         { title: 'Owner', dataIndex: 'owner', key: 'owner' },
         { title: 'Product Name', dataIndex: 'productNDC', key: 'productNDC', ...getColumnSearchProps('productNDC') },
         { title: 'WAC Price', dataIndex: 'wacPrice', key: 'wacPrice', align: 'center' },

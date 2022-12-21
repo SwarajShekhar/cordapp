@@ -8,14 +8,15 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { APIEndPointContext, AuthContext } from './context';
 import { HomeOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useLocalStorage } from './useLocalStorage';
 
 const { Content, Footer } = Layout;
 
 function App() {
-  const apiuri = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://localhost:8082/api' : '/api';
-  const [apiEndPoint, setApiEndPoint] = useState(apiuri);
-  let [user, setUser] = React.useState(null);
-
+  // const apiuri = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://localhost:8082/api' : '/api';
+  const [apiEndPoint, setApiEndPoint] = useLocalStorage('apiuri', null);
+  const [user, setUser] = useLocalStorage("user", null);
+  /*
   const navigate = useNavigate();
   // for quick change of user during development mode
   const changeBaseUri = ({ key }) => {
@@ -29,6 +30,7 @@ function App() {
     setApiEndPoint(`http://localhost:${port[rkey]}/api`);
     navigate('/');
   }
+  */
   let signin = (newUser, callback) => {
     const apiuri = (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? `http://localhost:${newUser}/api` : '/api';
     setApiEndPoint(apiuri);
@@ -52,7 +54,7 @@ function App() {
   ].concat(segments.map((m, idx) => <Breadcrumb.Item key={idx}>{m}</Breadcrumb.Item>));
   return (<>
     <AuthContext.Provider value={value}>
-      <APIEndPointContext.Provider value={{ baseUri: apiEndPoint, changeBaseUri }}>
+      <APIEndPointContext.Provider value={{ baseUri: apiEndPoint }}>
         <Layout>
           {user ? (<>
             <AppHeader />

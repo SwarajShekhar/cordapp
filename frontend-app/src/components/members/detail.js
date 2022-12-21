@@ -2,7 +2,7 @@ import { Descriptions } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { APIEndPointContext } from "../../context";
-import { UserInfo } from "../../utils";
+import { formatDateInfo, UserInfo } from "../../utils";
 
 const MemberDetail = () => {
     const params = useParams();
@@ -14,7 +14,10 @@ const MemberDetail = () => {
             .then(res => res.json())
             .then(data => {
                 const { DDDID, DEAID, address, description, linearId, memberName, memberType, owner, status, eventDate } = data[0].state.data;
-                const member = { DDDID, DEAID, address, description, linearId: linearId.id, memberName, memberType, owner: new UserInfo(owner).toString(), status, eventDate }
+                const member = {
+                    DDDID, DEAID, address, description, linearId: linearId.id, memberName, memberType, owner: new UserInfo(owner).toString(), status,
+                    eventDate: formatDateInfo(eventDate)
+                }
                 setMember(member);
             })
     }, []);

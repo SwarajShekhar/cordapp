@@ -1,6 +1,6 @@
-import { Form, Input, Typography, Button, Select } from "antd";
+import { Form, Input, Typography, Button, Select, Space, Row, Tooltip, DatePicker } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
 
 const InvoiceLineItemCreate = () => {
@@ -9,8 +9,9 @@ const InvoiceLineItemCreate = () => {
     const [formErr, setFormErr] = useState(null);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
+    const [memInfo, setMemInfo] = useState(null);
     const navigate = useNavigate();
-
+    const disableItems = (params && params.bidawardid) ? true : false;
     const onFinish = async (values) => {
         console.log('Success:', values);
         try {
@@ -19,7 +20,8 @@ const InvoiceLineItemCreate = () => {
             const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
             const fdata = [];
             for (const [key, value] of Object.entries(values)) {
-                fdata.push(`${key}=${encodeURIComponent(value)}`);
+                const val = (key === 'invoiceDate') ? value.format('YYYY-MM-DDTHH:mm:ss.SSS[z]') : value;
+                fdata.push(`${key}=${encodeURIComponent(val)}`);
             }
 
             const res = await fetch(`${baseUri}/invoiceLineItem`, { method: 'POST', headers, body: fdata.join('&') });
@@ -45,7 +47,7 @@ const InvoiceLineItemCreate = () => {
 
     const handleCancel = () => {
         form.resetFields();
-        navigate('/invoicelineitem/list');
+        navigate(-1);
     }
 
     const fetchBidAwardData = async () => {
@@ -56,15 +58,22 @@ const InvoiceLineItemCreate = () => {
             console.log('fetchBidAwardData', params.bidawardid)
             const res = await fetch(`${baseUri}/bidAward/${params.bidawardid}`);
             const data = await res.json();
-
+            const memberStateUniqueIdentifier = data[0].state.data.memberStateLinearPointer.pointer.id;
+            // get bidaward info
             form.setFieldsValue({
                 productNDC: data[0].state.data.productNDC,
-                memberStateUniqueIdentifier: data[0].state.data.memberStateLinearPointer.pointer.id,
+                memberStateUniqueIdentifier,
                 bidAwardUniqueIdentifier: data[0].state.data.linearId.id,
-                consumer: data[0].state.data.owner
+                consumer: data[0].state.data.owner,
+                // invoiceDate: dayjs('2023-01-01T10:10:10.111z')
             });
+            // get members info
+            const memRes = await fetch(`${baseUri}/members/${memberStateUniqueIdentifier}`);
+            const memData = await memRes.json();
+            // console.log('members data', memData);
+            setMemInfo(memData[0].state.data);
         } catch (error) {
-            console.log('somethingwen wrong', error);
+            console.log('something went wrong', error);
         }
     }
 
@@ -73,7 +82,7 @@ const InvoiceLineItemCreate = () => {
     }, [])
 
     return (<>
-        <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed}>
+        <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete='off'>
             <Form.Item name="invoiceId"
                 label="Invoice ID"
                 rules={[
@@ -92,18 +101,29 @@ const InvoiceLineItemCreate = () => {
                         message: 'Please input the Invoice Date!',
                     },
                 ]}>
-                <Input />
+                <DatePicker />
             </Form.Item>
-            <Form.Item name="memberStateUniqueIdentifier"
-                label="Member State Unique Identifier"
-                rules={[
+            <Form.Item label="Member State Unique Identifier" required>
+                <Space>
+                    <Form.Item name="memberStateUniqueIdentifier"
+                        noStyle
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input the Member State Unique Identifier!',
+                            },
+                        ]}>
+                        <Input disabled={disableItems} />
+                    </Form.Item>
                     {
-                        required: true,
-                        message: 'Please input the Member State Unique Identifier!',
-                    },
-                ]}>
-                <Input />
+                        memInfo ? (<Tooltip title={`${memInfo?.memberName}, ${memInfo?.address}`}>
+                            <Link to={`/members/${memInfo?.linearId.id}`}>Details</Link>
+                        </Tooltip>) : null
+                    }
+
+                </Space>
             </Form.Item>
+
             <Form.Item name="productNDC"
                 label="Product Name"
                 rules={[
@@ -112,7 +132,7 @@ const InvoiceLineItemCreate = () => {
                         message: 'Please input the Product Name!',
                     },
                 ]}>
-                <Input />
+                <Input disabled={disableItems} />
             </Form.Item>
             <Form.Item name="consumer"
                 label="Manufacturer Party"
@@ -122,7 +142,7 @@ const InvoiceLineItemCreate = () => {
                         message: 'Please input the Manufacturer Party!',
                     },
                 ]}>
-                <Input />
+                <Input disabled={disableItems} />
             </Form.Item>
             <Form.Item name="bidAwardUniqueIdentifier"
                 label="Bid Award Linear ID"
@@ -132,7 +152,7 @@ const InvoiceLineItemCreate = () => {
                         message: 'Please input the Bid Award Linear ID!',
                     },
                 ]}>
-                <Input />
+                <Input disabled={disableItems} />
             </Form.Item>
             <Form.Item name="quantity"
                 label="Quantity"

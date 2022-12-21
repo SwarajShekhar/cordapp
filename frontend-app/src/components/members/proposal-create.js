@@ -1,4 +1,4 @@
-import { Form, Input, Select, Typography, Button } from "antd";
+import { Form, Input, Select, Typography, Button, DatePicker } from "antd";
 import { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { APIEndPointContext } from "../../context";
@@ -27,7 +27,8 @@ const MemmberPrposalCreate = () => {
             const fdata = [];
             for (const [key, value] of Object.entries(values)) {
                 // console.log(`${key}: ${value}`);
-                fdata.push(`${key}=${encodeURIComponent(value)}`);
+                const val = (key === 'startDate' || key === 'endDate') ? value.format('YYYY-MM-DDTHH:mm:ss.SSS[z]') : value;
+                fdata.push(`${key}=${encodeURIComponent(val)}`);
             }
 
             const res = await fetch(`${baseUri}/memberProposal`, { method: 'POST', headers, body: fdata.join('&') });
@@ -57,7 +58,7 @@ const MemmberPrposalCreate = () => {
     }
 
     return (<div>
-        <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} >
+        <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 14 }} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete='off' >
             <Form.Item name="memberName"
                 label="Member Name"
                 rules={[
@@ -119,7 +120,9 @@ const MemmberPrposalCreate = () => {
                         message: 'Please input the member status!',
                     },
                 ]}>
-                <Input />
+                <Select placeholder='Select member status'>
+                    <Option value='ACTIVE'>Active</Option>
+                </Select>
             </Form.Item>
             <Form.Item name="address"
                 label="Address"
@@ -139,7 +142,7 @@ const MemmberPrposalCreate = () => {
                         message: 'Please input the member state proposal start date!',
                     },
                 ]}>
-                <Input />
+                <DatePicker />
             </Form.Item>
             <Form.Item name="endDate"
                 label="End Date"
@@ -149,7 +152,7 @@ const MemmberPrposalCreate = () => {
                         message: 'Please input the member state proposal end date!',
                     },
                 ]}>
-                <Input />
+                <DatePicker />
             </Form.Item>
             <Form.Item name="internalName"
                 label="Internal Name"

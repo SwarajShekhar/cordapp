@@ -1,4 +1,5 @@
-import { Divider, Menu, Space, Typography } from 'antd';
+import { EditOutlined, EllipsisOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Card, Divider, Menu, Space, Typography } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { Outlet, useLocation, Navigate, useMatch, matchPath, Link } from 'react-router-dom';
 import { APIEndPointContext, AuthContext } from '../../context';
@@ -25,11 +26,22 @@ export const DefaultPage = () => {
             });
     }, [baseUri]);
 
-    return (<Typography.Paragraph>
-        Logged in as: {me.o}<br />
-        O={me.o}, OU={me.ou}, L={me.l}, C={me.c}<br />
-        API endpoint: {baseUri}
-    </Typography.Paragraph>)
+    return (<>
+        <Card
+            style={{ width: 300 }}
+            actions={[
+                <SettingOutlined key="setting" />,
+                <EditOutlined key="edit" />,
+                <EllipsisOutlined key="ellipsis" />,
+            ]}>
+            <Card.Meta
+                avatar={<Avatar src='https://picsum.photos/50' />}
+                title={me.o}
+                description={<span>O={me.o}, OU={me.ou}, L={me.l}, C={me.c}<br />
+                    API endpoint: {baseUri}</span>}
+            />
+        </Card>
+    </>);
 }
 
 export const ContentPage = ({ title, items, children }) => {
